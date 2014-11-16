@@ -22,7 +22,6 @@ Partial Class frmMain
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         Me.spcMain = New System.Windows.Forms.SplitContainer()
         Me.picHeader = New System.Windows.Forms.PictureBox()
         Me.tbcLiveryDesign = New System.Windows.Forms.TabControl()
@@ -38,6 +37,10 @@ Partial Class frmMain
         Me.nudDriverNo = New System.Windows.Forms.NumericUpDown()
         Me.spcLiveryBasicsSettings2 = New System.Windows.Forms.SplitContainer()
         Me.grpBasicFonts = New System.Windows.Forms.GroupBox()
+        Me.chkNameFontItalic = New System.Windows.Forms.CheckBox()
+        Me.chkNameFontBold = New System.Windows.Forms.CheckBox()
+        Me.chkNoFontItalic = New System.Windows.Forms.CheckBox()
+        Me.chkNoFontBold = New System.Windows.Forms.CheckBox()
         Me.lblNoFont = New System.Windows.Forms.Label()
         Me.lblNameFont = New System.Windows.Forms.Label()
         Me.cmbNoFont = New System.Windows.Forms.ComboBox()
@@ -100,10 +103,6 @@ Partial Class frmMain
         Me.btnCarEditor = New System.Windows.Forms.ToolStripButton()
         Me.btnCarDelete = New System.Windows.Forms.ToolStripButton()
         Me.btnSettings = New System.Windows.Forms.ToolStripButton()
-        Me.chkNoFontBold = New System.Windows.Forms.CheckBox()
-        Me.chkNoFontItalic = New System.Windows.Forms.CheckBox()
-        Me.chkNameFontItalic = New System.Windows.Forms.CheckBox()
-        Me.chkNameFontBold = New System.Windows.Forms.CheckBox()
         CType(Me.spcMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.spcMain.Panel1.SuspendLayout()
         Me.spcMain.Panel2.SuspendLayout()
@@ -192,11 +191,11 @@ Partial Class frmMain
         Me.tbcLiveryDesign.Controls.Add(Me.tbpIntWindows)
         Me.tbcLiveryDesign.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tbcLiveryDesign.ItemSize = New System.Drawing.Size(62, 32)
-        Me.tbcLiveryDesign.Location = New System.Drawing.Point(0, 39)
+        Me.tbcLiveryDesign.Location = New System.Drawing.Point(0, 31)
         Me.tbcLiveryDesign.Multiline = True
         Me.tbcLiveryDesign.Name = "tbcLiveryDesign"
         Me.tbcLiveryDesign.SelectedIndex = 0
-        Me.tbcLiveryDesign.Size = New System.Drawing.Size(784, 419)
+        Me.tbcLiveryDesign.Size = New System.Drawing.Size(784, 435)
         Me.tbcLiveryDesign.TabIndex = 2
         '
         'tbpLiveryBasics
@@ -205,7 +204,7 @@ Partial Class frmMain
         Me.tbpLiveryBasics.Location = New System.Drawing.Point(4, 36)
         Me.tbpLiveryBasics.Name = "tbpLiveryBasics"
         Me.tbpLiveryBasics.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbpLiveryBasics.Size = New System.Drawing.Size(776, 379)
+        Me.tbpLiveryBasics.Size = New System.Drawing.Size(776, 395)
         Me.tbpLiveryBasics.TabIndex = 0
         Me.tbpLiveryBasics.Text = "Livery basics"
         Me.tbpLiveryBasics.UseVisualStyleBackColor = True
@@ -227,7 +226,7 @@ Partial Class frmMain
         '
         Me.spcLiveryBasics.Panel2.Controls.Add(Me.picLiveryBasicsPreview)
         Me.spcLiveryBasics.Panel2.Controls.Add(Me.btnLiveryBasicsPreview)
-        Me.spcLiveryBasics.Size = New System.Drawing.Size(770, 373)
+        Me.spcLiveryBasics.Size = New System.Drawing.Size(770, 389)
         Me.spcLiveryBasics.SplitterDistance = 140
         Me.spcLiveryBasics.SplitterWidth = 1
         Me.spcLiveryBasics.TabIndex = 0
@@ -361,6 +360,54 @@ Partial Class frmMain
         Me.grpBasicFonts.TabIndex = 4
         Me.grpBasicFonts.TabStop = False
         Me.grpBasicFonts.Text = "Font Settings"
+        '
+        'chkNameFontItalic
+        '
+        Me.chkNameFontItalic.Appearance = System.Windows.Forms.Appearance.Button
+        Me.chkNameFontItalic.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.chkNameFontItalic.Location = New System.Drawing.Point(158, 97)
+        Me.chkNameFontItalic.Name = "chkNameFontItalic"
+        Me.chkNameFontItalic.Size = New System.Drawing.Size(67, 20)
+        Me.chkNameFontItalic.TabIndex = 7
+        Me.chkNameFontItalic.Text = "Italic"
+        Me.chkNameFontItalic.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.chkNameFontItalic.UseVisualStyleBackColor = True
+        '
+        'chkNameFontBold
+        '
+        Me.chkNameFontBold.Appearance = System.Windows.Forms.Appearance.Button
+        Me.chkNameFontBold.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.chkNameFontBold.Location = New System.Drawing.Point(85, 97)
+        Me.chkNameFontBold.Name = "chkNameFontBold"
+        Me.chkNameFontBold.Size = New System.Drawing.Size(67, 20)
+        Me.chkNameFontBold.TabIndex = 6
+        Me.chkNameFontBold.Text = "Bold"
+        Me.chkNameFontBold.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.chkNameFontBold.UseVisualStyleBackColor = True
+        '
+        'chkNoFontItalic
+        '
+        Me.chkNoFontItalic.Appearance = System.Windows.Forms.Appearance.Button
+        Me.chkNoFontItalic.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.chkNoFontItalic.Location = New System.Drawing.Point(158, 45)
+        Me.chkNoFontItalic.Name = "chkNoFontItalic"
+        Me.chkNoFontItalic.Size = New System.Drawing.Size(67, 20)
+        Me.chkNoFontItalic.TabIndex = 5
+        Me.chkNoFontItalic.Text = "Italic"
+        Me.chkNoFontItalic.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.chkNoFontItalic.UseVisualStyleBackColor = True
+        '
+        'chkNoFontBold
+        '
+        Me.chkNoFontBold.Appearance = System.Windows.Forms.Appearance.Button
+        Me.chkNoFontBold.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.chkNoFontBold.Location = New System.Drawing.Point(85, 45)
+        Me.chkNoFontBold.Name = "chkNoFontBold"
+        Me.chkNoFontBold.Size = New System.Drawing.Size(67, 20)
+        Me.chkNoFontBold.TabIndex = 4
+        Me.chkNoFontBold.Text = "Bold"
+        Me.chkNoFontBold.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.chkNoFontBold.UseVisualStyleBackColor = True
         '
         'lblNoFont
         '
@@ -526,17 +573,21 @@ Partial Class frmMain
         Me.picLiveryBasicsPreview.Location = New System.Drawing.Point(200, 5)
         Me.picLiveryBasicsPreview.Name = "picLiveryBasicsPreview"
         Me.picLiveryBasicsPreview.Size = New System.Drawing.Size(370, 141)
+        Me.picLiveryBasicsPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picLiveryBasicsPreview.TabIndex = 1
         Me.picLiveryBasicsPreview.TabStop = False
         '
         'btnLiveryBasicsPreview
         '
         Me.btnLiveryBasicsPreview.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.btnLiveryBasicsPreview.Image = Global.Simplivery.My.Resources.Resources.reload
         Me.btnLiveryBasicsPreview.Location = New System.Drawing.Point(342, 152)
         Me.btnLiveryBasicsPreview.Name = "btnLiveryBasicsPreview"
         Me.btnLiveryBasicsPreview.Size = New System.Drawing.Size(100, 32)
         Me.btnLiveryBasicsPreview.TabIndex = 0
         Me.btnLiveryBasicsPreview.Text = "Preview"
+        Me.btnLiveryBasicsPreview.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnLiveryBasicsPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnLiveryBasicsPreview.UseVisualStyleBackColor = True
         '
         'tbpChassis
@@ -545,7 +596,7 @@ Partial Class frmMain
         Me.tbpChassis.Location = New System.Drawing.Point(4, 36)
         Me.tbpChassis.Name = "tbpChassis"
         Me.tbpChassis.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbpChassis.Size = New System.Drawing.Size(776, 379)
+        Me.tbpChassis.Size = New System.Drawing.Size(776, 395)
         Me.tbpChassis.TabIndex = 1
         Me.tbpChassis.Text = "Chassis"
         Me.tbpChassis.UseVisualStyleBackColor = True
@@ -565,7 +616,7 @@ Partial Class frmMain
         'spcChassis1.Panel2
         '
         Me.spcChassis1.Panel2.Controls.Add(Me.spcChassis2)
-        Me.spcChassis1.Size = New System.Drawing.Size(770, 373)
+        Me.spcChassis1.Size = New System.Drawing.Size(770, 389)
         Me.spcChassis1.SplitterDistance = 200
         Me.spcChassis1.SplitterWidth = 1
         Me.spcChassis1.TabIndex = 1
@@ -583,7 +634,7 @@ Partial Class frmMain
         Me.grpChassisLayers.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpChassisLayers.Location = New System.Drawing.Point(0, 0)
         Me.grpChassisLayers.Name = "grpChassisLayers"
-        Me.grpChassisLayers.Size = New System.Drawing.Size(200, 373)
+        Me.grpChassisLayers.Size = New System.Drawing.Size(200, 389)
         Me.grpChassisLayers.TabIndex = 0
         Me.grpChassisLayers.TabStop = False
         Me.grpChassisLayers.Text = "Layers"
@@ -597,7 +648,7 @@ Partial Class frmMain
         Me.pnlChassisLayers.Controls.Add(Me.tstChassisLayers)
         Me.pnlChassisLayers.Location = New System.Drawing.Point(6, 171)
         Me.pnlChassisLayers.Name = "pnlChassisLayers"
-        Me.pnlChassisLayers.Size = New System.Drawing.Size(188, 196)
+        Me.pnlChassisLayers.Size = New System.Drawing.Size(188, 212)
         Me.pnlChassisLayers.TabIndex = 7
         '
         'lviChassisLayers
@@ -608,7 +659,7 @@ Partial Class frmMain
         Me.lviChassisLayers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.lviChassisLayers.Location = New System.Drawing.Point(0, 0)
         Me.lviChassisLayers.Name = "lviChassisLayers"
-        Me.lviChassisLayers.Size = New System.Drawing.Size(186, 169)
+        Me.lviChassisLayers.Size = New System.Drawing.Size(186, 185)
         Me.lviChassisLayers.TabIndex = 1
         Me.lviChassisLayers.UseCompatibleStateImageBehavior = False
         Me.lviChassisLayers.View = System.Windows.Forms.View.Details
@@ -618,7 +669,7 @@ Partial Class frmMain
         Me.tstChassisLayers.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.tstChassisLayers.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.tstChassisLayers.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnChassisEditLayer, Me.btnChassisRemoveLayer, Me.btnChassisLayerDown, Me.btnChassisLayerUp})
-        Me.tstChassisLayers.Location = New System.Drawing.Point(0, 169)
+        Me.tstChassisLayers.Location = New System.Drawing.Point(0, 185)
         Me.tstChassisLayers.Name = "tstChassisLayers"
         Me.tstChassisLayers.Size = New System.Drawing.Size(186, 25)
         Me.tstChassisLayers.TabIndex = 0
@@ -627,7 +678,7 @@ Partial Class frmMain
         'btnChassisEditLayer
         '
         Me.btnChassisEditLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnChassisEditLayer.Image = CType(resources.GetObject("btnChassisEditLayer.Image"), System.Drawing.Image)
+        Me.btnChassisEditLayer.Image = Global.Simplivery.My.Resources.Resources.edit
         Me.btnChassisEditLayer.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnChassisEditLayer.Name = "btnChassisEditLayer"
         Me.btnChassisEditLayer.Size = New System.Drawing.Size(23, 22)
@@ -636,7 +687,7 @@ Partial Class frmMain
         'btnChassisRemoveLayer
         '
         Me.btnChassisRemoveLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnChassisRemoveLayer.Image = CType(resources.GetObject("btnChassisRemoveLayer.Image"), System.Drawing.Image)
+        Me.btnChassisRemoveLayer.Image = Global.Simplivery.My.Resources.Resources.delete
         Me.btnChassisRemoveLayer.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnChassisRemoveLayer.Name = "btnChassisRemoveLayer"
         Me.btnChassisRemoveLayer.Size = New System.Drawing.Size(23, 22)
@@ -646,7 +697,7 @@ Partial Class frmMain
         '
         Me.btnChassisLayerDown.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
         Me.btnChassisLayerDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnChassisLayerDown.Image = CType(resources.GetObject("btnChassisLayerDown.Image"), System.Drawing.Image)
+        Me.btnChassisLayerDown.Image = Global.Simplivery.My.Resources.Resources.down
         Me.btnChassisLayerDown.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnChassisLayerDown.Name = "btnChassisLayerDown"
         Me.btnChassisLayerDown.Size = New System.Drawing.Size(23, 22)
@@ -656,7 +707,7 @@ Partial Class frmMain
         '
         Me.btnChassisLayerUp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
         Me.btnChassisLayerUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnChassisLayerUp.Image = CType(resources.GetObject("btnChassisLayerUp.Image"), System.Drawing.Image)
+        Me.btnChassisLayerUp.Image = Global.Simplivery.My.Resources.Resources.up
         Me.btnChassisLayerUp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnChassisLayerUp.Name = "btnChassisLayerUp"
         Me.btnChassisLayerUp.Size = New System.Drawing.Size(23, 22)
@@ -664,56 +715,74 @@ Partial Class frmMain
         '
         'btnChassisAddShading
         '
+        Me.btnChassisAddShading.Image = Global.Simplivery.My.Resources.Resources.shading
         Me.btnChassisAddShading.Location = New System.Drawing.Point(103, 133)
         Me.btnChassisAddShading.Name = "btnChassisAddShading"
         Me.btnChassisAddShading.Size = New System.Drawing.Size(91, 32)
         Me.btnChassisAddShading.TabIndex = 6
         Me.btnChassisAddShading.Text = "Shading"
+        Me.btnChassisAddShading.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnChassisAddShading.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnChassisAddShading.UseVisualStyleBackColor = True
         '
         'btnChassisAddParts
         '
+        Me.btnChassisAddParts.Image = Global.Simplivery.My.Resources.Resources.parts
         Me.btnChassisAddParts.Location = New System.Drawing.Point(6, 133)
         Me.btnChassisAddParts.Name = "btnChassisAddParts"
         Me.btnChassisAddParts.Size = New System.Drawing.Size(91, 32)
         Me.btnChassisAddParts.TabIndex = 5
         Me.btnChassisAddParts.Text = "Parts"
+        Me.btnChassisAddParts.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnChassisAddParts.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnChassisAddParts.UseVisualStyleBackColor = True
         '
         'btnChassisAddNumberplate
         '
+        Me.btnChassisAddNumberplate.Image = Global.Simplivery.My.Resources.Resources.numberplate
         Me.btnChassisAddNumberplate.Location = New System.Drawing.Point(103, 95)
         Me.btnChassisAddNumberplate.Name = "btnChassisAddNumberplate"
         Me.btnChassisAddNumberplate.Size = New System.Drawing.Size(91, 32)
         Me.btnChassisAddNumberplate.TabIndex = 4
         Me.btnChassisAddNumberplate.Text = "No. Plate"
+        Me.btnChassisAddNumberplate.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnChassisAddNumberplate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnChassisAddNumberplate.UseVisualStyleBackColor = True
         '
         'btnChassisAddDetail
         '
+        Me.btnChassisAddDetail.Image = Global.Simplivery.My.Resources.Resources.details
         Me.btnChassisAddDetail.Location = New System.Drawing.Point(6, 95)
         Me.btnChassisAddDetail.Name = "btnChassisAddDetail"
         Me.btnChassisAddDetail.Size = New System.Drawing.Size(91, 32)
         Me.btnChassisAddDetail.TabIndex = 2
         Me.btnChassisAddDetail.Text = "Detail"
+        Me.btnChassisAddDetail.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnChassisAddDetail.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnChassisAddDetail.UseVisualStyleBackColor = True
         '
         'btnChassisAddColorableDecal
         '
+        Me.btnChassisAddColorableDecal.Image = Global.Simplivery.My.Resources.Resources.colordecal
         Me.btnChassisAddColorableDecal.Location = New System.Drawing.Point(6, 57)
         Me.btnChassisAddColorableDecal.Name = "btnChassisAddColorableDecal"
         Me.btnChassisAddColorableDecal.Size = New System.Drawing.Size(188, 32)
         Me.btnChassisAddColorableDecal.TabIndex = 1
         Me.btnChassisAddColorableDecal.Text = "Colorable Decal"
+        Me.btnChassisAddColorableDecal.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnChassisAddColorableDecal.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnChassisAddColorableDecal.UseVisualStyleBackColor = True
         '
         'btnChassisAddDecal
         '
+        Me.btnChassisAddDecal.Image = Global.Simplivery.My.Resources.Resources.decal
         Me.btnChassisAddDecal.Location = New System.Drawing.Point(6, 19)
         Me.btnChassisAddDecal.Name = "btnChassisAddDecal"
         Me.btnChassisAddDecal.Size = New System.Drawing.Size(188, 32)
         Me.btnChassisAddDecal.TabIndex = 0
         Me.btnChassisAddDecal.Text = "Decal"
+        Me.btnChassisAddDecal.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnChassisAddDecal.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnChassisAddDecal.UseVisualStyleBackColor = True
         '
         'spcChassis2
@@ -732,8 +801,8 @@ Partial Class frmMain
         'spcChassis2.Panel2
         '
         Me.spcChassis2.Panel2.Controls.Add(Me.grpChassisElements)
-        Me.spcChassis2.Size = New System.Drawing.Size(569, 373)
-        Me.spcChassis2.SplitterDistance = 374
+        Me.spcChassis2.Size = New System.Drawing.Size(569, 389)
+        Me.spcChassis2.SplitterDistance = 371
         Me.spcChassis2.SplitterWidth = 1
         Me.spcChassis2.TabIndex = 0
         Me.spcChassis2.TabStop = False
@@ -741,11 +810,13 @@ Partial Class frmMain
         'btnChassisPreview
         '
         Me.btnChassisPreview.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.btnChassisPreview.Location = New System.Drawing.Point(143, 189)
+        Me.btnChassisPreview.Image = Global.Simplivery.My.Resources.Resources.reload
+        Me.btnChassisPreview.Location = New System.Drawing.Point(141, 205)
         Me.btnChassisPreview.Name = "btnChassisPreview"
         Me.btnChassisPreview.Size = New System.Drawing.Size(100, 32)
         Me.btnChassisPreview.TabIndex = 1
         Me.btnChassisPreview.Text = "Preview"
+        Me.btnChassisPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnChassisPreview.UseVisualStyleBackColor = True
         '
         'picChassisPreview
@@ -756,8 +827,8 @@ Partial Class frmMain
         Me.picChassisPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.picChassisPreview.Location = New System.Drawing.Point(5, 3)
         Me.picChassisPreview.Name = "picChassisPreview"
-        Me.picChassisPreview.Size = New System.Drawing.Size(366, 180)
-        Me.picChassisPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize
+        Me.picChassisPreview.Size = New System.Drawing.Size(361, 196)
+        Me.picChassisPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picChassisPreview.TabIndex = 0
         Me.picChassisPreview.TabStop = False
         '
@@ -769,7 +840,7 @@ Partial Class frmMain
         Me.grpChassisElements.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpChassisElements.Location = New System.Drawing.Point(0, 0)
         Me.grpChassisElements.Name = "grpChassisElements"
-        Me.grpChassisElements.Size = New System.Drawing.Size(194, 373)
+        Me.grpChassisElements.Size = New System.Drawing.Size(197, 389)
         Me.grpChassisElements.TabIndex = 1
         Me.grpChassisElements.TabStop = False
         Me.grpChassisElements.Text = "Elements"
@@ -783,7 +854,7 @@ Partial Class frmMain
         Me.pnlChassisElements.Controls.Add(Me.tstChassisElements)
         Me.pnlChassisElements.Location = New System.Drawing.Point(6, 172)
         Me.pnlChassisElements.Name = "pnlChassisElements"
-        Me.pnlChassisElements.Size = New System.Drawing.Size(188, 196)
+        Me.pnlChassisElements.Size = New System.Drawing.Size(188, 212)
         Me.pnlChassisElements.TabIndex = 8
         '
         'lviChassisElements
@@ -794,7 +865,7 @@ Partial Class frmMain
         Me.lviChassisElements.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.lviChassisElements.Location = New System.Drawing.Point(0, 0)
         Me.lviChassisElements.Name = "lviChassisElements"
-        Me.lviChassisElements.Size = New System.Drawing.Size(186, 169)
+        Me.lviChassisElements.Size = New System.Drawing.Size(186, 185)
         Me.lviChassisElements.TabIndex = 1
         Me.lviChassisElements.UseCompatibleStateImageBehavior = False
         Me.lviChassisElements.View = System.Windows.Forms.View.Details
@@ -804,7 +875,7 @@ Partial Class frmMain
         Me.tstChassisElements.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.tstChassisElements.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.tstChassisElements.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnChassisEditElement, Me.btnChassisRemoveElement, Me.btnChassisElementDown, Me.btnChassisElementUp})
-        Me.tstChassisElements.Location = New System.Drawing.Point(0, 169)
+        Me.tstChassisElements.Location = New System.Drawing.Point(0, 185)
         Me.tstChassisElements.Name = "tstChassisElements"
         Me.tstChassisElements.Size = New System.Drawing.Size(186, 25)
         Me.tstChassisElements.TabIndex = 0
@@ -813,7 +884,7 @@ Partial Class frmMain
         'btnChassisEditElement
         '
         Me.btnChassisEditElement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnChassisEditElement.Image = CType(resources.GetObject("btnChassisEditElement.Image"), System.Drawing.Image)
+        Me.btnChassisEditElement.Image = Global.Simplivery.My.Resources.Resources.edit
         Me.btnChassisEditElement.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnChassisEditElement.Name = "btnChassisEditElement"
         Me.btnChassisEditElement.Size = New System.Drawing.Size(23, 22)
@@ -822,7 +893,7 @@ Partial Class frmMain
         'btnChassisRemoveElement
         '
         Me.btnChassisRemoveElement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnChassisRemoveElement.Image = CType(resources.GetObject("btnChassisRemoveElement.Image"), System.Drawing.Image)
+        Me.btnChassisRemoveElement.Image = Global.Simplivery.My.Resources.Resources.delete
         Me.btnChassisRemoveElement.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnChassisRemoveElement.Name = "btnChassisRemoveElement"
         Me.btnChassisRemoveElement.Size = New System.Drawing.Size(23, 22)
@@ -832,7 +903,7 @@ Partial Class frmMain
         '
         Me.btnChassisElementDown.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
         Me.btnChassisElementDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnChassisElementDown.Image = CType(resources.GetObject("btnChassisElementDown.Image"), System.Drawing.Image)
+        Me.btnChassisElementDown.Image = Global.Simplivery.My.Resources.Resources.down
         Me.btnChassisElementDown.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnChassisElementDown.Name = "btnChassisElementDown"
         Me.btnChassisElementDown.Size = New System.Drawing.Size(23, 22)
@@ -842,7 +913,7 @@ Partial Class frmMain
         '
         Me.btnChassisElementUp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
         Me.btnChassisElementUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnChassisElementUp.Image = CType(resources.GetObject("btnChassisElementUp.Image"), System.Drawing.Image)
+        Me.btnChassisElementUp.Image = Global.Simplivery.My.Resources.Resources.up
         Me.btnChassisElementUp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnChassisElementUp.Name = "btnChassisElementUp"
         Me.btnChassisElementUp.Size = New System.Drawing.Size(23, 22)
@@ -850,20 +921,26 @@ Partial Class frmMain
         '
         'btnChassisAddSponsor
         '
+        Me.btnChassisAddSponsor.Image = Global.Simplivery.My.Resources.Resources.sponsor
         Me.btnChassisAddSponsor.Location = New System.Drawing.Point(6, 57)
         Me.btnChassisAddSponsor.Name = "btnChassisAddSponsor"
         Me.btnChassisAddSponsor.Size = New System.Drawing.Size(188, 32)
         Me.btnChassisAddSponsor.TabIndex = 2
         Me.btnChassisAddSponsor.Text = "Sponsor Label"
+        Me.btnChassisAddSponsor.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnChassisAddSponsor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnChassisAddSponsor.UseVisualStyleBackColor = True
         '
         'btnChassisAddFreeText
         '
+        Me.btnChassisAddFreeText.Image = Global.Simplivery.My.Resources.Resources.text
         Me.btnChassisAddFreeText.Location = New System.Drawing.Point(6, 19)
         Me.btnChassisAddFreeText.Name = "btnChassisAddFreeText"
         Me.btnChassisAddFreeText.Size = New System.Drawing.Size(188, 32)
         Me.btnChassisAddFreeText.TabIndex = 1
         Me.btnChassisAddFreeText.Text = "Free Text"
+        Me.btnChassisAddFreeText.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnChassisAddFreeText.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnChassisAddFreeText.UseVisualStyleBackColor = True
         '
         'tbpWindows
@@ -872,7 +949,7 @@ Partial Class frmMain
         Me.tbpWindows.Location = New System.Drawing.Point(4, 36)
         Me.tbpWindows.Name = "tbpWindows"
         Me.tbpWindows.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbpWindows.Size = New System.Drawing.Size(776, 379)
+        Me.tbpWindows.Size = New System.Drawing.Size(776, 395)
         Me.tbpWindows.TabIndex = 2
         Me.tbpWindows.Text = "Windows"
         Me.tbpWindows.UseVisualStyleBackColor = True
@@ -882,7 +959,7 @@ Partial Class frmMain
         Me.lblWindowsWip.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lblWindowsWip.Location = New System.Drawing.Point(3, 3)
         Me.lblWindowsWip.Name = "lblWindowsWip"
-        Me.lblWindowsWip.Size = New System.Drawing.Size(770, 373)
+        Me.lblWindowsWip.Size = New System.Drawing.Size(770, 389)
         Me.lblWindowsWip.TabIndex = 0
         Me.lblWindowsWip.Text = "WIP"
         Me.lblWindowsWip.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -893,7 +970,7 @@ Partial Class frmMain
         Me.tbpIntWindows.Location = New System.Drawing.Point(4, 36)
         Me.tbpIntWindows.Name = "tbpIntWindows"
         Me.tbpIntWindows.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbpIntWindows.Size = New System.Drawing.Size(776, 379)
+        Me.tbpIntWindows.Size = New System.Drawing.Size(776, 395)
         Me.tbpIntWindows.TabIndex = 3
         Me.tbpIntWindows.Text = "Interior Windows"
         Me.tbpIntWindows.UseVisualStyleBackColor = True
@@ -903,7 +980,7 @@ Partial Class frmMain
         Me.Label1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Label1.Location = New System.Drawing.Point(3, 3)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(770, 373)
+        Me.Label1.Size = New System.Drawing.Size(770, 389)
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "WIP"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -912,65 +989,65 @@ Partial Class frmMain
         '
         Me.tstActions.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.tstActions.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.tstActions.ImageScalingSize = New System.Drawing.Size(32, 32)
+        Me.tstActions.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.tstActions.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnReset, Me.btnSave, Me.btnLoad, Me.btnExport})
-        Me.tstActions.Location = New System.Drawing.Point(0, 458)
+        Me.tstActions.Location = New System.Drawing.Point(0, 466)
         Me.tstActions.Name = "tstActions"
-        Me.tstActions.Size = New System.Drawing.Size(784, 39)
+        Me.tstActions.Size = New System.Drawing.Size(784, 31)
         Me.tstActions.TabIndex = 1
         Me.tstActions.Text = "Actions"
         '
         'btnReset
         '
         Me.btnReset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnReset.Image = CType(resources.GetObject("btnReset.Image"), System.Drawing.Image)
+        Me.btnReset.Image = Global.Simplivery.My.Resources.Resources.reset
         Me.btnReset.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnReset.Name = "btnReset"
-        Me.btnReset.Size = New System.Drawing.Size(36, 36)
+        Me.btnReset.Size = New System.Drawing.Size(28, 28)
         Me.btnReset.Text = "Reset Livery"
         '
         'btnSave
         '
         Me.btnSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnSave.Image = CType(resources.GetObject("btnSave.Image"), System.Drawing.Image)
+        Me.btnSave.Image = Global.Simplivery.My.Resources.Resources.save
         Me.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnSave.Name = "btnSave"
-        Me.btnSave.Size = New System.Drawing.Size(36, 36)
+        Me.btnSave.Size = New System.Drawing.Size(28, 28)
         Me.btnSave.Text = "Save Livery"
         '
         'btnLoad
         '
         Me.btnLoad.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnLoad.Image = CType(resources.GetObject("btnLoad.Image"), System.Drawing.Image)
+        Me.btnLoad.Image = Global.Simplivery.My.Resources.Resources.load
         Me.btnLoad.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnLoad.Name = "btnLoad"
-        Me.btnLoad.Size = New System.Drawing.Size(36, 36)
+        Me.btnLoad.Size = New System.Drawing.Size(28, 28)
         Me.btnLoad.Text = "Load Livery"
         '
         'btnExport
         '
         Me.btnExport.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
-        Me.btnExport.Image = CType(resources.GetObject("btnExport.Image"), System.Drawing.Image)
+        Me.btnExport.Image = Global.Simplivery.My.Resources.Resources.export
         Me.btnExport.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnExport.Name = "btnExport"
-        Me.btnExport.Size = New System.Drawing.Size(110, 36)
+        Me.btnExport.Size = New System.Drawing.Size(102, 28)
         Me.btnExport.Text = "Export Livery"
         '
         'tstCarSelection
         '
         Me.tstCarSelection.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.tstCarSelection.ImageScalingSize = New System.Drawing.Size(32, 32)
+        Me.tstCarSelection.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.tstCarSelection.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblCarSelection, Me.cmbCarSelection, Me.btnCarImport, Me.btnCarEditor, Me.btnCarDelete, Me.btnSettings})
         Me.tstCarSelection.Location = New System.Drawing.Point(0, 0)
         Me.tstCarSelection.Name = "tstCarSelection"
-        Me.tstCarSelection.Size = New System.Drawing.Size(784, 39)
+        Me.tstCarSelection.Size = New System.Drawing.Size(784, 31)
         Me.tstCarSelection.TabIndex = 0
         Me.tstCarSelection.Text = "CarSelection"
         '
         'lblCarSelection
         '
         Me.lblCarSelection.Name = "lblCarSelection"
-        Me.lblCarSelection.Size = New System.Drawing.Size(71, 36)
+        Me.lblCarSelection.Size = New System.Drawing.Size(71, 28)
         Me.lblCarSelection.Text = "Select a Car:"
         '
         'cmbCarSelection
@@ -980,92 +1057,44 @@ Partial Class frmMain
         Me.cmbCarSelection.FlatStyle = System.Windows.Forms.FlatStyle.Standard
         Me.cmbCarSelection.IntegralHeight = False
         Me.cmbCarSelection.Name = "cmbCarSelection"
-        Me.cmbCarSelection.Size = New System.Drawing.Size(180, 39)
+        Me.cmbCarSelection.Size = New System.Drawing.Size(180, 31)
         '
         'btnCarImport
         '
         Me.btnCarImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnCarImport.Image = CType(resources.GetObject("btnCarImport.Image"), System.Drawing.Image)
+        Me.btnCarImport.Image = Global.Simplivery.My.Resources.Resources.importcar
         Me.btnCarImport.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnCarImport.Name = "btnCarImport"
-        Me.btnCarImport.Size = New System.Drawing.Size(36, 36)
+        Me.btnCarImport.Size = New System.Drawing.Size(28, 28)
         Me.btnCarImport.Text = "Import Car"
         '
         'btnCarEditor
         '
         Me.btnCarEditor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnCarEditor.Image = CType(resources.GetObject("btnCarEditor.Image"), System.Drawing.Image)
+        Me.btnCarEditor.Image = Global.Simplivery.My.Resources.Resources.careditor
         Me.btnCarEditor.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnCarEditor.Name = "btnCarEditor"
-        Me.btnCarEditor.Size = New System.Drawing.Size(36, 36)
+        Me.btnCarEditor.Size = New System.Drawing.Size(28, 28)
         Me.btnCarEditor.Text = "Car Editor"
         '
         'btnCarDelete
         '
         Me.btnCarDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnCarDelete.Image = CType(resources.GetObject("btnCarDelete.Image"), System.Drawing.Image)
+        Me.btnCarDelete.Image = Global.Simplivery.My.Resources.Resources.deletecar
         Me.btnCarDelete.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnCarDelete.Name = "btnCarDelete"
-        Me.btnCarDelete.Size = New System.Drawing.Size(36, 36)
+        Me.btnCarDelete.Size = New System.Drawing.Size(28, 28)
         Me.btnCarDelete.Text = "Delete Car"
         '
         'btnSettings
         '
         Me.btnSettings.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
         Me.btnSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnSettings.Image = CType(resources.GetObject("btnSettings.Image"), System.Drawing.Image)
+        Me.btnSettings.Image = Global.Simplivery.My.Resources.Resources.settings
         Me.btnSettings.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnSettings.Name = "btnSettings"
-        Me.btnSettings.Size = New System.Drawing.Size(36, 36)
+        Me.btnSettings.Size = New System.Drawing.Size(28, 28)
         Me.btnSettings.Text = "Settings"
-        '
-        'chkNoFontBold
-        '
-        Me.chkNoFontBold.Appearance = System.Windows.Forms.Appearance.Button
-        Me.chkNoFontBold.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkNoFontBold.Location = New System.Drawing.Point(85, 45)
-        Me.chkNoFontBold.Name = "chkNoFontBold"
-        Me.chkNoFontBold.Size = New System.Drawing.Size(67, 20)
-        Me.chkNoFontBold.TabIndex = 4
-        Me.chkNoFontBold.Text = "Bold"
-        Me.chkNoFontBold.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.chkNoFontBold.UseVisualStyleBackColor = True
-        '
-        'chkNoFontItalic
-        '
-        Me.chkNoFontItalic.Appearance = System.Windows.Forms.Appearance.Button
-        Me.chkNoFontItalic.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkNoFontItalic.Location = New System.Drawing.Point(158, 45)
-        Me.chkNoFontItalic.Name = "chkNoFontItalic"
-        Me.chkNoFontItalic.Size = New System.Drawing.Size(67, 20)
-        Me.chkNoFontItalic.TabIndex = 5
-        Me.chkNoFontItalic.Text = "Italic"
-        Me.chkNoFontItalic.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.chkNoFontItalic.UseVisualStyleBackColor = True
-        '
-        'chkNameFontItalic
-        '
-        Me.chkNameFontItalic.Appearance = System.Windows.Forms.Appearance.Button
-        Me.chkNameFontItalic.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkNameFontItalic.Location = New System.Drawing.Point(158, 97)
-        Me.chkNameFontItalic.Name = "chkNameFontItalic"
-        Me.chkNameFontItalic.Size = New System.Drawing.Size(67, 20)
-        Me.chkNameFontItalic.TabIndex = 7
-        Me.chkNameFontItalic.Text = "Italic"
-        Me.chkNameFontItalic.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.chkNameFontItalic.UseVisualStyleBackColor = True
-        '
-        'chkNameFontBold
-        '
-        Me.chkNameFontBold.Appearance = System.Windows.Forms.Appearance.Button
-        Me.chkNameFontBold.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkNameFontBold.Location = New System.Drawing.Point(85, 97)
-        Me.chkNameFontBold.Name = "chkNameFontBold"
-        Me.chkNameFontBold.Size = New System.Drawing.Size(67, 20)
-        Me.chkNameFontBold.TabIndex = 6
-        Me.chkNameFontBold.Text = "Bold"
-        Me.chkNameFontBold.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.chkNameFontBold.UseVisualStyleBackColor = True
         '
         'frmMain
         '
@@ -1115,7 +1144,6 @@ Partial Class frmMain
         Me.tstChassisLayers.ResumeLayout(False)
         Me.tstChassisLayers.PerformLayout()
         Me.spcChassis2.Panel1.ResumeLayout(False)
-        Me.spcChassis2.Panel1.PerformLayout()
         Me.spcChassis2.Panel2.ResumeLayout(False)
         CType(Me.spcChassis2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.spcChassis2.ResumeLayout(False)
