@@ -93,6 +93,9 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Enums\LayerType.vb" />
+    <Compile Include="Classes\Layer.vb" />
+    <Compile Include="Classes\Template.vb" />
     <Compile Include="frmMain.vb">
       <SubType>Form</SubType>
     </Compile>
