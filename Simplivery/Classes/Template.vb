@@ -8,4 +8,8 @@
     Public Property Layers As List(Of Layer)
     Public Property Presets As List(Of Preset)
 
+    Public Sub New()
+        Me.Guid = Guid.NewGuid
+    End Sub
+
 End Class

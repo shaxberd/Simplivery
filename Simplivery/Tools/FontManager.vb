@@ -11,13 +11,13 @@
 
     Public Function GetFont(ByVal fontName As String, ByVal fontSize As Integer, ByVal isBold As Boolean, ByVal isItalic As Boolean) As Font
         If isBold AndAlso isItalic Then
-            Return New Font(fontName, fontSize, 3, GraphicsUnit.Pixel)
+            Return New Font(fontName, fontSize, (FontStyle.Bold Or FontStyle.Italic), GraphicsUnit.Pixel)
         ElseIf isBold Then
-            Return New Font(fontName, fontSize, 1, GraphicsUnit.Pixel)
+            Return New Font(fontName, fontSize, FontStyle.Bold, GraphicsUnit.Pixel)
         ElseIf isItalic Then
-            Return New Font(fontName, fontSize, 2, GraphicsUnit.Pixel)
+            Return New Font(fontName, fontSize, FontStyle.Italic, GraphicsUnit.Pixel)
         Else
-            Return New Font(fontName, fontSize, 0, GraphicsUnit.Pixel)
+            Return New Font(fontName, fontSize, FontStyle.Regular, GraphicsUnit.Pixel)
         End If
     End Function
 

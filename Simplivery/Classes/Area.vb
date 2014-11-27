@@ -1,10 +1,21 @@
 ﻿Public Class Area
 
-    Public Property X As Integer
-    Public Property Y As Integer
-    Public Property Width As Integer
-    Public Property Height As Integer
-    Public Property Rotation As Integer
-    Public Property Padding As Integer()
+    Public Property AreaX As Integer
+    Public Property AreaY As Integer
+    Public Property AreaWidth As Integer
+    Public Property AreaHeight As Integer
+    Public Property AreaRotation As Integer
+    Public Property AreaPadding As Integer()
 
+    Public Sub New()
+        Me.New(0, 0, 0, 0)
+    End Sub
+
+    Public Sub New(ByVal X As Integer, ByVal Y As Integer, ByVal Width As Integer, ByVal Height As Integer)
+        Me.AreaX = X
+        Me.AreaY = Y
+        Me.AreaWidth = Width
+        Me.AreaHeight = Height
+        Me.AreaRotation = 0
+    End Sub
 End Class

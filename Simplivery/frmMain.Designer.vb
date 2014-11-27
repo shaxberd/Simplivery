@@ -46,10 +46,9 @@ Partial Class frmMain
         Me.cmbNoFont = New System.Windows.Forms.ComboBox()
         Me.cmbNameFont = New System.Windows.Forms.ComboBox()
         Me.grpBasicColors = New System.Windows.Forms.GroupBox()
-        Me.lblTextColor = New System.Windows.Forms.Label()
-        Me.btnTextColor = New System.Windows.Forms.Button()
-        Me.pnlTextColor = New System.Windows.Forms.Panel()
-        Me.lblAccentColorInfo = New System.Windows.Forms.Label()
+        Me.lblThirdColor = New System.Windows.Forms.Label()
+        Me.pnlThirdColor = New System.Windows.Forms.Panel()
+        Me.btnThirdColor = New System.Windows.Forms.Button()
         Me.lblBaseColor = New System.Windows.Forms.Label()
         Me.pnlBaseColor = New System.Windows.Forms.Panel()
         Me.lblAccentColor = New System.Windows.Forms.Label()
@@ -99,10 +98,13 @@ Partial Class frmMain
         Me.tstCarSelection = New System.Windows.Forms.ToolStrip()
         Me.lblCarSelection = New System.Windows.Forms.ToolStripLabel()
         Me.cmbCarSelection = New System.Windows.Forms.ToolStripComboBox()
+        Me.cmbPresetCollection = New System.Windows.Forms.ToolStripComboBox()
         Me.btnCarImport = New System.Windows.Forms.ToolStripButton()
         Me.btnCarEditor = New System.Windows.Forms.ToolStripButton()
         Me.btnCarDelete = New System.Windows.Forms.ToolStripButton()
         Me.btnSettings = New System.Windows.Forms.ToolStripButton()
+        Me.lblThirdColorInfo = New System.Windows.Forms.Label()
+        Me.btnDebug = New System.Windows.Forms.Button()
         CType(Me.spcMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.spcMain.Panel1.SuspendLayout()
         Me.spcMain.Panel2.SuspendLayout()
@@ -161,6 +163,7 @@ Partial Class frmMain
         '
         'spcMain.Panel1
         '
+        Me.spcMain.Panel1.Controls.Add(Me.btnDebug)
         Me.spcMain.Panel1.Controls.Add(Me.picHeader)
         Me.spcMain.Panel1.Padding = New System.Windows.Forms.Padding(0, 5, 0, 0)
         '
@@ -426,9 +429,9 @@ Partial Class frmMain
         Me.lblNameFont.AutoSize = True
         Me.lblNameFont.Location = New System.Drawing.Point(6, 74)
         Me.lblNameFont.Name = "lblNameFont"
-        Me.lblNameFont.Size = New System.Drawing.Size(59, 13)
+        Me.lblNameFont.Size = New System.Drawing.Size(52, 13)
         Me.lblNameFont.TabIndex = 3
-        Me.lblNameFont.Text = "Name Font"
+        Me.lblNameFont.Text = "Text Font"
         '
         'cmbNoFont
         '
@@ -454,10 +457,10 @@ Partial Class frmMain
         '
         'grpBasicColors
         '
-        Me.grpBasicColors.Controls.Add(Me.lblTextColor)
-        Me.grpBasicColors.Controls.Add(Me.btnTextColor)
-        Me.grpBasicColors.Controls.Add(Me.pnlTextColor)
-        Me.grpBasicColors.Controls.Add(Me.lblAccentColorInfo)
+        Me.grpBasicColors.Controls.Add(Me.lblThirdColorInfo)
+        Me.grpBasicColors.Controls.Add(Me.lblThirdColor)
+        Me.grpBasicColors.Controls.Add(Me.pnlThirdColor)
+        Me.grpBasicColors.Controls.Add(Me.btnThirdColor)
         Me.grpBasicColors.Controls.Add(Me.lblBaseColor)
         Me.grpBasicColors.Controls.Add(Me.pnlBaseColor)
         Me.grpBasicColors.Controls.Add(Me.lblAccentColor)
@@ -470,47 +473,37 @@ Partial Class frmMain
         Me.grpBasicColors.Size = New System.Drawing.Size(256, 140)
         Me.grpBasicColors.TabIndex = 7
         Me.grpBasicColors.TabStop = False
-        Me.grpBasicColors.Text = "Color Settings"
+        Me.grpBasicColors.Text = "Color Settings (overridable per layer)"
         '
-        'lblTextColor
+        'lblThirdColor
         '
-        Me.lblTextColor.AutoSize = True
-        Me.lblTextColor.Location = New System.Drawing.Point(7, 101)
-        Me.lblTextColor.Name = "lblTextColor"
-        Me.lblTextColor.Size = New System.Drawing.Size(55, 13)
-        Me.lblTextColor.TabIndex = 9
-        Me.lblTextColor.Text = "Text Color"
+        Me.lblThirdColor.AutoSize = True
+        Me.lblThirdColor.Location = New System.Drawing.Point(7, 75)
+        Me.lblThirdColor.Name = "lblThirdColor"
+        Me.lblThirdColor.Size = New System.Drawing.Size(58, 13)
+        Me.lblThirdColor.TabIndex = 10
+        Me.lblThirdColor.Text = "Third Color"
         '
-        'btnTextColor
+        'pnlThirdColor
         '
-        Me.btnTextColor.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnTextColor.Location = New System.Drawing.Point(185, 97)
-        Me.btnTextColor.Name = "btnTextColor"
-        Me.btnTextColor.Size = New System.Drawing.Size(67, 20)
-        Me.btnTextColor.TabIndex = 8
-        Me.btnTextColor.Text = "Choose"
-        Me.btnTextColor.UseVisualStyleBackColor = True
-        '
-        'pnlTextColor
-        '
-        Me.pnlTextColor.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.pnlThirdColor.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlTextColor.BackColor = System.Drawing.Color.White
-        Me.pnlTextColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.pnlTextColor.Location = New System.Drawing.Point(85, 97)
-        Me.pnlTextColor.Name = "pnlTextColor"
-        Me.pnlTextColor.Size = New System.Drawing.Size(94, 20)
-        Me.pnlTextColor.TabIndex = 6
+        Me.pnlThirdColor.BackColor = System.Drawing.Color.White
+        Me.pnlThirdColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.pnlThirdColor.Location = New System.Drawing.Point(85, 71)
+        Me.pnlThirdColor.Name = "pnlThirdColor"
+        Me.pnlThirdColor.Size = New System.Drawing.Size(94, 20)
+        Me.pnlThirdColor.TabIndex = 12
         '
-        'lblAccentColorInfo
+        'btnThirdColor
         '
-        Me.lblAccentColorInfo.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblAccentColorInfo.AutoSize = True
-        Me.lblAccentColorInfo.Location = New System.Drawing.Point(144, 68)
-        Me.lblAccentColorInfo.Name = "lblAccentColorInfo"
-        Me.lblAccentColorInfo.Size = New System.Drawing.Size(108, 13)
-        Me.lblAccentColorInfo.TabIndex = 7
-        Me.lblAccentColorInfo.Text = "(overridable per layer)"
+        Me.btnThirdColor.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnThirdColor.Location = New System.Drawing.Point(185, 71)
+        Me.btnThirdColor.Name = "btnThirdColor"
+        Me.btnThirdColor.Size = New System.Drawing.Size(67, 20)
+        Me.btnThirdColor.TabIndex = 11
+        Me.btnThirdColor.Text = "Choose"
+        Me.btnThirdColor.UseVisualStyleBackColor = True
         '
         'lblBaseColor
         '
@@ -808,7 +801,7 @@ Partial Class frmMain
         '
         Me.spcChassis2.Panel2.Controls.Add(Me.grpChassisElements)
         Me.spcChassis2.Size = New System.Drawing.Size(569, 389)
-        Me.spcChassis2.SplitterDistance = 371
+        Me.spcChassis2.SplitterDistance = 377
         Me.spcChassis2.SplitterWidth = 1
         Me.spcChassis2.TabIndex = 0
         Me.spcChassis2.TabStop = False
@@ -817,7 +810,7 @@ Partial Class frmMain
         '
         Me.btnChassisPreview.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.btnChassisPreview.Image = Global.Simplivery.My.Resources.Resources.reload
-        Me.btnChassisPreview.Location = New System.Drawing.Point(138, 205)
+        Me.btnChassisPreview.Location = New System.Drawing.Point(141, 205)
         Me.btnChassisPreview.Name = "btnChassisPreview"
         Me.btnChassisPreview.Size = New System.Drawing.Size(100, 32)
         Me.btnChassisPreview.TabIndex = 1
@@ -833,7 +826,7 @@ Partial Class frmMain
         Me.picChassisPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.picChassisPreview.Location = New System.Drawing.Point(5, 3)
         Me.picChassisPreview.Name = "picChassisPreview"
-        Me.picChassisPreview.Size = New System.Drawing.Size(361, 196)
+        Me.picChassisPreview.Size = New System.Drawing.Size(367, 196)
         Me.picChassisPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picChassisPreview.TabIndex = 0
         Me.picChassisPreview.TabStop = False
@@ -846,7 +839,7 @@ Partial Class frmMain
         Me.grpChassisElements.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpChassisElements.Location = New System.Drawing.Point(0, 0)
         Me.grpChassisElements.Name = "grpChassisElements"
-        Me.grpChassisElements.Size = New System.Drawing.Size(197, 389)
+        Me.grpChassisElements.Size = New System.Drawing.Size(191, 389)
         Me.grpChassisElements.TabIndex = 1
         Me.grpChassisElements.TabStop = False
         Me.grpChassisElements.Text = "Elements"
@@ -1043,7 +1036,7 @@ Partial Class frmMain
         '
         Me.tstCarSelection.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.tstCarSelection.ImageScalingSize = New System.Drawing.Size(24, 24)
-        Me.tstCarSelection.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblCarSelection, Me.cmbCarSelection, Me.btnCarImport, Me.btnCarEditor, Me.btnCarDelete, Me.btnSettings})
+        Me.tstCarSelection.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblCarSelection, Me.cmbCarSelection, Me.cmbPresetCollection, Me.btnCarImport, Me.btnCarEditor, Me.btnCarDelete, Me.btnSettings})
         Me.tstCarSelection.Location = New System.Drawing.Point(0, 0)
         Me.tstCarSelection.Name = "tstCarSelection"
         Me.tstCarSelection.Size = New System.Drawing.Size(784, 31)
@@ -1063,7 +1056,16 @@ Partial Class frmMain
         Me.cmbCarSelection.FlatStyle = System.Windows.Forms.FlatStyle.Standard
         Me.cmbCarSelection.IntegralHeight = False
         Me.cmbCarSelection.Name = "cmbCarSelection"
-        Me.cmbCarSelection.Size = New System.Drawing.Size(180, 31)
+        Me.cmbCarSelection.Size = New System.Drawing.Size(240, 31)
+        '
+        'cmbPresetCollection
+        '
+        Me.cmbPresetCollection.DropDownHeight = 100
+        Me.cmbPresetCollection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cmbPresetCollection.FlatStyle = System.Windows.Forms.FlatStyle.Standard
+        Me.cmbPresetCollection.IntegralHeight = False
+        Me.cmbPresetCollection.Name = "cmbPresetCollection"
+        Me.cmbPresetCollection.Size = New System.Drawing.Size(180, 31)
         '
         'btnCarImport
         '
@@ -1101,6 +1103,24 @@ Partial Class frmMain
         Me.btnSettings.Name = "btnSettings"
         Me.btnSettings.Size = New System.Drawing.Size(28, 28)
         Me.btnSettings.Text = "Settings"
+        '
+        'lblThirdColorInfo
+        '
+        Me.lblThirdColorInfo.AutoSize = True
+        Me.lblThirdColorInfo.Location = New System.Drawing.Point(85, 97)
+        Me.lblThirdColorInfo.Name = "lblThirdColorInfo"
+        Me.lblThirdColorInfo.Size = New System.Drawing.Size(129, 13)
+        Me.lblThirdColorInfo.TabIndex = 13
+        Me.lblThirdColorInfo.Text = "(used for text and presets)"
+        '
+        'btnDebug
+        '
+        Me.btnDebug.Location = New System.Drawing.Point(12, 12)
+        Me.btnDebug.Name = "btnDebug"
+        Me.btnDebug.Size = New System.Drawing.Size(75, 23)
+        Me.btnDebug.TabIndex = 1
+        Me.btnDebug.Text = "Debug"
+        Me.btnDebug.UseVisualStyleBackColor = True
         '
         'frmMain
         '
@@ -1212,7 +1232,6 @@ Partial Class frmMain
     Friend WithEvents grpBasicDriver As System.Windows.Forms.GroupBox
     Friend WithEvents grpBasicFonts As System.Windows.Forms.GroupBox
     Friend WithEvents grpBasicColors As System.Windows.Forms.GroupBox
-    Friend WithEvents lblAccentColorInfo As System.Windows.Forms.Label
     Friend WithEvents grpChassisLayers As System.Windows.Forms.GroupBox
     Friend WithEvents picChassisPreview As System.Windows.Forms.PictureBox
     Friend WithEvents grpChassisElements As System.Windows.Forms.GroupBox
@@ -1242,12 +1261,15 @@ Partial Class frmMain
     Friend WithEvents lblWindowsWip As System.Windows.Forms.Label
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents picHeader As System.Windows.Forms.PictureBox
-    Friend WithEvents lblTextColor As System.Windows.Forms.Label
-    Friend WithEvents btnTextColor As System.Windows.Forms.Button
-    Friend WithEvents pnlTextColor As System.Windows.Forms.Panel
     Friend WithEvents chkNameFontItalic As System.Windows.Forms.CheckBox
     Friend WithEvents chkNameFontBold As System.Windows.Forms.CheckBox
     Friend WithEvents chkNoFontItalic As System.Windows.Forms.CheckBox
     Friend WithEvents chkNoFontBold As System.Windows.Forms.CheckBox
+    Friend WithEvents cmbPresetCollection As System.Windows.Forms.ToolStripComboBox
+    Friend WithEvents lblThirdColor As System.Windows.Forms.Label
+    Friend WithEvents pnlThirdColor As System.Windows.Forms.Panel
+    Friend WithEvents btnThirdColor As System.Windows.Forms.Button
+    Friend WithEvents lblThirdColorInfo As System.Windows.Forms.Label
+    Friend WithEvents btnDebug As System.Windows.Forms.Button
 
 End Class
