@@ -8,6 +8,7 @@ Public Class frmMain
     Private myFontManager As FontManager
     Private templatesPath As String
     Private availableTemplates As List(Of Template)
+    Private currentTemplate As Template
 
 #End Region
 
