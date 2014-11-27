@@ -1,11 +1,11 @@
 ﻿Public Class Template
 
-    Public Guid As Guid
-    Public CarName As String
-    Public AuthorName As String
-    Public BodyIncluded As Boolean
-    Public WindowsIncluded As Boolean
-    Public InteriorWindowsIncluded As Boolean
-    Public Layers As List(Of Layer)
+    Public Property Guid As Guid
+    Public Property CarName As String
+    Public Property AuthorName As String
+    Public Property Description As String
+    Public Property LiveryScope As LiveryScope
+    Public Property Layers As List(Of Layer)
+    Public Property Presets As List(Of Preset)
 
 End Class

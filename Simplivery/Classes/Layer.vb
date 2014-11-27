@@ -6,6 +6,6 @@
     Public Property Description As String
     Public Property Rank As Integer
     Public Property isDefault As Boolean
-    Public Property Settings As String
+    Public Property Areas As List(Of Area)
 
 End Class

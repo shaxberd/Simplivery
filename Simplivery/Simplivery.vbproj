@@ -93,8 +93,15 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Area.vb" />
+    <Compile Include="Classes\Enums\ElementType.vb" />
     <Compile Include="Classes\Enums\LayerType.vb" />
+    <Compile Include="Classes\Enums\LiveryScope.vb" />
+    <Compile Include="Classes\Enums\PresetColorType.vb" />
     <Compile Include="Classes\Layer.vb" />
+    <Compile Include="Classes\Preset.vb" />
+    <Compile Include="Classes\PresetElement.vb" />
+    <Compile Include="Classes\PresetLayer.vb" />
     <Compile Include="Classes\Template.vb" />
     <Compile Include="frmMain.vb">
       <SubType>Form</SubType>
