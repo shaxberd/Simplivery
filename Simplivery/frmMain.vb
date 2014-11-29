@@ -6,8 +6,9 @@ Public Class frmMain
 #Region "Fields"
 
     Private myFontManager As FontManager
-    Private templatesPath As String
-    Private availableTemplates As List(Of Template)
+    Private templatePath As String
+    Private allTemplates As List(Of Template)
+    Private availableTemplates As Dictionary(Of Guid, String)
     Private currentTemplate As Template
 
 #End Region
@@ -21,8 +22,9 @@ Public Class frmMain
 
         'Initializing
         myFontManager = New FontManager
-        templatesPath = Path.Combine(Environment.CurrentDirectory, "Templates")
-        availableTemplates = New List(Of Template)
+        templatePath = Path.Combine(Environment.CurrentDirectory, "Templates")
+        allTemplates = New List(Of Template)
+        availableTemplates = New Dictionary(Of Guid, String)
 
         'Loading
         LoadFontLists()
@@ -131,37 +133,49 @@ Public Class frmMain
 #Region "Methods - Template handling"
 
     Private Sub LoadTemplates()
-        '##### TODO: Fehlerhandling
         'initialize
         Dim xmlDeser As New Xml.Serialization.XmlSerializer((New Template).GetType)
         Dim xmlStream As FileStream
-        Dim currentTemplate As Template
-        Dim currentDirName As String
+        Dim tmpTemplate As Template
+        Dim tmpDirName As String
+        allTemplates.Clear()
         availableTemplates.Clear()
 
-        'iterate possible template directories
-        For Each tmpDir In Directory.EnumerateDirectories(templatesPath)
-            'check whether the current directory name is a guid
-            currentDirName = tmpDir.Split(CChar("\")).Last()
-            If Guid.TryParseExact(currentDirName, "D", New Guid) Then
-                'deserialize template
-                xmlStream = New FileStream(Path.Combine(tmpDir, "template.xml"), FileMode.Open, FileAccess.Read)
-                currentTemplate = CType(xmlDeser.Deserialize(xmlStream), Template)
-                xmlStream.Close()
-                xmlStream.Dispose()
+        Try
+            'iterate possible template directories
+            For Each tmpDir In Directory.EnumerateDirectories(templatePath)
+                'check whether the current directory name is a guid
+                tmpDirName = tmpDir.Split(CChar("\")).Last()
+                If Guid.TryParseExact(tmpDirName, "D", New Guid) Then
+                    Try
+                        'deserialize template
+                        xmlStream = New FileStream(Path.Combine(tmpDir, "template.xml"), FileMode.Open, FileAccess.Read)
+                        tmpTemplate = CType(xmlDeser.Deserialize(xmlStream), Template)
+                        xmlStream.Close()
+                        xmlStream.Dispose()
+                    Catch ex As Exception
+                        MessageBox.Show(String.Format("Error deserializing template {0}: {2}", tmpDirName, ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Continue For
+                    End Try
 
-                'add template to available templates
-                availableTemplates.Add(currentTemplate)
-            End If
-        Next
-    End Sub
+                    'add template to available templates if error-free
+                    If tmpTemplate.Check(templatePath) OrElse _
+                        MessageBox.Show(String.Format("The template {0} by {1} contained erroneous layers and/or presets. Do you want to continue loading the template without those?", tmpTemplate.CarName, tmpTemplate.AuthorName), _
+                                        "Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error) = Windows.Forms.DialogResult.Yes Then
+                        allTemplates.Add(tmpTemplate)
+                        availableTemplates.Add(tmpTemplate.Guid, String.Format("{0} ({1})", tmpTemplate.CarName, tmpTemplate.AuthorName))
+                    End If
 
-    Private Sub UpdateCarSelection()
-        'update car selection combobox
-        If availableTemplates.Count > 0 Then
-            cmbCarSelection.Items.Clear()
-            cmbCarSelection.Items.AddRange((From at In availableTemplates Select String.Format("{0} ({1})", at.CarName, at.AuthorName)).ToArray)
-        End If
+                    're-bind template dictionary to combobox
+                    cmbCarSelection.ComboBox.DataSource = New BindingSource(availableTemplates, Nothing)
+                    cmbCarSelection.ComboBox.DisplayMember = "Value"
+                    cmbCarSelection.ComboBox.ValueMember = "Key"
+                End If
+            Next
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error loading templates: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        End Try
     End Sub
 
     Private Sub UpdatePresetCollection()
@@ -173,6 +187,10 @@ Public Class frmMain
 
     Private Sub btnDebug_Click(sender As Object, e As EventArgs) Handles btnDebug.Click
 
+
+
+
+        'MsgBox(cmbCarSelection.ComboBox.SelectedValue.ToString)
 
 
 
