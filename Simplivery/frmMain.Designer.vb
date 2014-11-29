@@ -23,6 +23,7 @@ Partial Class frmMain
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.spcMain = New System.Windows.Forms.SplitContainer()
+        Me.btnDebug = New System.Windows.Forms.Button()
         Me.picHeader = New System.Windows.Forms.PictureBox()
         Me.tbcLiveryDesign = New System.Windows.Forms.TabControl()
         Me.tbpLiveryBasics = New System.Windows.Forms.TabPage()
@@ -46,6 +47,7 @@ Partial Class frmMain
         Me.cmbNoFont = New System.Windows.Forms.ComboBox()
         Me.cmbNameFont = New System.Windows.Forms.ComboBox()
         Me.grpBasicColors = New System.Windows.Forms.GroupBox()
+        Me.lblThirdColorInfo = New System.Windows.Forms.Label()
         Me.lblThirdColor = New System.Windows.Forms.Label()
         Me.pnlThirdColor = New System.Windows.Forms.Panel()
         Me.btnThirdColor = New System.Windows.Forms.Button()
@@ -98,13 +100,14 @@ Partial Class frmMain
         Me.tstCarSelection = New System.Windows.Forms.ToolStrip()
         Me.lblCarSelection = New System.Windows.Forms.ToolStripLabel()
         Me.cmbCarSelection = New System.Windows.Forms.ToolStripComboBox()
+        Me.lblPresetSelection = New System.Windows.Forms.ToolStripLabel()
         Me.cmbPresetCollection = New System.Windows.Forms.ToolStripComboBox()
         Me.btnCarImport = New System.Windows.Forms.ToolStripButton()
         Me.btnCarEditor = New System.Windows.Forms.ToolStripButton()
         Me.btnCarDelete = New System.Windows.Forms.ToolStripButton()
         Me.btnSettings = New System.Windows.Forms.ToolStripButton()
-        Me.lblThirdColorInfo = New System.Windows.Forms.Label()
-        Me.btnDebug = New System.Windows.Forms.Button()
+        Me.clhGuid = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.clhName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         CType(Me.spcMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.spcMain.Panel1.SuspendLayout()
         Me.spcMain.Panel2.SuspendLayout()
@@ -177,6 +180,15 @@ Partial Class frmMain
         Me.spcMain.SplitterDistance = 60
         Me.spcMain.TabIndex = 0
         Me.spcMain.TabStop = False
+        '
+        'btnDebug
+        '
+        Me.btnDebug.Location = New System.Drawing.Point(12, 12)
+        Me.btnDebug.Name = "btnDebug"
+        Me.btnDebug.Size = New System.Drawing.Size(75, 23)
+        Me.btnDebug.TabIndex = 1
+        Me.btnDebug.Text = "Debug"
+        Me.btnDebug.UseVisualStyleBackColor = True
         '
         'picHeader
         '
@@ -475,6 +487,15 @@ Partial Class frmMain
         Me.grpBasicColors.TabStop = False
         Me.grpBasicColors.Text = "Color Settings (overridable per layer)"
         '
+        'lblThirdColorInfo
+        '
+        Me.lblThirdColorInfo.AutoSize = True
+        Me.lblThirdColorInfo.Location = New System.Drawing.Point(85, 97)
+        Me.lblThirdColorInfo.Name = "lblThirdColorInfo"
+        Me.lblThirdColorInfo.Size = New System.Drawing.Size(129, 13)
+        Me.lblThirdColorInfo.TabIndex = 13
+        Me.lblThirdColorInfo.Text = "(used for text and presets)"
+        '
         'lblThirdColor
         '
         Me.lblThirdColor.AutoSize = True
@@ -653,10 +674,14 @@ Partial Class frmMain
         'lviChassisLayers
         '
         Me.lviChassisLayers.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.lviChassisLayers.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.clhGuid, Me.clhName})
         Me.lviChassisLayers.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lviChassisLayers.FullRowSelect = True
         Me.lviChassisLayers.GridLines = True
         Me.lviChassisLayers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
+        Me.lviChassisLayers.HideSelection = False
         Me.lviChassisLayers.Location = New System.Drawing.Point(0, 0)
+        Me.lviChassisLayers.MultiSelect = False
         Me.lviChassisLayers.Name = "lviChassisLayers"
         Me.lviChassisLayers.Size = New System.Drawing.Size(186, 185)
         Me.lviChassisLayers.TabIndex = 1
@@ -860,9 +885,12 @@ Partial Class frmMain
         '
         Me.lviChassisElements.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.lviChassisElements.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lviChassisElements.FullRowSelect = True
         Me.lviChassisElements.GridLines = True
         Me.lviChassisElements.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
+        Me.lviChassisElements.HideSelection = False
         Me.lviChassisElements.Location = New System.Drawing.Point(0, 0)
+        Me.lviChassisElements.MultiSelect = False
         Me.lviChassisElements.Name = "lviChassisElements"
         Me.lviChassisElements.Size = New System.Drawing.Size(186, 185)
         Me.lviChassisElements.TabIndex = 1
@@ -1036,7 +1064,7 @@ Partial Class frmMain
         '
         Me.tstCarSelection.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.tstCarSelection.ImageScalingSize = New System.Drawing.Size(24, 24)
-        Me.tstCarSelection.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblCarSelection, Me.cmbCarSelection, Me.cmbPresetCollection, Me.btnCarImport, Me.btnCarEditor, Me.btnCarDelete, Me.btnSettings})
+        Me.tstCarSelection.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblCarSelection, Me.cmbCarSelection, Me.lblPresetSelection, Me.cmbPresetCollection, Me.btnCarImport, Me.btnCarEditor, Me.btnCarDelete, Me.btnSettings})
         Me.tstCarSelection.Location = New System.Drawing.Point(0, 0)
         Me.tstCarSelection.Name = "tstCarSelection"
         Me.tstCarSelection.Size = New System.Drawing.Size(784, 31)
@@ -1057,6 +1085,12 @@ Partial Class frmMain
         Me.cmbCarSelection.IntegralHeight = False
         Me.cmbCarSelection.Name = "cmbCarSelection"
         Me.cmbCarSelection.Size = New System.Drawing.Size(240, 31)
+        '
+        'lblPresetSelection
+        '
+        Me.lblPresetSelection.Name = "lblPresetSelection"
+        Me.lblPresetSelection.Size = New System.Drawing.Size(47, 28)
+        Me.lblPresetSelection.Text = "Presets:"
         '
         'cmbPresetCollection
         '
@@ -1104,23 +1138,16 @@ Partial Class frmMain
         Me.btnSettings.Size = New System.Drawing.Size(28, 28)
         Me.btnSettings.Text = "Settings"
         '
-        'lblThirdColorInfo
+        'clhGuid
         '
-        Me.lblThirdColorInfo.AutoSize = True
-        Me.lblThirdColorInfo.Location = New System.Drawing.Point(85, 97)
-        Me.lblThirdColorInfo.Name = "lblThirdColorInfo"
-        Me.lblThirdColorInfo.Size = New System.Drawing.Size(129, 13)
-        Me.lblThirdColorInfo.TabIndex = 13
-        Me.lblThirdColorInfo.Text = "(used for text and presets)"
+        Me.clhGuid.Text = ""
+        Me.clhGuid.Width = 0
         '
-        'btnDebug
+        'clhName
         '
-        Me.btnDebug.Location = New System.Drawing.Point(12, 12)
-        Me.btnDebug.Name = "btnDebug"
-        Me.btnDebug.Size = New System.Drawing.Size(75, 23)
-        Me.btnDebug.TabIndex = 1
-        Me.btnDebug.Text = "Debug"
-        Me.btnDebug.UseVisualStyleBackColor = True
+        Me.clhName.Text = ""
+        Me.clhName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.clhName.Width = 186
         '
         'frmMain
         '
@@ -1271,5 +1298,8 @@ Partial Class frmMain
     Friend WithEvents btnThirdColor As System.Windows.Forms.Button
     Friend WithEvents lblThirdColorInfo As System.Windows.Forms.Label
     Friend WithEvents btnDebug As System.Windows.Forms.Button
+    Friend WithEvents lblPresetSelection As System.Windows.Forms.ToolStripLabel
+    Friend WithEvents clhGuid As System.Windows.Forms.ColumnHeader
+    Friend WithEvents clhName As System.Windows.Forms.ColumnHeader
 
 End Class

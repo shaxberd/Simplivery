@@ -6,10 +6,13 @@
     Public Property Description As String
     Public Property LiveryScope As LiveryScope
     Public Property Layers As List(Of Layer)
+    Public Property DefaultPreset As Guid
     Public Property Presets As List(Of Preset)
 
     Public Sub New()
         Me.Guid = Guid.NewGuid
+        Layers = New List(Of Layer)
+        Presets = New List(Of Preset)
     End Sub
 
     Public Function Check(ByVal templatePath As String) As Boolean
