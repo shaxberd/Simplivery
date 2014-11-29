@@ -70,23 +70,28 @@ Public Class frmMain
     End Sub
 
     Private Sub cmbCarSelection_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbCarSelection.SelectedIndexChanged
-        'get the selected template's GUID
-        SelectTemplate(DirectCast(cmbCarSelection.ComboBox.SelectedValue, KeyValuePair(Of Guid, String)).Key)
+        'get the selected template's GUID (two ways needed as SelectedValue returns an array when cmbBox is first created/filled)
+        Dim tmpGuid As Guid
+        If Guid.TryParseExact(cmbCarSelection.ComboBox.SelectedValue.ToString, "D", tmpGuid) Then
+            SelectTemplate(tmpGuid)
+        Else
+            SelectTemplate(DirectCast(cmbCarSelection.ComboBox.SelectedValue, KeyValuePair(Of Guid, String)).Key)
+        End If
     End Sub
 
     Private Sub cmbPresetCollection_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbPresetCollection.SelectedIndexChanged
-        'get the selected preset's GUID
-        SelectPreset(DirectCast(cmbPresetCollection.ComboBox.SelectedValue, KeyValuePair(Of Guid, String)).Key)
+        'get the selected preset's GUID (two ways needed as SelectedValue returns an array when cmbBox is first created/filled)
+        Dim tmpGuid As Guid
+        If Guid.TryParseExact(cmbPresetCollection.ComboBox.SelectedValue.ToString, "D", tmpGuid) Then
+            SelectPreset(tmpGuid)
+        Else
+            SelectPreset(DirectCast(cmbPresetCollection.ComboBox.SelectedValue, KeyValuePair(Of Guid, String)).Key)
+        End If
     End Sub
 
     Private Sub btnReset_Click(sender As Object, e As EventArgs) Handles btnReset.Click
         LoadTemplateDefault()
     End Sub
-
-#End Region
-
-#Region "Methods - General Usage"
-
 
 #End Region
 
@@ -147,7 +152,7 @@ Public Class frmMain
 
 #End Region
 
-#Region "Methods - Template handling"
+#Region "Methods - Loading & Selecting"
 
     Private Sub LoadTemplates()
         'initialize
@@ -268,6 +273,11 @@ Public Class frmMain
 
 #End Region
 
+#Region "Methods - Adding Stuff"
+
+
+
+#End Region
 
     Private Sub btnDebug_Click(sender As Object, e As EventArgs) Handles btnDebug.Click
         'Dim xmlDeser As New Xml.Serialization.XmlSerializer((New Template).GetType)
@@ -310,9 +320,9 @@ Public Class frmMain
         '    xmlStream.Close()
         '    xmlStream.Dispose()
         'End If
-        
 
-        LoadTemplateDefault()
+
+        'LoadTemplateDefault()
 
 
 
