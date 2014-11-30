@@ -37,7 +37,7 @@ Public Class frmMain
 
 #End Region
 
-#Region "GUI"
+#Region "GUI - General"
 
     Private Sub btnBaseColor_Click(sender As Object, e As EventArgs) Handles btnBaseColor.Click
         'choose new text color
@@ -52,12 +52,6 @@ Public Class frmMain
     Private Sub btnThirdColor_Click(sender As Object, e As EventArgs) Handles btnThirdColor.Click
         'choose new third color
         pnlThirdColor.BackColor = ChooseColor(pnlThirdColor.BackColor)
-    End Sub
-
-    Private Sub LoadFontLists()
-        'Load list of installed fonts into comboboxes
-        cmbNoFont.Items.AddRange(_myFontManager.InstalledFonts)
-        cmbNameFont.Items.AddRange(_myFontManager.InstalledFonts)
     End Sub
 
     Private Sub btnLiveryBasicsPreview_Click(sender As Object, e As EventArgs) Handles btnLiveryBasicsPreview.Click
@@ -91,6 +85,58 @@ Public Class frmMain
 
     Private Sub btnReset_Click(sender As Object, e As EventArgs) Handles btnReset.Click
         LoadTemplateDefault()
+    End Sub
+
+#End Region
+
+#Region "GUI - Adding & Moving Stuff"
+
+    Private Sub btnChassisAddDecal_Click(sender As Object, e As EventArgs) Handles btnChassisAddDecal.Click
+        OpenLayerAddDialog(LayerType.Decal)
+    End Sub
+
+    Private Sub btnChassisAddColorableDecal_Click(sender As Object, e As EventArgs) Handles btnChassisAddColorableDecal.Click
+        OpenLayerAddDialog(LayerType.ColorDecal)
+    End Sub
+
+    Private Sub btnChassisAddDetail_Click(sender As Object, e As EventArgs) Handles btnChassisAddDetail.Click
+        OpenLayerAddDialog(LayerType.Detail)
+    End Sub
+
+    Private Sub btnChassisAddNumberplate_Click(sender As Object, e As EventArgs) Handles btnChassisAddNumberplate.Click
+        OpenLayerAddDialog(LayerType.Numberplate)
+    End Sub
+
+    Private Sub btnChassisAddParts_Click(sender As Object, e As EventArgs) Handles btnChassisAddParts.Click
+        OpenLayerAddDialog(LayerType.Parts)
+    End Sub
+
+    Private Sub btnChassisAddShading_Click(sender As Object, e As EventArgs) Handles btnChassisAddShading.Click
+        OpenLayerAddDialog(LayerType.Shading)
+    End Sub
+
+    Private Sub btnChassisLayerUp_Click(sender As Object, e As EventArgs) Handles btnChassisLayerUp.Click
+        'If lviChassisLayers.SelectedItems.Count = 1 Then
+        '    Dim insertIndex As Integer = _currentSet.Layers.FindIndex(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")) - 1
+        '    If insertIndex < 0 Then Exit Sub
+
+        '    _currentSet.Layers.Insert(insertIndex, _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")))
+        '    _currentSet.Layers.RemoveAt(insertIndex + 2)
+
+        '    LoadPreset(_currentSet)
+
+        '    lviChassisLayers.Items(insertIndex).Selected = True
+        'End If
+    End Sub
+
+#End Region
+
+#Region "Methods - General"
+
+    Private Sub LoadFontLists()
+        'Load list of installed fonts into comboboxes
+        cmbNoFont.Items.AddRange(_myFontManager.InstalledFonts)
+        cmbNameFont.Items.AddRange(_myFontManager.InstalledFonts)
     End Sub
 
 #End Region
@@ -152,7 +198,7 @@ Public Class frmMain
 
 #End Region
 
-#Region "Methods - Loading & Selecting"
+#Region "Methods - Loading, Selecting & Updating Lists"
 
     Private Sub LoadTemplates()
         'initialize
@@ -275,11 +321,57 @@ Public Class frmMain
 
 #Region "Methods - Adding Stuff"
 
+    Private Sub OpenLayerAddDialog(ByVal type As LayerType)
+        'opens up the layer chooser for the given type
+        Dim lad As New frmLayerAddDialog(_templatePath, type, _currentTemplate, _currentSet.Layers)
+        If lad.ShowDialog = Windows.Forms.DialogResult.OK Then
+            AddLayer(lad.SelectedLayer, lad.SelectedColor)
+        End If
+        lad.Dispose()
+    End Sub
 
+    Private Sub AddLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
+        'initialise
+        Dim insertIndex As Integer = lviChassisLayers.Items.Count
+        Dim currentSetTypes As New List(Of LayerType)
+        Dim newPresetLayer As New PresetLayer
+        Dim tmpLayer As Layer = _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = layerGuid)
+
+        newPresetLayer.LayerGuid = layerGuid
+        newPresetLayer.PresetColor = PresetColorType.NonColorable
+
+        'get current set's layertypes
+        For Each tmpPresetLayer In _currentSet.Layers
+            currentSetTypes.Add(_currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = tmpPresetLayer.LayerGuid).Type)
+        Next
+
+        'determine where to insert the new layer
+        insertIndex = currentSetTypes.FindIndex(Function(x) CInt(x) > CInt(tmpLayer.Type))
+        If tmpLayer.Type = LayerType.ColorDecal Then
+            newPresetLayer.PresetColor = PresetColorType.CustomPreset
+            newPresetLayer.DefaultColor = layerColor.ToArgb
+        End If
+
+        'add layer to current set
+        _currentSet.Layers.Insert(insertIndex, newPresetLayer)
+
+        'reload set (lists, etc)
+        LoadPreset(_currentSet)
+    End Sub
 
 #End Region
 
+
     Private Sub btnDebug_Click(sender As Object, e As EventArgs) Handles btnDebug.Click
+        'Dim lad As New frmLayerAddDialog(_templatePath, LayerType.ColorDecal, _currentTemplate, _currentSet.Layers)
+        'If lad.ShowDialog = Windows.Forms.DialogResult.OK Then
+        '    MessageBox.Show(lad.SelectedColor.ToArgb.ToString)
+        '    MessageBox.Show(lad.SelectedLayer.ToString)
+        'End If
+        'lad.Dispose()
+
+
+
         'Dim xmlDeser As New Xml.Serialization.XmlSerializer((New Template).GetType)
         'Dim xmlStream As FileStream
         'Dim tmpTemplate As Template
