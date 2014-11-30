@@ -5,13 +5,14 @@ Public Class frmMain
 
 #Region "Fields"
 
-    Private _myFontManager As FontManager
     Private _templatePath As String
     Private _allTemplates As List(Of Template)
     Private _availableTemplates As Dictionary(Of Guid, String)
     Private _availablePresets As Dictionary(Of Guid, String)
     Private _currentTemplate As Template
     Private _currentSet As Preset
+    Private _noFont As Font
+    Friend _nameFont As Font
 
 #End Region
 
@@ -23,16 +24,17 @@ Public Class frmMain
         InitializeComponent()
 
         'Initializing
-        _myFontManager = New FontManager
         _templatePath = Path.Combine(Environment.CurrentDirectory, "Templates")
         _allTemplates = New List(Of Template)
         _availableTemplates = New Dictionary(Of Guid, String)
         _availablePresets = New Dictionary(Of Guid, String)
+        _noFont = New Font("Impact", 40)
+        _nameFont = New Font("Arial", 16)
+        txtNoFont.Text = _noFont.Name
+        txtNameFont.Text = _nameFont.Name
 
         'Loading
-        LoadFontLists()
         LoadTemplates()
-
     End Sub
 
 #End Region
@@ -52,6 +54,18 @@ Public Class frmMain
     Private Sub btnThirdColor_Click(sender As Object, e As EventArgs) Handles btnThirdColor.Click
         'choose new third color
         pnlThirdColor.BackColor = ChooseColor(pnlThirdColor.BackColor)
+    End Sub
+
+    Private Sub btnNoFont_Click(sender As Object, e As EventArgs) Handles btnNoFont.Click
+        'choose new number font
+        _noFont = ChooseFont(_noFont)
+        txtNoFont.Text = _noFont.Name
+    End Sub
+
+    Private Sub btnNameFont_Click(sender As Object, e As EventArgs) Handles btnNameFont.Click
+        'choose new text font
+        _nameFont = ChooseFont(_nameFont)
+        txtNameFont.Text = _nameFont.Name
     End Sub
 
     Private Sub btnLiveryBasicsPreview_Click(sender As Object, e As EventArgs) Handles btnLiveryBasicsPreview.Click
@@ -126,6 +140,14 @@ Public Class frmMain
         OpenLayerAddDialog(LayerType.Shading)
     End Sub
 
+    Private Sub btnChassisAddFreeText_Click(sender As Object, e As EventArgs) Handles btnChassisAddFreeText.Click
+        OpenElementDialog(ElementType.Text, Guid.Empty)
+    End Sub
+
+    Private Sub btnChassisAddSponsor_Click(sender As Object, e As EventArgs) Handles btnChassisAddSponsor.Click
+        OpenElementDialog(ElementType.Sponsor, Guid.Empty)
+    End Sub
+
     Private Sub btnChassisLayerUp_Click(sender As Object, e As EventArgs) Handles btnChassisLayerUp.Click
         MoveLayer(False)
     End Sub
@@ -151,7 +173,9 @@ Public Class frmMain
     End Sub
 
     Private Sub btnChassisEditElement_Click(sender As Object, e As EventArgs) Handles btnChassisEditElement.Click
-
+        If lviChassisElements.SelectedItems.Count = 1 Then
+            OpenElementDialog(_currentSet.Elements.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")).ElementType, Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D"))
+        End If
     End Sub
 
     Private Sub btnChassisRemoveElement_Click(sender As Object, e As EventArgs) Handles btnChassisRemoveElement.Click
@@ -161,12 +185,6 @@ Public Class frmMain
 #End Region
 
 #Region "Methods - General"
-
-    Private Sub LoadFontLists()
-        'Load list of installed fonts into comboboxes
-        cmbNoFont.Items.AddRange(_myFontManager.InstalledFonts)
-        cmbNameFont.Items.AddRange(_myFontManager.InstalledFonts)
-    End Sub
 
 #End Region
 
@@ -184,6 +202,20 @@ Public Class frmMain
         End Using
     End Function
 
+    Private Function ChooseFont(ByVal currentFont As Font) As Font
+        'Multi-Use colorchooser
+        Using fd As New FontDialog
+            fd.Font = currentFont
+            If fd.ShowDialog = Windows.Forms.DialogResult.OK Then
+                Return fd.Font
+            Else
+                Return currentFont
+            End If
+        End Using
+    End Function
+
+
+
 #End Region
 
 #Region "Methods - Imaging"
@@ -195,8 +227,8 @@ Public Class frmMain
         Dim baseBrush As New SolidBrush(pnlBaseColor.BackColor)
         Dim accentBrush As New SolidBrush(pnlAccentColor.BackColor)
         Dim textBrush As New SolidBrush(pnlThirdColor.BackColor)
-        Dim nameFont As Font = _myFontManager.GetFont(cmbNameFont.Text, 25, chkNameFontBold.Checked, chkNameFontItalic.Checked)
-        Dim noFont As Font = _myFontManager.GetFont(cmbNoFont.Text, 60, chkNoFontBold.Checked, chkNoFontItalic.Checked)
+        Dim nameFont As Font = _nameFont
+        Dim noFont As Font = _noFont
 
         'Ensure centered text (Number)
         Dim noFormat As New StringFormat()
@@ -336,7 +368,7 @@ Public Class frmMain
 
             'load elements
             For Each tmpElement In preset.Elements
-                lviChassisElements.Items.Add(New ListViewItem({tmpElement.Guid.ToString, tmpElement.ElementType.ToString}))
+                lviChassisElements.Items.Add(New ListViewItem({tmpElement.Guid.ToString, String.Format("{0}: {1}", tmpElement.ElementType.ToString, tmpElement.Content)}))
             Next
 
             'set preset active
@@ -385,8 +417,18 @@ Public Class frmMain
         End If
     End Sub
 
-    Private Sub OpenElementDialog()
-
+    Private Sub OpenElementDialog(ByVal elementType As ElementType, ByVal elementGuid As Guid)
+        'opens up the element add/edit dialog
+        Dim ed As New frmElementDialog(elementType, elementGuid, _currentSet.Elements)
+        If ed.ShowDialog = Windows.Forms.DialogResult.OK Then
+            'add/edit element
+            If elementGuid = Guid.Empty Then
+                AddElement(ed.Element)
+            Else
+                UpdateElement(ed.Element)
+            End If
+        End If
+        ed.Dispose()
     End Sub
 
     Private Sub AddLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
@@ -419,8 +461,12 @@ Public Class frmMain
         LoadPreset(_currentSet)
     End Sub
 
-    Private Sub AddElement()
+    Private Sub AddElement(ByVal element As PresetElement)
+        'add alement ot current set
+        _currentSet.Elements.Add(element)
 
+        'reload set (lists, etc)
+        LoadPreset(_currentSet)
     End Sub
 
     Private Sub UpdateLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
@@ -428,8 +474,13 @@ Public Class frmMain
         _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).Color = layerColor.ToArgb
     End Sub
 
-    Private Sub UpdateElement()
+    Private Sub UpdateElement(ByVal element As PresetElement)
+        'update the edited layer's properties
+        _currentSet.Elements.FirstOrDefault(Function(x) x.Guid = element.Guid).Content = element.Content
+        _currentSet.Elements.FirstOrDefault(Function(x) x.Guid = element.Guid).Area = element.Area
 
+        'reload set (lists, etc)
+        LoadPreset(_currentSet)
     End Sub
 
     Private Sub MoveLayer(ByVal moveDown As Boolean)

@@ -111,6 +111,12 @@
     <Compile Include="Classes\PresetElement.vb" />
     <Compile Include="Classes\PresetLayer.vb" />
     <Compile Include="Classes\Template.vb" />
+    <Compile Include="frmElementDialog.Designer.vb">
+      <DependentUpon>frmElementDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmElementDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmLayerEditDialog.Designer.vb">
       <DependentUpon>frmLayerEditDialog.vb</DependentUpon>
     </Compile>
@@ -145,9 +151,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Tools\FontManager.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmElementDialog.resx">
+      <DependentUpon>frmElementDialog.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmLayerAddDialog.resx">
       <DependentUpon>frmLayerAddDialog.vb</DependentUpon>
     </EmbeddedResource>
@@ -241,6 +249,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\logo_header.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tools\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

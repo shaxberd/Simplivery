@@ -38,15 +38,15 @@ Partial Class frmMain
         Me.nudDriverNo = New System.Windows.Forms.NumericUpDown()
         Me.spcLiveryBasicsSettings2 = New System.Windows.Forms.SplitContainer()
         Me.grpBasicFonts = New System.Windows.Forms.GroupBox()
-        Me.chkNameFontItalic = New System.Windows.Forms.CheckBox()
-        Me.chkNameFontBold = New System.Windows.Forms.CheckBox()
-        Me.chkNoFontItalic = New System.Windows.Forms.CheckBox()
-        Me.chkNoFontBold = New System.Windows.Forms.CheckBox()
+        Me.lblNameFontInfo = New System.Windows.Forms.Label()
+        Me.txtNameFont = New System.Windows.Forms.TextBox()
+        Me.btnNameFont = New System.Windows.Forms.Button()
+        Me.txtNoFont = New System.Windows.Forms.TextBox()
+        Me.btnNoFont = New System.Windows.Forms.Button()
         Me.lblNoFont = New System.Windows.Forms.Label()
         Me.lblNameFont = New System.Windows.Forms.Label()
-        Me.cmbNoFont = New System.Windows.Forms.ComboBox()
-        Me.cmbNameFont = New System.Windows.Forms.ComboBox()
         Me.grpBasicColors = New System.Windows.Forms.GroupBox()
+        Me.lblThirdColorInfo = New System.Windows.Forms.Label()
         Me.lblThirdColor = New System.Windows.Forms.Label()
         Me.pnlThirdColor = New System.Windows.Forms.Panel()
         Me.btnThirdColor = New System.Windows.Forms.Button()
@@ -82,6 +82,8 @@ Partial Class frmMain
         Me.grpChassisElements = New System.Windows.Forms.GroupBox()
         Me.pnlChassisElements = New System.Windows.Forms.Panel()
         Me.lviChassisElements = New System.Windows.Forms.ListView()
+        Me.clhElementGuid = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.clhElementType = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.tstChassisElements = New System.Windows.Forms.ToolStrip()
         Me.btnChassisEditElement = New System.Windows.Forms.ToolStripButton()
         Me.btnChassisRemoveElement = New System.Windows.Forms.ToolStripButton()
@@ -107,7 +109,6 @@ Partial Class frmMain
         Me.btnCarEditor = New System.Windows.Forms.ToolStripButton()
         Me.btnCarDelete = New System.Windows.Forms.ToolStripButton()
         Me.btnSettings = New System.Windows.Forms.ToolStripButton()
-        Me.lblThirdColorInfo = New System.Windows.Forms.Label()
         CType(Me.spcMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.spcMain.Panel1.SuspendLayout()
         Me.spcMain.Panel2.SuspendLayout()
@@ -363,14 +364,13 @@ Partial Class frmMain
         '
         'grpBasicFonts
         '
-        Me.grpBasicFonts.Controls.Add(Me.chkNameFontItalic)
-        Me.grpBasicFonts.Controls.Add(Me.chkNameFontBold)
-        Me.grpBasicFonts.Controls.Add(Me.chkNoFontItalic)
-        Me.grpBasicFonts.Controls.Add(Me.chkNoFontBold)
+        Me.grpBasicFonts.Controls.Add(Me.lblNameFontInfo)
+        Me.grpBasicFonts.Controls.Add(Me.txtNameFont)
+        Me.grpBasicFonts.Controls.Add(Me.btnNameFont)
+        Me.grpBasicFonts.Controls.Add(Me.txtNoFont)
+        Me.grpBasicFonts.Controls.Add(Me.btnNoFont)
         Me.grpBasicFonts.Controls.Add(Me.lblNoFont)
         Me.grpBasicFonts.Controls.Add(Me.lblNameFont)
-        Me.grpBasicFonts.Controls.Add(Me.cmbNoFont)
-        Me.grpBasicFonts.Controls.Add(Me.cmbNameFont)
         Me.grpBasicFonts.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpBasicFonts.Location = New System.Drawing.Point(0, 0)
         Me.grpBasicFonts.Name = "grpBasicFonts"
@@ -379,53 +379,50 @@ Partial Class frmMain
         Me.grpBasicFonts.TabStop = False
         Me.grpBasicFonts.Text = "Font Settings"
         '
-        'chkNameFontItalic
+        'lblNameFontInfo
         '
-        Me.chkNameFontItalic.Appearance = System.Windows.Forms.Appearance.Button
-        Me.chkNameFontItalic.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkNameFontItalic.Location = New System.Drawing.Point(158, 97)
-        Me.chkNameFontItalic.Name = "chkNameFontItalic"
-        Me.chkNameFontItalic.Size = New System.Drawing.Size(67, 20)
-        Me.chkNameFontItalic.TabIndex = 7
-        Me.chkNameFontItalic.Text = "Italic"
-        Me.chkNameFontItalic.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.chkNameFontItalic.UseVisualStyleBackColor = True
+        Me.lblNameFontInfo.AutoSize = True
+        Me.lblNameFontInfo.Location = New System.Drawing.Point(82, 68)
+        Me.lblNameFontInfo.Name = "lblNameFontInfo"
+        Me.lblNameFontInfo.Size = New System.Drawing.Size(174, 13)
+        Me.lblNameFontInfo.TabIndex = 38
+        Me.lblNameFontInfo.Text = "(used for text elements, overridable)"
         '
-        'chkNameFontBold
+        'txtNameFont
         '
-        Me.chkNameFontBold.Appearance = System.Windows.Forms.Appearance.Button
-        Me.chkNameFontBold.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkNameFontBold.Location = New System.Drawing.Point(85, 97)
-        Me.chkNameFontBold.Name = "chkNameFontBold"
-        Me.chkNameFontBold.Size = New System.Drawing.Size(67, 20)
-        Me.chkNameFontBold.TabIndex = 6
-        Me.chkNameFontBold.Text = "Bold"
-        Me.chkNameFontBold.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.chkNameFontBold.UseVisualStyleBackColor = True
+        Me.txtNameFont.Location = New System.Drawing.Point(85, 45)
+        Me.txtNameFont.Name = "txtNameFont"
+        Me.txtNameFont.ReadOnly = True
+        Me.txtNameFont.Size = New System.Drawing.Size(92, 20)
+        Me.txtNameFont.TabIndex = 37
         '
-        'chkNoFontItalic
+        'btnNameFont
         '
-        Me.chkNoFontItalic.Appearance = System.Windows.Forms.Appearance.Button
-        Me.chkNoFontItalic.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkNoFontItalic.Location = New System.Drawing.Point(158, 45)
-        Me.chkNoFontItalic.Name = "chkNoFontItalic"
-        Me.chkNoFontItalic.Size = New System.Drawing.Size(67, 20)
-        Me.chkNoFontItalic.TabIndex = 5
-        Me.chkNoFontItalic.Text = "Italic"
-        Me.chkNoFontItalic.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.chkNoFontItalic.UseVisualStyleBackColor = True
+        Me.btnNameFont.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnNameFont.Location = New System.Drawing.Point(183, 45)
+        Me.btnNameFont.Name = "btnNameFont"
+        Me.btnNameFont.Size = New System.Drawing.Size(67, 20)
+        Me.btnNameFont.TabIndex = 36
+        Me.btnNameFont.Text = "Choose"
+        Me.btnNameFont.UseVisualStyleBackColor = True
         '
-        'chkNoFontBold
+        'txtNoFont
         '
-        Me.chkNoFontBold.Appearance = System.Windows.Forms.Appearance.Button
-        Me.chkNoFontBold.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkNoFontBold.Location = New System.Drawing.Point(85, 45)
-        Me.chkNoFontBold.Name = "chkNoFontBold"
-        Me.chkNoFontBold.Size = New System.Drawing.Size(67, 20)
-        Me.chkNoFontBold.TabIndex = 4
-        Me.chkNoFontBold.Text = "Bold"
-        Me.chkNoFontBold.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.chkNoFontBold.UseVisualStyleBackColor = True
+        Me.txtNoFont.Location = New System.Drawing.Point(85, 19)
+        Me.txtNoFont.Name = "txtNoFont"
+        Me.txtNoFont.ReadOnly = True
+        Me.txtNoFont.Size = New System.Drawing.Size(92, 20)
+        Me.txtNoFont.TabIndex = 35
+        '
+        'btnNoFont
+        '
+        Me.btnNoFont.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnNoFont.Location = New System.Drawing.Point(183, 19)
+        Me.btnNoFont.Name = "btnNoFont"
+        Me.btnNoFont.Size = New System.Drawing.Size(67, 20)
+        Me.btnNoFont.TabIndex = 34
+        Me.btnNoFont.Text = "Choose"
+        Me.btnNoFont.UseVisualStyleBackColor = True
         '
         'lblNoFont
         '
@@ -439,33 +436,11 @@ Partial Class frmMain
         'lblNameFont
         '
         Me.lblNameFont.AutoSize = True
-        Me.lblNameFont.Location = New System.Drawing.Point(6, 74)
+        Me.lblNameFont.Location = New System.Drawing.Point(6, 48)
         Me.lblNameFont.Name = "lblNameFont"
         Me.lblNameFont.Size = New System.Drawing.Size(52, 13)
         Me.lblNameFont.TabIndex = 3
         Me.lblNameFont.Text = "Text Font"
-        '
-        'cmbNoFont
-        '
-        Me.cmbNoFont.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmbNoFont.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cmbNoFont.FormattingEnabled = True
-        Me.cmbNoFont.Location = New System.Drawing.Point(85, 19)
-        Me.cmbNoFont.Name = "cmbNoFont"
-        Me.cmbNoFont.Size = New System.Drawing.Size(165, 21)
-        Me.cmbNoFont.TabIndex = 0
-        '
-        'cmbNameFont
-        '
-        Me.cmbNameFont.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmbNameFont.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cmbNameFont.FormattingEnabled = True
-        Me.cmbNameFont.Location = New System.Drawing.Point(85, 71)
-        Me.cmbNameFont.Name = "cmbNameFont"
-        Me.cmbNameFont.Size = New System.Drawing.Size(165, 21)
-        Me.cmbNameFont.TabIndex = 1
         '
         'grpBasicColors
         '
@@ -485,7 +460,16 @@ Partial Class frmMain
         Me.grpBasicColors.Size = New System.Drawing.Size(256, 140)
         Me.grpBasicColors.TabIndex = 7
         Me.grpBasicColors.TabStop = False
-        Me.grpBasicColors.Text = "Preselect colors"
+        Me.grpBasicColors.Text = "Preselect colors (overridable)"
+        '
+        'lblThirdColorInfo
+        '
+        Me.lblThirdColorInfo.AutoSize = True
+        Me.lblThirdColorInfo.Location = New System.Drawing.Point(82, 94)
+        Me.lblThirdColorInfo.Name = "lblThirdColorInfo"
+        Me.lblThirdColorInfo.Size = New System.Drawing.Size(129, 13)
+        Me.lblThirdColorInfo.TabIndex = 13
+        Me.lblThirdColorInfo.Text = "(used for text and presets)"
         '
         'lblThirdColor
         '
@@ -828,7 +812,7 @@ Partial Class frmMain
         '
         Me.spcChassis2.Panel2.Controls.Add(Me.grpChassisElements)
         Me.spcChassis2.Size = New System.Drawing.Size(569, 389)
-        Me.spcChassis2.SplitterDistance = 368
+        Me.spcChassis2.SplitterDistance = 371
         Me.spcChassis2.SplitterWidth = 1
         Me.spcChassis2.TabIndex = 0
         Me.spcChassis2.TabStop = False
@@ -837,7 +821,7 @@ Partial Class frmMain
         '
         Me.btnChassisPreview.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.btnChassisPreview.Image = Global.Simplivery.My.Resources.Resources.reload
-        Me.btnChassisPreview.Location = New System.Drawing.Point(137, 205)
+        Me.btnChassisPreview.Location = New System.Drawing.Point(138, 205)
         Me.btnChassisPreview.Name = "btnChassisPreview"
         Me.btnChassisPreview.Size = New System.Drawing.Size(100, 32)
         Me.btnChassisPreview.TabIndex = 1
@@ -854,7 +838,7 @@ Partial Class frmMain
         Me.picChassisPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.picChassisPreview.Location = New System.Drawing.Point(5, 3)
         Me.picChassisPreview.Name = "picChassisPreview"
-        Me.picChassisPreview.Size = New System.Drawing.Size(358, 196)
+        Me.picChassisPreview.Size = New System.Drawing.Size(361, 196)
         Me.picChassisPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picChassisPreview.TabIndex = 0
         Me.picChassisPreview.TabStop = False
@@ -867,7 +851,7 @@ Partial Class frmMain
         Me.grpChassisElements.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpChassisElements.Location = New System.Drawing.Point(0, 0)
         Me.grpChassisElements.Name = "grpChassisElements"
-        Me.grpChassisElements.Size = New System.Drawing.Size(200, 389)
+        Me.grpChassisElements.Size = New System.Drawing.Size(197, 389)
         Me.grpChassisElements.TabIndex = 1
         Me.grpChassisElements.TabStop = False
         Me.grpChassisElements.Text = "Elements"
@@ -887,6 +871,7 @@ Partial Class frmMain
         'lviChassisElements
         '
         Me.lviChassisElements.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.lviChassisElements.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.clhElementGuid, Me.clhElementType})
         Me.lviChassisElements.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lviChassisElements.FullRowSelect = True
         Me.lviChassisElements.GridLines = True
@@ -899,6 +884,17 @@ Partial Class frmMain
         Me.lviChassisElements.TabIndex = 1
         Me.lviChassisElements.UseCompatibleStateImageBehavior = False
         Me.lviChassisElements.View = System.Windows.Forms.View.Details
+        '
+        'clhElementGuid
+        '
+        Me.clhElementGuid.Text = ""
+        Me.clhElementGuid.Width = 0
+        '
+        'clhElementType
+        '
+        Me.clhElementType.Text = ""
+        Me.clhElementType.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.clhElementType.Width = 186
         '
         'tstChassisElements
         '
@@ -1141,15 +1137,6 @@ Partial Class frmMain
         Me.btnSettings.Size = New System.Drawing.Size(28, 28)
         Me.btnSettings.Text = "Settings"
         '
-        'lblThirdColorInfo
-        '
-        Me.lblThirdColorInfo.AutoSize = True
-        Me.lblThirdColorInfo.Location = New System.Drawing.Point(85, 97)
-        Me.lblThirdColorInfo.Name = "lblThirdColorInfo"
-        Me.lblThirdColorInfo.Size = New System.Drawing.Size(129, 13)
-        Me.lblThirdColorInfo.TabIndex = 13
-        Me.lblThirdColorInfo.Text = "(used for text and presets)"
-        '
         'frmMain
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
@@ -1243,8 +1230,6 @@ Partial Class frmMain
     Friend WithEvents txtTeamName As System.Windows.Forms.TextBox
     Friend WithEvents txtDriverName As System.Windows.Forms.TextBox
     Friend WithEvents lblDriverName As System.Windows.Forms.Label
-    Friend WithEvents cmbNameFont As System.Windows.Forms.ComboBox
-    Friend WithEvents cmbNoFont As System.Windows.Forms.ComboBox
     Friend WithEvents lblNameFont As System.Windows.Forms.Label
     Friend WithEvents lblNoFont As System.Windows.Forms.Label
     Friend WithEvents pnlBaseColor As System.Windows.Forms.Panel
@@ -1289,10 +1274,6 @@ Partial Class frmMain
     Friend WithEvents lblWindowsWip As System.Windows.Forms.Label
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents picHeader As System.Windows.Forms.PictureBox
-    Friend WithEvents chkNameFontItalic As System.Windows.Forms.CheckBox
-    Friend WithEvents chkNameFontBold As System.Windows.Forms.CheckBox
-    Friend WithEvents chkNoFontItalic As System.Windows.Forms.CheckBox
-    Friend WithEvents chkNoFontBold As System.Windows.Forms.CheckBox
     Friend WithEvents cmbPresetCollection As System.Windows.Forms.ToolStripComboBox
     Friend WithEvents lblThirdColor As System.Windows.Forms.Label
     Friend WithEvents pnlThirdColor As System.Windows.Forms.Panel
@@ -1302,5 +1283,12 @@ Partial Class frmMain
     Friend WithEvents clhGuid As System.Windows.Forms.ColumnHeader
     Friend WithEvents clhName As System.Windows.Forms.ColumnHeader
     Friend WithEvents lblThirdColorInfo As System.Windows.Forms.Label
+    Friend WithEvents clhElementGuid As System.Windows.Forms.ColumnHeader
+    Friend WithEvents clhElementType As System.Windows.Forms.ColumnHeader
+    Friend WithEvents txtNameFont As System.Windows.Forms.TextBox
+    Friend WithEvents btnNameFont As System.Windows.Forms.Button
+    Friend WithEvents txtNoFont As System.Windows.Forms.TextBox
+    Friend WithEvents btnNoFont As System.Windows.Forms.Button
+    Friend WithEvents lblNameFontInfo As System.Windows.Forms.Label
 
 End Class
