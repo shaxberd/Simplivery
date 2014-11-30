@@ -111,6 +111,12 @@
     <Compile Include="Classes\PresetElement.vb" />
     <Compile Include="Classes\PresetLayer.vb" />
     <Compile Include="Classes\Template.vb" />
+    <Compile Include="frmLayerEditDialog.Designer.vb">
+      <DependentUpon>frmLayerEditDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmLayerEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmMain.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +150,9 @@
   <ItemGroup>
     <EmbeddedResource Include="frmLayerAddDialog.resx">
       <DependentUpon>frmLayerAddDialog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmLayerEditDialog.resx">
+      <DependentUpon>frmLayerEditDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.vb</DependentUpon>

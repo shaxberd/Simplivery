@@ -87,9 +87,20 @@ Public Class frmMain
         LoadTemplateDefault()
     End Sub
 
+    Private Sub lviChassisLayers_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lviChassisLayers.SelectedIndexChanged
+        'disable edit button if layer is not colordecal
+        If lviChassisLayers.SelectedItems.Count = 1 Then
+            If _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")).Type = LayerType.ColorDecal Then
+                btnChassisEditLayer.Enabled = True
+            Else
+                btnChassisEditLayer.Enabled = False
+            End If
+        End If
+    End Sub
+
 #End Region
 
-#Region "GUI - Adding & Moving Stuff"
+#Region "GUI - Adding, Editing & Moving Stuff"
 
     Private Sub btnChassisAddDecal_Click(sender As Object, e As EventArgs) Handles btnChassisAddDecal.Click
         OpenLayerAddDialog(LayerType.Decal)
@@ -116,17 +127,35 @@ Public Class frmMain
     End Sub
 
     Private Sub btnChassisLayerUp_Click(sender As Object, e As EventArgs) Handles btnChassisLayerUp.Click
-        'If lviChassisLayers.SelectedItems.Count = 1 Then
-        '    Dim insertIndex As Integer = _currentSet.Layers.FindIndex(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")) - 1
-        '    If insertIndex < 0 Then Exit Sub
+        MoveLayer(False)
+    End Sub
 
-        '    _currentSet.Layers.Insert(insertIndex, _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")))
-        '    _currentSet.Layers.RemoveAt(insertIndex + 2)
+    Private Sub btnChassisLayerDown_Click(sender As Object, e As EventArgs) Handles btnChassisLayerDown.Click
+        MoveLayer(True)
+    End Sub
 
-        '    LoadPreset(_currentSet)
+    Private Sub btnChassisElementUp_Click(sender As Object, e As EventArgs) Handles btnChassisElementUp.Click
+        MoveElement(False)
+    End Sub
 
-        '    lviChassisLayers.Items(insertIndex).Selected = True
-        'End If
+    Private Sub btnChassisElementDown_Click(sender As Object, e As EventArgs) Handles btnChassisElementDown.Click
+        MoveElement(True)
+    End Sub
+
+    Private Sub btnChassisEditLayer_Click(sender As Object, e As EventArgs) Handles btnChassisEditLayer.Click
+        OpenLayerEditDialog()
+    End Sub
+
+    Private Sub btnChassisRemoveLayer_Click(sender As Object, e As EventArgs) Handles btnChassisRemoveLayer.Click
+        RemoveLayer()
+    End Sub
+
+    Private Sub btnChassisEditElement_Click(sender As Object, e As EventArgs) Handles btnChassisEditElement.Click
+
+    End Sub
+
+    Private Sub btnChassisRemoveElement_Click(sender As Object, e As EventArgs) Handles btnChassisRemoveElement.Click
+        RemoveElement()
     End Sub
 
 #End Region
@@ -319,7 +348,7 @@ Public Class frmMain
 
 #End Region
 
-#Region "Methods - Adding Stuff"
+#Region "Methods - Adding, Editing & Moving Stuff"
 
     Private Sub OpenLayerAddDialog(ByVal type As LayerType)
         'opens up the layer chooser for the given type
@@ -328,6 +357,17 @@ Public Class frmMain
             AddLayer(lad.SelectedLayer, lad.SelectedColor)
         End If
         lad.Dispose()
+    End Sub
+
+    Private Sub OpenLayerEditDialog()
+        'opens up the layer edit dialog
+        If lviChassisLayers.SelectedItems.Count = 1 Then
+            Dim led As New frmLayerEditDialog(Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D"), _templatePath, _currentTemplate, _currentSet.Layers)
+            If led.ShowDialog = Windows.Forms.DialogResult.OK Then
+                UpdateLayer(Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D"), led.SelectedColor)
+            End If
+            led.Dispose()
+        End If
     End Sub
 
     Private Sub AddLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
@@ -357,6 +397,104 @@ Public Class frmMain
 
         'reload set (lists, etc)
         LoadPreset(_currentSet)
+    End Sub
+
+    Private Sub UpdateLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
+        'update the edited layer's color, no reload necessary
+        _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).DefaultColor = layerColor.ToArgb
+    End Sub
+
+    Private Sub MoveLayer(ByVal moveDown As Boolean)
+        'check whether an item is selected
+        If lviChassisLayers.SelectedItems.Count = 1 Then
+            'find item in current set & get new index if it's NOT the first/last
+            Dim insertIndex As Integer
+            If moveDown Then
+                insertIndex = _currentSet.Layers.FindIndex(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")) + 2
+                If insertIndex > _currentSet.Layers.Count Then Exit Sub
+            Else
+                insertIndex = _currentSet.Layers.FindIndex(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")) - 1
+                If insertIndex < 0 Then Exit Sub
+            End If
+
+            'insert item at new index & remove at old
+            _currentSet.Layers.Insert(insertIndex, _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")))
+            If moveDown Then
+                _currentSet.Layers.RemoveAt(insertIndex - 2)
+            Else
+                _currentSet.Layers.RemoveAt(insertIndex + 2)
+            End If
+
+            'reload current set
+            LoadPreset(_currentSet)
+
+            'reselect item
+            If moveDown Then
+                lviChassisLayers.Items(insertIndex - 1).Selected = True
+            Else
+                lviChassisLayers.Items(insertIndex).Selected = True
+            End If
+        End If
+    End Sub
+
+    Private Sub MoveElement(ByVal moveDown As Boolean)
+        'check whether an item is selected
+        If lviChassisElements.SelectedItems.Count = 1 Then
+            'find item in current set & get new index if it's NOT the first/last
+            Dim insertIndex As Integer
+            If moveDown Then
+                insertIndex = _currentSet.Elements.FindIndex(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")) + 2
+                If insertIndex > _currentSet.Elements.Count Then Exit Sub
+            Else
+                insertIndex = _currentSet.Elements.FindIndex(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")) - 1
+                If insertIndex < 0 Then Exit Sub
+            End If
+
+            'insert item at new index & remove at old
+            _currentSet.Elements.Insert(insertIndex, _currentSet.Elements.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")))
+            If moveDown Then
+                _currentSet.Elements.RemoveAt(insertIndex - 2)
+            Else
+                _currentSet.Elements.RemoveAt(insertIndex + 2)
+            End If
+
+            'reload current set
+            LoadPreset(_currentSet)
+
+            'reselect item
+            If moveDown Then
+                lviChassisElements.Items(insertIndex - 1).Selected = True
+            Else
+                lviChassisElements.Items(insertIndex).Selected = True
+            End If
+        End If
+    End Sub
+
+    Private Sub RemoveLayer()
+        'check whether an item is selected
+        If lviChassisLayers.SelectedItems.Count = 1 Then
+            'check whether the selected item is the base layer and warn accordingly
+            If Not _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")).Type = LayerType.Base _
+                OrElse MessageBox.Show("You are trying to remove the base layer, which is NOT recommended - do you want to continue anyway?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
+
+                'remove layer
+                _currentSet.Layers.RemoveAll(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D"))
+
+                'reload current set
+                LoadPreset(_currentSet)
+            End If
+        End If
+    End Sub
+
+    Private Sub RemoveElement()
+        'check whether an item is selected
+        If lviChassisElements.SelectedItems.Count = 1 Then
+            'remove layer
+            _currentSet.Elements.RemoveAll(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D"))
+
+            'reload current set
+            LoadPreset(_currentSet)
+        End If
     End Sub
 
 #End Region
