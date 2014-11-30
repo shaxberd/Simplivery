@@ -1,10 +1,12 @@
 ﻿Imports System.Drawing
 Imports System.IO
+Imports System.Drawing.Imaging
 
 Public Class frmMain
 
 #Region "Fields"
 
+    Private _settings As Settings
     Private _templatePath As String
     Private _allTemplates As List(Of Template)
     Private _availableTemplates As Dictionary(Of Guid, String)
@@ -33,13 +35,17 @@ Public Class frmMain
         txtNoFont.Text = _noFont.Name
         txtNameFont.Text = _nameFont.Name
 
+        'TODO: Load settings
+        _settings = New Settings
+        _settings.ImagingEngine = Settings.ImagingEngines.SystemDrawing
+
         'Loading
         LoadTemplates()
     End Sub
 
 #End Region
 
-#Region "GUI - General"
+#Region "GUI - General & Buttons"
 
     Private Sub btnBaseColor_Click(sender As Object, e As EventArgs) Handles btnBaseColor.Click
         'choose new text color
@@ -147,6 +153,10 @@ Public Class frmMain
         Catch ex As Exception
             MessageBox.Show(String.Format("Error loading configuration: {0}{1}The default preset of the current livery will be loaded.", ex.Message, Environment.NewLine), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub btnChassisPreview_Click(sender As Object, e As EventArgs) Handles btnChassisPreview.Click
+        UpdateChassisPreview()
     End Sub
 
 #End Region
@@ -292,6 +302,111 @@ Public Class frmMain
 
         'Set image
         picLiveryBasicsPreview.Image = basicsPreview
+    End Sub
+
+    Private Sub UpdateChassisPreview()
+        Select Case _settings.ImagingEngine
+            Case Settings.ImagingEngines.SystemDrawing
+                picChassisPreview.Image = GetLiveryImageSd()
+            Case Settings.ImagingEngines.ImageMagick
+                picChassisPreview.Image = GetLiveryImageIm()
+        End Select
+    End Sub
+
+    Private Function GetLiveryImageSd() As Image
+        'declarations
+        Dim tmpLayer As Layer
+        Dim numImage As Bitmap
+        'create base image & initialize
+        Dim tmpImage As Image = Image.FromFile(Path.Combine(_templatePath, _currentTemplate.Guid.ToString, _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = _currentSet.Layers(0).LayerGuid).FileName))
+        Dim tmpBitmap As New Bitmap(tmpImage.Width, tmpImage.Height)
+        Dim tmpGfx As Graphics = Graphics.FromImage(tmpBitmap)
+        Dim tmpRect As New Rectangle(0, 0, tmpImage.Width, tmpImage.Height)
+
+        'enable quality options
+        tmpGfx.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+        tmpGfx.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+
+        'add each image on top of the previous ones
+        For Each layerImage In _currentSet.Layers
+            'get matching layer
+            tmpLayer = _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = layerImage.LayerGuid)
+
+            'check layer type and insert elements if it's a numberplate
+            If tmpLayer.Type = LayerType.Numberplate Then
+                'TODO: Insert all elements
+            End If
+
+            'create image
+            tmpImage = Image.FromFile(Path.Combine(_templatePath, _currentTemplate.Guid.ToString, tmpLayer.FileName))
+
+            'check whether the current layer is colorable
+            If tmpLayer.Type = LayerType.Base OrElse tmpLayer.Type = LayerType.ColorDecal Then
+                tmpGfx.DrawImage(tmpImage, tmpRect, 0, 0, tmpImage.Width, tmpImage.Height, GraphicsUnit.Pixel, _
+                                     GetImageMatrixSd(Color.FromArgb(layerImage.Color)))
+            Else
+                tmpGfx.DrawImage(tmpImage, tmpRect, 0, 0, tmpImage.Width, tmpImage.Height, GraphicsUnit.Pixel)
+            End If
+
+            'check whether the current layer is a number and add the actual number to it
+            'If tmpLayer.Type = LayerType.Numberplate Then
+            '    'add number to each area
+            '    For Each tmpArea In tmpLayer.Areas
+            '        'get image
+            '        numImage = GetNumberImage(tmpArea.AreaWidth, tmpArea.AreaHeight)
+            '        'rotate number
+            '        numImage.RotateFlip(RotateFlipType.Rotate180FlipNone)
+            '        'add number
+            '        tmpGfx.DrawImage(numImage, tmpArea.AreaX, tmpArea.AreaY)
+            '    Next
+            'End If
+        Next
+
+        'dispose objects & return the livery image
+        tmpGfx.Dispose()
+        tmpImage.Dispose()
+        Return tmpBitmap
+    End Function
+
+    Private Function GetLiveryImageIm() As Image
+
+    End Function
+
+    Private Function GetImageMatrixSd(ByVal matrixColor As Color) As Imaging.ImageAttributes
+        Try
+            'Calculate re-colorization array
+            Dim tmpColorize() As Single = {CSng(matrixColor.R / 255), CSng(matrixColor.G / 255), CSng(matrixColor.B / 255), 0, 1}
+
+            'Add the array to a ColorMatrix
+            Dim tmpCm = New ColorMatrix(New Single()() {New Single() {1, 0, 0, 0, 0}, New Single() {0, 1, 0, 0, 0}, _
+                                                        New Single() {0, 0, 1, 0, 0}, New Single() {0, 0, 0, 1, 0}, tmpColorize})
+
+            'Define & return ImageAttributes
+            Dim tmpIa = New ImageAttributes()
+            tmpIa.SetColorMatrix(tmpCm)
+
+            Return tmpIa
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error creating ColorMatrix:{0}{1}", Environment.NewLine, ex.ToString), _
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return Nothing
+        End Try
+    End Function
+
+    Private Function GetImageMatrixIm(ByVal matrixColor As Color) As ImageMagick.ColorMatrix()
+
+    End Function
+
+    Private Function GetNumberImage(ByVal width As Integer, ByVal height As Integer) As Bitmap
+
+    End Function
+
+    Private Function GetElementImage(ByVal textElement As PresetElement) As Bitmap
+
+    End Function
+
+    Private Sub ExportLivery()
+
     End Sub
 
 #End Region
