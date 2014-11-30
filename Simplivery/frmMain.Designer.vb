@@ -47,7 +47,6 @@ Partial Class frmMain
         Me.cmbNoFont = New System.Windows.Forms.ComboBox()
         Me.cmbNameFont = New System.Windows.Forms.ComboBox()
         Me.grpBasicColors = New System.Windows.Forms.GroupBox()
-        Me.lblThirdColorInfo = New System.Windows.Forms.Label()
         Me.lblThirdColor = New System.Windows.Forms.Label()
         Me.pnlThirdColor = New System.Windows.Forms.Panel()
         Me.btnThirdColor = New System.Windows.Forms.Button()
@@ -108,6 +107,7 @@ Partial Class frmMain
         Me.btnCarEditor = New System.Windows.Forms.ToolStripButton()
         Me.btnCarDelete = New System.Windows.Forms.ToolStripButton()
         Me.btnSettings = New System.Windows.Forms.ToolStripButton()
+        Me.lblThirdColorInfo = New System.Windows.Forms.Label()
         CType(Me.spcMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.spcMain.Panel1.SuspendLayout()
         Me.spcMain.Panel2.SuspendLayout()
@@ -485,16 +485,7 @@ Partial Class frmMain
         Me.grpBasicColors.Size = New System.Drawing.Size(256, 140)
         Me.grpBasicColors.TabIndex = 7
         Me.grpBasicColors.TabStop = False
-        Me.grpBasicColors.Text = "Color Settings (overridable per layer)"
-        '
-        'lblThirdColorInfo
-        '
-        Me.lblThirdColorInfo.AutoSize = True
-        Me.lblThirdColorInfo.Location = New System.Drawing.Point(85, 97)
-        Me.lblThirdColorInfo.Name = "lblThirdColorInfo"
-        Me.lblThirdColorInfo.Size = New System.Drawing.Size(129, 13)
-        Me.lblThirdColorInfo.TabIndex = 13
-        Me.lblThirdColorInfo.Text = "(used for text and presets)"
+        Me.grpBasicColors.Text = "Preselect colors"
         '
         'lblThirdColor
         '
@@ -1150,6 +1141,15 @@ Partial Class frmMain
         Me.btnSettings.Size = New System.Drawing.Size(28, 28)
         Me.btnSettings.Text = "Settings"
         '
+        'lblThirdColorInfo
+        '
+        Me.lblThirdColorInfo.AutoSize = True
+        Me.lblThirdColorInfo.Location = New System.Drawing.Point(85, 97)
+        Me.lblThirdColorInfo.Name = "lblThirdColorInfo"
+        Me.lblThirdColorInfo.Size = New System.Drawing.Size(129, 13)
+        Me.lblThirdColorInfo.TabIndex = 13
+        Me.lblThirdColorInfo.Text = "(used for text and presets)"
+        '
         'frmMain
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
@@ -1297,10 +1297,10 @@ Partial Class frmMain
     Friend WithEvents lblThirdColor As System.Windows.Forms.Label
     Friend WithEvents pnlThirdColor As System.Windows.Forms.Panel
     Friend WithEvents btnThirdColor As System.Windows.Forms.Button
-    Friend WithEvents lblThirdColorInfo As System.Windows.Forms.Label
     Friend WithEvents btnDebug As System.Windows.Forms.Button
     Friend WithEvents lblPresetSelection As System.Windows.Forms.ToolStripLabel
     Friend WithEvents clhGuid As System.Windows.Forms.ColumnHeader
     Friend WithEvents clhName As System.Windows.Forms.ColumnHeader
+    Friend WithEvents lblThirdColorInfo As System.Windows.Forms.Label
 
 End Class

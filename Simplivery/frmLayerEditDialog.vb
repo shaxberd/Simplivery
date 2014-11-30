@@ -14,7 +14,7 @@
             picLayer.Image = Image.FromFile(IO.Path.Combine(templatePath, currentTemplate.Guid.ToString, tmpLayer.FileName))
             Me.Text = String.Format("{0} {1}", Me.Text, tmpLayer.Name)
             txtLayerName.Text = tmpLayer.Name
-            pnlLayerColor.BackColor = Color.FromArgb(currentSetLayers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).DefaultColor)
+            pnlLayerColor.BackColor = Color.FromArgb(currentSetLayers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).Color)
         Else
             Me.DialogResult = Windows.Forms.DialogResult.Abort
         End If

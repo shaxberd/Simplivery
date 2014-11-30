@@ -90,7 +90,7 @@ Public Class frmMain
     Private Sub lviChassisLayers_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lviChassisLayers.SelectedIndexChanged
         'disable edit button if layer is not colordecal
         If lviChassisLayers.SelectedItems.Count = 1 Then
-            If _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")).Type = LayerType.ColorDecal Then
+            If {LayerType.ColorDecal, LayerType.Base}.Contains(_currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")).Type) Then
                 btnChassisEditLayer.Enabled = True
             Else
                 btnChassisEditLayer.Enabled = False
@@ -341,6 +341,21 @@ Public Class frmMain
 
             'set preset active
             _currentSet = preset
+
+            'color matching
+            For Each tmpLayer In _currentSet.Layers
+                If {LayerType.Base, LayerType.ColorDecal}.Contains(_currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = tmpLayer.LayerGuid).Type) Then
+                    Select Case tmpLayer.PresetColor
+                        Case PresetColorType.Main
+                            tmpLayer.Color = pnlBaseColor.BackColor.ToArgb
+                        Case PresetColorType.Accent
+                            tmpLayer.Color = pnlAccentColor.BackColor.ToArgb
+                        Case PresetColorType.Third
+                            tmpLayer.Color = pnlThirdColor.BackColor.ToArgb
+                    End Select
+                    tmpLayer.PresetColor = PresetColorType.CustomPreset
+                End If
+            Next
         Catch ex As Exception
             MessageBox.Show(String.Format("Error loading preset: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -389,7 +404,7 @@ Public Class frmMain
         insertIndex = currentSetTypes.FindIndex(Function(x) CInt(x) > CInt(tmpLayer.Type))
         If tmpLayer.Type = LayerType.ColorDecal Then
             newPresetLayer.PresetColor = PresetColorType.CustomPreset
-            newPresetLayer.DefaultColor = layerColor.ToArgb
+            newPresetLayer.Color = layerColor.ToArgb
         End If
 
         'add layer to current set
@@ -401,7 +416,7 @@ Public Class frmMain
 
     Private Sub UpdateLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
         'update the edited layer's color, no reload necessary
-        _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).DefaultColor = layerColor.ToArgb
+        _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).Color = layerColor.ToArgb
     End Sub
 
     Private Sub MoveLayer(ByVal moveDown As Boolean)
