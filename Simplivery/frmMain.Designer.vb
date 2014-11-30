@@ -812,7 +812,7 @@ Partial Class frmMain
         '
         Me.spcChassis2.Panel2.Controls.Add(Me.grpChassisElements)
         Me.spcChassis2.Size = New System.Drawing.Size(569, 389)
-        Me.spcChassis2.SplitterDistance = 371
+        Me.spcChassis2.SplitterDistance = 368
         Me.spcChassis2.SplitterWidth = 1
         Me.spcChassis2.TabIndex = 0
         Me.spcChassis2.TabStop = False
@@ -821,7 +821,7 @@ Partial Class frmMain
         '
         Me.btnChassisPreview.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.btnChassisPreview.Image = Global.Simplivery.My.Resources.Resources.reload
-        Me.btnChassisPreview.Location = New System.Drawing.Point(138, 205)
+        Me.btnChassisPreview.Location = New System.Drawing.Point(137, 205)
         Me.btnChassisPreview.Name = "btnChassisPreview"
         Me.btnChassisPreview.Size = New System.Drawing.Size(100, 32)
         Me.btnChassisPreview.TabIndex = 1
@@ -838,7 +838,7 @@ Partial Class frmMain
         Me.picChassisPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.picChassisPreview.Location = New System.Drawing.Point(5, 3)
         Me.picChassisPreview.Name = "picChassisPreview"
-        Me.picChassisPreview.Size = New System.Drawing.Size(361, 196)
+        Me.picChassisPreview.Size = New System.Drawing.Size(358, 196)
         Me.picChassisPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picChassisPreview.TabIndex = 0
         Me.picChassisPreview.TabStop = False
@@ -851,7 +851,7 @@ Partial Class frmMain
         Me.grpChassisElements.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpChassisElements.Location = New System.Drawing.Point(0, 0)
         Me.grpChassisElements.Name = "grpChassisElements"
-        Me.grpChassisElements.Size = New System.Drawing.Size(197, 389)
+        Me.grpChassisElements.Size = New System.Drawing.Size(200, 389)
         Me.grpChassisElements.TabIndex = 1
         Me.grpChassisElements.TabStop = False
         Me.grpChassisElements.Text = "Elements"
@@ -1030,7 +1030,7 @@ Partial Class frmMain
         Me.btnReset.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnReset.Name = "btnReset"
         Me.btnReset.Size = New System.Drawing.Size(28, 28)
-        Me.btnReset.Text = "Reset Livery"
+        Me.btnReset.Text = "Reset livery to default preset"
         '
         'btnSave
         '
@@ -1039,7 +1039,7 @@ Partial Class frmMain
         Me.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(28, 28)
-        Me.btnSave.Text = "Save Livery"
+        Me.btnSave.Text = "Save this configuration"
         '
         'btnLoad
         '
@@ -1048,7 +1048,7 @@ Partial Class frmMain
         Me.btnLoad.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnLoad.Name = "btnLoad"
         Me.btnLoad.Size = New System.Drawing.Size(28, 28)
-        Me.btnLoad.Text = "Load Livery"
+        Me.btnLoad.Text = "Load livery configuration"
         '
         'btnExport
         '

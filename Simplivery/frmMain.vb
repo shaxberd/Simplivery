@@ -112,6 +112,43 @@ Public Class frmMain
         End If
     End Sub
 
+    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+        'export current set
+        Try
+            Dim sfd As New SaveFileDialog()
+            sfd.InitialDirectory = Path.Combine(Environment.CurrentDirectory, "Presets")
+            sfd.Filter = "XML|*.xml"
+            If sfd.ShowDialog = Windows.Forms.DialogResult.OK Then
+                Dim xmlSer As New Xml.Serialization.XmlSerializer(_currentSet.GetType)
+                Dim xmlStream As New FileStream(sfd.FileName, FileMode.OpenOrCreate, FileAccess.Write)
+                xmlSer.Serialize(xmlStream, _currentSet)
+                xmlStream.Close()
+            End If
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error exporting configuration: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub btnLoad_Click(sender As Object, e As EventArgs) Handles btnLoad.Click
+        'open preset from file
+        Try
+            Dim ofd As New OpenFileDialog()
+            ofd.Filter = "XML|*.xml"
+            ofd.InitialDirectory = Path.Combine(Environment.CurrentDirectory, "Presets")
+            If ofd.ShowDialog = Windows.Forms.DialogResult.OK Then
+                Dim xmlSer As New Xml.Serialization.XmlSerializer(_currentSet.GetType)
+                Dim xmlStream As New FileStream(ofd.FileName, FileMode.Open, FileAccess.Read)
+                _currentSet = DirectCast(xmlSer.Deserialize(xmlStream), Preset)
+                xmlStream.Close()
+
+                'reload
+                LoadPreset(_currentSet)
+            End If
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error loading configuration: {0}{1}The default preset of the current livery will be loaded.", ex.Message, Environment.NewLine), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
 #End Region
 
 #Region "GUI - Adding, Editing & Moving Stuff"
