@@ -385,9 +385,13 @@ Public Class frmMain
         End If
     End Sub
 
+    Private Sub OpenElementDialog()
+
+    End Sub
+
     Private Sub AddLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
         'initialise
-        Dim insertIndex As Integer = lviChassisLayers.Items.Count
+        Dim insertIndex As Integer
         Dim currentSetTypes As New List(Of LayerType)
         Dim newPresetLayer As New PresetLayer
         Dim tmpLayer As Layer = _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = layerGuid)
@@ -406,6 +410,7 @@ Public Class frmMain
             newPresetLayer.PresetColor = PresetColorType.CustomPreset
             newPresetLayer.Color = layerColor.ToArgb
         End If
+        If insertIndex = -1 Then insertIndex = lviChassisLayers.Items.Count
 
         'add layer to current set
         _currentSet.Layers.Insert(insertIndex, newPresetLayer)
@@ -414,9 +419,17 @@ Public Class frmMain
         LoadPreset(_currentSet)
     End Sub
 
+    Private Sub AddElement()
+
+    End Sub
+
     Private Sub UpdateLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
         'update the edited layer's color, no reload necessary
         _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).Color = layerColor.ToArgb
+    End Sub
+
+    Private Sub UpdateElement()
+
     End Sub
 
     Private Sub MoveLayer(ByVal moveDown As Boolean)

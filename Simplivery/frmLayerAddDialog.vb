@@ -52,7 +52,11 @@
     End Sub
 
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
-        Me.DialogResult = Windows.Forms.DialogResult.OK
+        If lviLayerList.SelectedItems.Count = 1 Then
+            Me.DialogResult = Windows.Forms.DialogResult.OK
+        Else
+            Me.DialogResult = Windows.Forms.DialogResult.Cancel
+        End If
     End Sub
 
     Private Sub btnLayerColor_Click(sender As Object, e As EventArgs) Handles btnLayerColor.Click
