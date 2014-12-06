@@ -23,13 +23,13 @@
         'load element (if edit)
         If Not elementGuid = Guid.Empty Then
             Element = currentElements.FirstOrDefault(Function(x) x.Guid = elementGuid)
-            _elementFont = TryCast(_fontConverter.ConvertFromString(Element.Settings), Font)
 
             'load settings
             Select Case elementType
                 Case Simplivery.ElementType.Sponsor
                     txtElementImage.Text = Element.Content
                 Case Simplivery.ElementType.Text
+                    _elementFont = TryCast(_fontConverter.ConvertFromString(Element.Settings), Font)
                     txtElementText.Text = Element.Content
                     txtElementTextFont.Text = _elementFont.Name
                     pnlElementTextColor.BackColor = Color.FromArgb(Element.Color)
@@ -49,7 +49,8 @@
             txtElementTextFont.Text = _elementFont.Name
             Element = New PresetElement
             Element.ElementType = elementType
-            Element.Color = frmMain.pnlThirdColor.BackColor.ToArgb
+            pnlElementTextColor.BackColor = frmMain.pnlThirdColor.BackColor
+            Element.Color = pnlElementTextColor.BackColor.ToArgb
             btnApply.Text = "Add"
         End If
 
@@ -169,7 +170,7 @@
         End Select
 
         'create area
-        Element.Area = New Area(tbrElementPositionX.Value, tbrElementPositionY.Value, tbrElementHeight.Value, tbrElementHeight.Value)
+        Element.Area = New Area(tbrElementPositionX.Value, tbrElementPositionY.Value, tbrElementWidth.Value, tbrElementHeight.Value)
         Element.Area.AreaRotation = tbrElementRotation.Value
         Element.Area.AreaPadding = {CInt(nudElementPaddingTop.Value), CInt(nudElementPaddingBottom.Value)}
 

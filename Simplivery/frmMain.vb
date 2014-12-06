@@ -37,6 +37,7 @@ Public Class frmMain
 
         'TODO: Load settings
         _settings = New Settings
+        'TODO: Settings
         _settings.ImagingEngine = Settings.ImagingEngines.SystemDrawing
 
         'Loading
@@ -315,10 +316,12 @@ Public Class frmMain
 
     Private Function GetLiveryImageSd() As Image
         'declarations
+        Dim elementsApplied As Boolean = False
         Dim tmpLayer As Layer
         Dim numImage As Bitmap
         'create base image & initialize
-        Dim tmpImage As Image = Image.FromFile(Path.Combine(_templatePath, _currentTemplate.Guid.ToString, _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = _currentSet.Layers(0).LayerGuid).FileName))
+        Dim tmpImage As Image = Image.FromFile(Path.Combine(_templatePath, _currentTemplate.Guid.ToString, _
+                                                            _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = _currentSet.Layers(0).LayerGuid).FileName))
         Dim tmpBitmap As New Bitmap(tmpImage.Width, tmpImage.Height)
         Dim tmpGfx As Graphics = Graphics.FromImage(tmpBitmap)
         Dim tmpRect As New Rectangle(0, 0, tmpImage.Width, tmpImage.Height)
@@ -333,8 +336,11 @@ Public Class frmMain
             tmpLayer = _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = layerImage.LayerGuid)
 
             'check layer type and insert elements if it's a numberplate
-            If tmpLayer.Type = LayerType.Numberplate Then
-                'TODO: Insert all elements
+            If tmpLayer.Type > 3 AndAlso Not elementsApplied Then
+                'add all elements before applying numberplate or higher
+                tmpGfx.DrawImage(GetElementsImage, tmpRect, tmpRect, GraphicsUnit.Pixel)
+                'set elementsAplied true -> only call this block once 
+                elementsApplied = True
             End If
 
             'create image
@@ -349,17 +355,19 @@ Public Class frmMain
             End If
 
             'check whether the current layer is a number and add the actual number to it
-            'If tmpLayer.Type = LayerType.Numberplate Then
-            '    'add number to each area
-            '    For Each tmpArea In tmpLayer.Areas
-            '        'get image
-            '        numImage = GetNumberImage(tmpArea.AreaWidth, tmpArea.AreaHeight)
-            '        'rotate number
-            '        numImage.RotateFlip(RotateFlipType.Rotate180FlipNone)
-            '        'add number
-            '        tmpGfx.DrawImage(numImage, tmpArea.AreaX, tmpArea.AreaY)
-            '    Next
-            'End If
+            If tmpLayer.Type = LayerType.Numberplate Then
+                'add number to each area
+                For Each tmpArea In tmpLayer.Areas
+                    'get image
+                    numImage = GetNumberImage(tmpArea.AreaWidth, tmpArea.AreaHeight)
+
+                    'rotate if necessary
+                    numImage = RotateImage(numImage, tmpArea.AreaRotation)
+
+                    'add number
+                    tmpGfx.DrawImage(numImage, tmpArea.AreaX, tmpArea.AreaY)
+                Next
+            End If
         Next
 
         'dispose objects & return the livery image
@@ -369,7 +377,111 @@ Public Class frmMain
     End Function
 
     Private Function GetLiveryImageIm() As Image
+        ''Create base image & initialize
+        'Dim tmpImage As ImageMagick.MagickImage = New ImageMagick.MagickImage(lviCurrentElements.Items(0).SubItems(1).Text)
+        'Dim tmpLayer As ImageMagick.MagickImage
 
+        ''Add each image on top of the previous ones
+        'For Each elementImage As ListViewItem In lviCurrentElements.Items
+        '    tmpLayer = New ImageMagick.MagickImage(elementImage.SubItems(1).Text)
+
+        '    'Check whether the current image is colorable and, if so, call colorize it
+        '    If CType(elementImage.SubItems(5).Text, Boolean) Then
+        '        Dim tmpColor As Color = Color.FromArgb(CInt(elementImage.SubItems(6).Text))
+
+        '        'the base layer can't be colorized using a color matrix, so we'll use ImageMagick's Colorize instead
+        '        '(which, in turn, doesn't work on transparent images, so we can't go all the way with it ;-))
+        '        If elementImage.Text = ElementType.Base.ToString Then
+        '            tmpLayer.Colorize(New ImageMagick.MagickColor(Color.FromArgb(CInt(elementImage.SubItems(6).Text))), New ImageMagick.Percentage(100))
+        '        Else
+        '            'Create the color matrix needed to re-colorize the image
+        '            Dim tmpMatrix As New ImageMagick.ColorMatrix(6)
+
+        '            tmpMatrix.SetValue(0, 0, 1)
+        '            tmpMatrix.SetValue(0, 1, 0)
+        '            tmpMatrix.SetValue(0, 2, 0)
+        '            tmpMatrix.SetValue(0, 3, 0)
+        '            tmpMatrix.SetValue(0, 4, 0)
+
+        '            tmpMatrix.SetValue(1, 0, 0)
+        '            tmpMatrix.SetValue(1, 1, 1)
+        '            tmpMatrix.SetValue(1, 2, 0)
+        '            tmpMatrix.SetValue(1, 3, 0)
+        '            tmpMatrix.SetValue(1, 4, 0)
+
+        '            tmpMatrix.SetValue(2, 0, 0)
+        '            tmpMatrix.SetValue(2, 1, 0)
+        '            tmpMatrix.SetValue(2, 2, 1)
+        '            tmpMatrix.SetValue(2, 3, 0)
+        '            tmpMatrix.SetValue(2, 4, 0)
+
+        '            tmpMatrix.SetValue(3, 0, 0)
+        '            tmpMatrix.SetValue(3, 1, 0)
+        '            tmpMatrix.SetValue(3, 2, 0)
+        '            tmpMatrix.SetValue(3, 3, 1)
+        '            tmpMatrix.SetValue(3, 4, 0)
+
+        '            tmpMatrix.SetValue(4, 0, CDbl(tmpColor.R / 255))
+        '            tmpMatrix.SetValue(4, 1, CDbl(tmpColor.G / 255))
+        '            tmpMatrix.SetValue(4, 2, CDbl(tmpColor.B / 255))
+        '            tmpMatrix.SetValue(4, 3, 0)
+        '            tmpMatrix.SetValue(4, 4, 1)
+
+        '            'Apply the color matrix
+        '            tmpLayer.ColorMatrix(tmpMatrix)
+        '        End If
+        '    End If
+
+        '    'Check whether the current image is a racing number and, if so, generate a racing number and add it to both sides
+        '    If elementImage.Text = ElementType.Numbers.ToString Then
+        '        Dim numImage As New ImageMagick.MagickImage(GetNumberImage(CInt(nudDriverNo.Value), currentElementCollection.LeftNumberRectangle.Width, currentElementCollection.LeftNumberRectangle.Height))
+
+        '        'Add number to the left side
+        '        tmpLayer.Composite(numImage, currentElementCollection.LeftNumberRectangle.X, currentElementCollection.LeftNumberRectangle.Y, ImageMagick.CompositeOperator.Atop)
+        '        'Rotate number
+        '        numImage.Rotate(180)
+        '        'Add number to the right side
+        '        tmpLayer.Composite(numImage, currentElementCollection.RightNumberRectangle.X, currentElementCollection.RightNumberRectangle.Y, ImageMagick.CompositeOperator.Atop)
+        '    End If
+
+        '    'Add image atop the previous ones
+        '    tmpImage.Composite(tmpLayer, 0, 0, ImageMagick.CompositeOperator.Atop)
+        'Next
+
+        ''Return the livery image
+        'Return tmpImage.ToBitmap
+    End Function
+
+    Private Function RotateImage(ByVal image As Bitmap, ByVal rotation As Integer) As Bitmap
+        'rotate image, if necessary at all
+        If rotation = 0 Then
+            Return image
+        Else
+            Dim tmpImg As New ImageMagick.MagickImage(image)
+            tmpImg.BackgroundColor = Color.Transparent
+            tmpImg.Alpha(ImageMagick.AlphaOption.Background)
+            tmpImg.Rotate(rotation)
+            Return tmpImg.ToBitmap
+        End If
+    End Function
+
+    Private Function ResizeImage(ByVal image As Bitmap, ByVal maxSize As Size) As Bitmap
+        'resize image, if necessary at all
+        If image.Width < maxSize.Width AndAlso image.Height < maxSize.Height Then Return image
+
+        'create IM image
+        Dim tmpImg As New ImageMagick.MagickImage(image)
+
+        'determine how to resize
+        If maxSize.Width / tmpImg.Width < maxSize.Height / tmpImg.Height Then
+            'resize by width
+            tmpImg.Resize(maxSize.Width, CInt(tmpImg.Height * (tmpImg.Width / maxSize.Width)))
+        Else
+            'resize by height
+            tmpImg.Resize(CInt(tmpImg.Width * (tmpImg.Height / maxSize.Height)), maxSize.Height)
+        End If
+
+        Return tmpImg.ToBitmap
     End Function
 
     Private Function GetImageMatrixSd(ByVal matrixColor As Color) As Imaging.ImageAttributes
@@ -387,7 +499,7 @@ Public Class frmMain
 
             Return tmpIa
         Catch ex As Exception
-            MessageBox.Show(String.Format("Error creating ColorMatrix:{0}{1}", Environment.NewLine, ex.ToString), _
+            MessageBox.Show(String.Format("Error creating ColorMatrix: {0}", ex.Message), _
                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return Nothing
         End Try
@@ -398,15 +510,155 @@ Public Class frmMain
     End Function
 
     Private Function GetNumberImage(ByVal width As Integer, ByVal height As Integer) As Bitmap
-
+        'let general GetTextImage take over
+        Return GetTextImage(width, height, nudDriverNo.Value.ToString, _noFont, Color.Black, True)
     End Function
 
-    Private Function GetElementImage(ByVal textElement As PresetElement) As Bitmap
+    Private Function GetTextImage(ByVal width As Integer, ByVal height As Integer, ByVal text As String, ByVal font As Font, ByVal color As Color, ByVal centered As Boolean) As Bitmap
+        'Initialize
+        Dim txtImage As New Bitmap(width, height)
+        Dim txtGfx As Graphics = Graphics.FromImage(txtImage)
+        Dim txtFormat As New StringFormat()
 
+        If centered Then
+            'Ensure centered text
+            txtFormat.LineAlignment = StringAlignment.Center
+            txtFormat.Alignment = StringAlignment.Center
+        End If
+
+        'Enable Antialiasing
+        txtGfx.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+
+        'Draw number image
+        Dim tmpFont As New Font(font.FontFamily, height, font.Style, GraphicsUnit.Pixel)
+        txtGfx.DrawString(text, tmpFont, New SolidBrush(color), New Rectangle(0, 0, width, height), txtFormat)
+
+        txtGfx.Dispose()
+        Return txtImage
+    End Function
+
+    Private Function GetElementsImage() As Bitmap
+        'initialize
+        Dim elementImage As Bitmap
+        Dim tmpFontConverter As New FontConverter
+
+        'create new empty image & graphics
+        Dim tmpImage As New Bitmap(2048, 1024)
+        Dim tmpGfx As Graphics = Graphics.FromImage(tmpImage)
+        tmpGfx.Clear(Color.Transparent)
+
+        'quality
+        tmpGfx.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+        tmpGfx.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+        tmpGfx.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+
+        For Each tmpElement In _currentSet.Elements
+            Select Case tmpElement.ElementType
+                Case ElementType.Sponsor
+                    'load image
+                    elementImage = New Bitmap(tmpElement.Content)
+
+                    'resize image if necessary
+                    elementImage = ResizeImage(elementImage, New Size(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight))
+                Case ElementType.Text
+                    'create image
+                    elementImage = GetTextImage(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight, tmpElement.Content, TryCast(tmpFontConverter.ConvertFromString(tmpElement.Settings), Font), Color.FromArgb(tmpElement.Color), False)
+                Case Else
+                    Continue For
+            End Select
+
+            'rotate image, if necessary
+            elementImage = RotateImage(elementImage, tmpElement.Area.AreaRotation)
+
+            'draw image (centered)
+            tmpGfx.DrawImage(elementImage, tmpElement.Area.AreaX + (tmpElement.Area.AreaWidth - elementImage.Width), _
+                             tmpElement.Area.AreaY + (tmpElement.Area.AreaHeight - elementImage.Height))
+        Next
+
+        'clean up & return image
+        tmpGfx.Dispose()
+        Return tmpImage
     End Function
 
     Private Sub ExportLivery()
+        ''Create default folder string
+        'Dim tmpSkinFolder As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SimBin", "RACE 07", "CustomSkins")
 
+        ''Create & open a folder browser
+        'Dim sfd As New FolderBrowserDialog
+        'sfd.Description = "Please select a folder to save your livery to:"
+        'If Directory.Exists(tmpSkinFolder) Then sfd.SelectedPath = tmpSkinFolder
+
+        'If sfd.ShowDialog = Windows.Forms.DialogResult.OK Then
+        '    'Check whether the folder's empty, warn the user if it isn't
+        '    If Directory.EnumerateFiles(sfd.SelectedPath).Count > 0 AndAlso Not _
+        '        MessageBox.Show("The selected folder is not empty. Existing files might be overwritten. Continue anyway?", "Folder not empty", _
+        '                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
+        '        Exit Sub
+        '    End If
+
+        '    'Prepare the files' path strings
+        '    Dim ddsFileName As String = Path.Combine(sfd.SelectedPath, String.Format("{0}_{1}.dds", _
+        '                                                                             currentElementCollection.CarName.Replace(CChar(" "), ""), _
+        '                                                                             txtDriverName.Text.Replace(CChar(" "), "")))
+        '    Dim iniFileName As String = Path.ChangeExtension(ddsFileName, "ini")
+
+        '    'Check for existing files & delete them
+        '    If File.Exists(ddsFileName) Then File.Delete(ddsFileName)
+        '    If File.Exists(iniFileName) Then File.Delete(iniFileName)
+
+        '    'Create the ImageMagick image using the selected engine
+        '    Dim exportImage As ImageMagick.MagickImage
+        '    Select Case cmbGfxEngine.SelectedIndex
+        '        Case 0
+        '            exportImage = New ImageMagick.MagickImage(New Bitmap(GetLiveryImage))
+        '        Case 1
+        '            exportImage = New ImageMagick.MagickImage(New Bitmap(GetLiveryImageMagick))
+        '        Case Else
+        '            MessageBox.Show("Invalid graphics engine", "Invalid graphics engine", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        '            Exit Sub
+        '    End Select
+
+        '    'Open up a filestream for the DDS file
+        '    Dim tmpFs As New FileStream(ddsFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite)
+
+        '    'Create export parameters
+        '    Select Case "b"
+        '        Case "b"
+        '            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
+        '            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt1")
+        '            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "false")
+        '            'Case "w"
+        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
+        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
+        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
+        '            'Case "i"
+        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "0")
+        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
+        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
+        '    End Select
+        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "cluster-fit", "true")
+        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "color-type", "6")
+
+        '    'Save the file
+        '    exportImage.Write(tmpFs, ImageMagick.MagickFormat.Dds)
+
+        '    'Close & Dispose
+        '    tmpFs.Close()
+        '    exportImage.Dispose()
+
+        '    'Write the INI file used by Race07
+        '    File.WriteAllText(iniFileName, String.Format("[[[{1}]]]{0}[[{2}]]{0}[BMW MINI COOPER]{0}body = {3}", Environment.NewLine, _
+        '                                                 txtTeamName.Text, _
+        '                                                 txtDriverName.Text, _
+        '                                                 Path.GetFileName(ddsFileName)))
+
+        '    'Offer to open the export's folder
+        '    If MessageBox.Show("Export completed. Do you want to open the livery's folder?", "Export completed", _
+        '                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+        '        Process.Start(sfd.SelectedPath)
+        '    End If
+        'End If
     End Sub
 
 #End Region
@@ -732,15 +984,6 @@ Public Class frmMain
 
 
     Private Sub btnDebug_Click(sender As Object, e As EventArgs) Handles btnDebug.Click
-        'Dim lad As New frmLayerAddDialog(_templatePath, LayerType.ColorDecal, _currentTemplate, _currentSet.Layers)
-        'If lad.ShowDialog = Windows.Forms.DialogResult.OK Then
-        '    MessageBox.Show(lad.SelectedColor.ToArgb.ToString)
-        '    MessageBox.Show(lad.SelectedLayer.ToString)
-        'End If
-        'lad.Dispose()
-
-
-
         'Dim xmlDeser As New Xml.Serialization.XmlSerializer((New Template).GetType)
         'Dim xmlStream As FileStream
         'Dim tmpTemplate As Template
@@ -781,21 +1024,6 @@ Public Class frmMain
         '    xmlStream.Close()
         '    xmlStream.Dispose()
         'End If
-
-
-        'LoadTemplateDefault()
-
-
-
-        'MsgBox(cmbCarSelection.ComboBox.SelectedValue.ToString)
-
-
-
-        'LoadTemplates()
-
-
-
-        'My.Computer.Clipboard.SetText(Guid.NewGuid.ToString)
 
 
 
