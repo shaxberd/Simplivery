@@ -40,8 +40,6 @@
             nudElementWidth.Value = Element.Area.AreaWidth
             nudElementHeight.Value = Element.Area.AreaHeight
             nudElementRotation.Value = Element.Area.AreaRotation
-            nudElementPaddingTop.Value = Element.Area.AreaPadding(0)
-            nudElementPaddingBottom.Value = Element.Area.AreaPadding(1)
         Else
             'new element
             _newElement = True
@@ -172,7 +170,6 @@
         'create area
         Element.Area = New Area(tbrElementPositionX.Value, tbrElementPositionY.Value, tbrElementWidth.Value, tbrElementHeight.Value)
         Element.Area.AreaRotation = tbrElementRotation.Value
-        Element.Area.AreaPadding = {CInt(nudElementPaddingTop.Value), CInt(nudElementPaddingBottom.Value)}
 
         Me.DialogResult = Windows.Forms.DialogResult.OK
     End Sub

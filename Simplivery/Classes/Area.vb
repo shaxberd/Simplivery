@@ -5,7 +5,6 @@
     Public Property AreaWidth As Integer
     Public Property AreaHeight As Integer
     Public Property AreaRotation As Integer
-    Public Property AreaPadding As Integer()
 
     Public Sub New()
         Me.New(0, 0, 0, 0)
