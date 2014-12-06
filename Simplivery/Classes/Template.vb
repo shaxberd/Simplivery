@@ -2,6 +2,7 @@
 
     Public Property Guid As Guid
     Public Property CarName As String
+    Public Property InGameCarName As String
     Public Property AuthorName As String
     Public Property Description As String
     Public Property LiveryScope As LiveryScope

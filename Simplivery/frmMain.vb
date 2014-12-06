@@ -15,6 +15,7 @@ Public Class frmMain
     Private _currentSet As Preset
     Private _noFont As Font
     Friend _nameFont As Font
+    Private _fontConverter As FontConverter
 
 #End Region
 
@@ -26,19 +27,34 @@ Public Class frmMain
         InitializeComponent()
 
         'Initializing
+        _fontConverter = New FontConverter
         _templatePath = Path.Combine(Environment.CurrentDirectory, "Templates")
         _allTemplates = New List(Of Template)
         _availableTemplates = New Dictionary(Of Guid, String)
         _availablePresets = New Dictionary(Of Guid, String)
         _noFont = New Font("Impact", 40)
         _nameFont = New Font("Arial", 16)
+
+        'lad settings
+        _settings = New Settings
+        LoadSettings()
+        If _settings.SaveDriverInfo Then
+            nudDriverNo.Value = _settings.DriverNo
+            txtDriverName.Text = _settings.DriverName
+            txtTeamName.Text = _settings.DriverTeam
+        End If
+        If _settings.SaveFontInfo Then
+            If Not String.IsNullOrWhiteSpace(_settings.NameFont) Then _nameFont = TryCast(_fontConverter.ConvertFromString(_settings.NameFont), Font)
+            If Not String.IsNullOrWhiteSpace(_settings.NoFont) Then _noFont = TryCast(_fontConverter.ConvertFromString(_settings.NoFont), Font)
+        End If
+        'display settings/default values
         txtNoFont.Text = _noFont.Name
         txtNameFont.Text = _nameFont.Name
-
-        'TODO: Load settings
-        _settings = New Settings
-        'TODO: Settings
-        _settings.ImagingEngine = Settings.ImagingEngines.SystemDrawing
+        If _settings.SaveColorInfo Then
+            pnlBaseColor.BackColor = Color.FromArgb(_settings.BaseColor)
+            pnlAccentColor.BackColor = Color.FromArgb(_settings.AccentColor)
+            pnlThirdColor.BackColor = Color.FromArgb(_settings.ThirdColor)
+        End If
 
         'Loading
         LoadTemplates()
@@ -130,6 +146,7 @@ Public Class frmMain
                 Dim xmlStream As New FileStream(sfd.FileName, FileMode.OpenOrCreate, FileAccess.Write)
                 xmlSer.Serialize(xmlStream, _currentSet)
                 xmlStream.Close()
+                xmlStream.Dispose()
             End If
         Catch ex As Exception
             MessageBox.Show(String.Format("Error exporting configuration: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -147,6 +164,7 @@ Public Class frmMain
                 Dim xmlStream As New FileStream(ofd.FileName, FileMode.Open, FileAccess.Read)
                 _currentSet = DirectCast(xmlSer.Deserialize(xmlStream), Preset)
                 xmlStream.Close()
+                xmlStream.Dispose()
 
                 'reload
                 LoadPreset(_currentSet)
@@ -158,6 +176,23 @@ Public Class frmMain
 
     Private Sub btnChassisPreview_Click(sender As Object, e As EventArgs) Handles btnChassisPreview.Click
         UpdateChassisPreview()
+    End Sub
+
+    Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+        ExportLivery()
+    End Sub
+
+    Private Sub btnCarDelete_Click(sender As Object, e As EventArgs) Handles btnCarDelete.Click
+        If MessageBox.Show("Are you sure you want to remove the selected car completely?", "Remove car", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
+            If Directory.Exists(Path.Combine(_templatePath, _currentSet.TemplateGuid.ToString)) Then
+                Try
+                    Directory.Delete(Path.Combine(_templatePath, _currentSet.TemplateGuid.ToString), True)
+                Catch ex As Exception
+                    MessageBox.Show(String.Format("Error deleting directory: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End Try
+                LoadTemplates()
+            End If
+        End If
     End Sub
 
 #End Region
@@ -234,6 +269,19 @@ Public Class frmMain
 
 #Region "Methods - General"
 
+    Private Sub LoadSettings()
+        'deserialize settings
+        Dim settingsFile As String = Path.Combine(Environment.CurrentDirectory, "settings.xml")
+
+        If File.Exists(settingsFile) Then
+            Dim xmlSer As New Xml.Serialization.XmlSerializer(_settings.GetType)
+            Dim xmlStream As New FileStream(settingsFile, FileMode.Open, FileAccess.Read)
+            _settings = TryCast(xmlSer.Deserialize(xmlStream), Settings)
+            xmlStream.Close()
+            xmlStream.Dispose()
+        End If
+    End Sub
+
 #End Region
 
 #Region "Methods - Dialogs"
@@ -269,6 +317,10 @@ Public Class frmMain
 #Region "Methods - Imaging"
 
     Private Sub UpdateBasicPreview()
+        'disable ui
+        Me.Cursor = Cursors.WaitCursor
+        Me.Enabled = False
+
         'Initialize
         Dim basicsPreview As New Bitmap(370, 141)
         Dim bpGfx As Graphics = Graphics.FromImage(basicsPreview)
@@ -303,18 +355,25 @@ Public Class frmMain
 
         'Set image
         picLiveryBasicsPreview.Image = basicsPreview
+
+        'enable ui
+        Me.Cursor = Cursors.Default
+        Me.Enabled = True
     End Sub
 
     Private Sub UpdateChassisPreview()
-        Select Case _settings.ImagingEngine
-            Case Settings.ImagingEngines.SystemDrawing
-                picChassisPreview.Image = GetLiveryImageSd()
-            Case Settings.ImagingEngines.ImageMagick
-                picChassisPreview.Image = GetLiveryImageIm()
-        End Select
+        'disable ui
+        Me.Cursor = Cursors.WaitCursor
+        Me.Enabled = False
+
+        picChassisPreview.Image = GetLiveryImage()
+
+        'enable ui
+        Me.Cursor = Cursors.Default
+        Me.Enabled = True
     End Sub
 
-    Private Function GetLiveryImageSd() As Image
+    Private Function GetLiveryImage() As Image
         'declarations
         Dim elementsApplied As Boolean = False
         Dim tmpLayer As Layer
@@ -349,7 +408,7 @@ Public Class frmMain
             'check whether the current layer is colorable
             If tmpLayer.Type = LayerType.Base OrElse tmpLayer.Type = LayerType.ColorDecal Then
                 tmpGfx.DrawImage(tmpImage, tmpRect, 0, 0, tmpImage.Width, tmpImage.Height, GraphicsUnit.Pixel, _
-                                     GetImageMatrixSd(Color.FromArgb(layerImage.Color)))
+                                     GetImageMatrix(Color.FromArgb(layerImage.Color)))
             Else
                 tmpGfx.DrawImage(tmpImage, tmpRect, 0, 0, tmpImage.Width, tmpImage.Height, GraphicsUnit.Pixel)
             End If
@@ -374,82 +433,6 @@ Public Class frmMain
         tmpGfx.Dispose()
         tmpImage.Dispose()
         Return tmpBitmap
-    End Function
-
-    Private Function GetLiveryImageIm() As Image
-        ''Create base image & initialize
-        'Dim tmpImage As ImageMagick.MagickImage = New ImageMagick.MagickImage(lviCurrentElements.Items(0).SubItems(1).Text)
-        'Dim tmpLayer As ImageMagick.MagickImage
-
-        ''Add each image on top of the previous ones
-        'For Each elementImage As ListViewItem In lviCurrentElements.Items
-        '    tmpLayer = New ImageMagick.MagickImage(elementImage.SubItems(1).Text)
-
-        '    'Check whether the current image is colorable and, if so, call colorize it
-        '    If CType(elementImage.SubItems(5).Text, Boolean) Then
-        '        Dim tmpColor As Color = Color.FromArgb(CInt(elementImage.SubItems(6).Text))
-
-        '        'the base layer can't be colorized using a color matrix, so we'll use ImageMagick's Colorize instead
-        '        '(which, in turn, doesn't work on transparent images, so we can't go all the way with it ;-))
-        '        If elementImage.Text = ElementType.Base.ToString Then
-        '            tmpLayer.Colorize(New ImageMagick.MagickColor(Color.FromArgb(CInt(elementImage.SubItems(6).Text))), New ImageMagick.Percentage(100))
-        '        Else
-        '            'Create the color matrix needed to re-colorize the image
-        '            Dim tmpMatrix As New ImageMagick.ColorMatrix(6)
-
-        '            tmpMatrix.SetValue(0, 0, 1)
-        '            tmpMatrix.SetValue(0, 1, 0)
-        '            tmpMatrix.SetValue(0, 2, 0)
-        '            tmpMatrix.SetValue(0, 3, 0)
-        '            tmpMatrix.SetValue(0, 4, 0)
-
-        '            tmpMatrix.SetValue(1, 0, 0)
-        '            tmpMatrix.SetValue(1, 1, 1)
-        '            tmpMatrix.SetValue(1, 2, 0)
-        '            tmpMatrix.SetValue(1, 3, 0)
-        '            tmpMatrix.SetValue(1, 4, 0)
-
-        '            tmpMatrix.SetValue(2, 0, 0)
-        '            tmpMatrix.SetValue(2, 1, 0)
-        '            tmpMatrix.SetValue(2, 2, 1)
-        '            tmpMatrix.SetValue(2, 3, 0)
-        '            tmpMatrix.SetValue(2, 4, 0)
-
-        '            tmpMatrix.SetValue(3, 0, 0)
-        '            tmpMatrix.SetValue(3, 1, 0)
-        '            tmpMatrix.SetValue(3, 2, 0)
-        '            tmpMatrix.SetValue(3, 3, 1)
-        '            tmpMatrix.SetValue(3, 4, 0)
-
-        '            tmpMatrix.SetValue(4, 0, CDbl(tmpColor.R / 255))
-        '            tmpMatrix.SetValue(4, 1, CDbl(tmpColor.G / 255))
-        '            tmpMatrix.SetValue(4, 2, CDbl(tmpColor.B / 255))
-        '            tmpMatrix.SetValue(4, 3, 0)
-        '            tmpMatrix.SetValue(4, 4, 1)
-
-        '            'Apply the color matrix
-        '            tmpLayer.ColorMatrix(tmpMatrix)
-        '        End If
-        '    End If
-
-        '    'Check whether the current image is a racing number and, if so, generate a racing number and add it to both sides
-        '    If elementImage.Text = ElementType.Numbers.ToString Then
-        '        Dim numImage As New ImageMagick.MagickImage(GetNumberImage(CInt(nudDriverNo.Value), currentElementCollection.LeftNumberRectangle.Width, currentElementCollection.LeftNumberRectangle.Height))
-
-        '        'Add number to the left side
-        '        tmpLayer.Composite(numImage, currentElementCollection.LeftNumberRectangle.X, currentElementCollection.LeftNumberRectangle.Y, ImageMagick.CompositeOperator.Atop)
-        '        'Rotate number
-        '        numImage.Rotate(180)
-        '        'Add number to the right side
-        '        tmpLayer.Composite(numImage, currentElementCollection.RightNumberRectangle.X, currentElementCollection.RightNumberRectangle.Y, ImageMagick.CompositeOperator.Atop)
-        '    End If
-
-        '    'Add image atop the previous ones
-        '    tmpImage.Composite(tmpLayer, 0, 0, ImageMagick.CompositeOperator.Atop)
-        'Next
-
-        ''Return the livery image
-        'Return tmpImage.ToBitmap
     End Function
 
     Private Function RotateImage(ByVal image As Bitmap, ByVal rotation As Integer) As Bitmap
@@ -484,7 +467,7 @@ Public Class frmMain
         Return tmpImg.ToBitmap
     End Function
 
-    Private Function GetImageMatrixSd(ByVal matrixColor As Color) As Imaging.ImageAttributes
+    Private Function GetImageMatrix(ByVal matrixColor As Color) As Imaging.ImageAttributes
         Try
             'Calculate re-colorization array
             Dim tmpColorize() As Single = {CSng(matrixColor.R / 255), CSng(matrixColor.G / 255), CSng(matrixColor.B / 255), 0, 1}
@@ -503,10 +486,6 @@ Public Class frmMain
                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return Nothing
         End Try
-    End Function
-
-    Private Function GetImageMatrixIm(ByVal matrixColor As Color) As ImageMagick.ColorMatrix()
-
     End Function
 
     Private Function GetNumberImage(ByVal width As Integer, ByVal height As Integer) As Bitmap
@@ -540,7 +519,6 @@ Public Class frmMain
     Private Function GetElementsImage() As Bitmap
         'initialize
         Dim elementImage As Bitmap
-        Dim tmpFontConverter As New FontConverter
 
         'create new empty image & graphics
         Dim tmpImage As New Bitmap(2048, 1024)
@@ -562,7 +540,7 @@ Public Class frmMain
                     elementImage = ResizeImage(elementImage, New Size(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight))
                 Case ElementType.Text
                     'create image
-                    elementImage = GetTextImage(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight, tmpElement.Content, TryCast(tmpFontConverter.ConvertFromString(tmpElement.Settings), Font), Color.FromArgb(tmpElement.Color), False)
+                    elementImage = GetTextImage(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight, tmpElement.Content, TryCast(_fontConverter.ConvertFromString(tmpElement.Settings), Font), Color.FromArgb(tmpElement.Color), False)
                 Case Else
                     Continue For
             End Select
@@ -581,84 +559,84 @@ Public Class frmMain
     End Function
 
     Private Sub ExportLivery()
-        ''Create default folder string
-        'Dim tmpSkinFolder As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SimBin", "RACE 07", "CustomSkins")
+        'disable ui
+        Me.Cursor = Cursors.WaitCursor
+        Me.Enabled = False
 
-        ''Create & open a folder browser
-        'Dim sfd As New FolderBrowserDialog
-        'sfd.Description = "Please select a folder to save your livery to:"
-        'If Directory.Exists(tmpSkinFolder) Then sfd.SelectedPath = tmpSkinFolder
+        'create default folder string
+        Dim tmpSkinFolder As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SimBin", "RACE 07", "CustomSkins")
 
-        'If sfd.ShowDialog = Windows.Forms.DialogResult.OK Then
-        '    'Check whether the folder's empty, warn the user if it isn't
-        '    If Directory.EnumerateFiles(sfd.SelectedPath).Count > 0 AndAlso Not _
-        '        MessageBox.Show("The selected folder is not empty. Existing files might be overwritten. Continue anyway?", "Folder not empty", _
-        '                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
-        '        Exit Sub
-        '    End If
+        'create & open a folder browser
+        Dim sfd As New FolderBrowserDialog
+        sfd.Description = "Please select a folder to save your livery to:"
+        If Directory.Exists(tmpSkinFolder) Then sfd.SelectedPath = tmpSkinFolder
 
-        '    'Prepare the files' path strings
-        '    Dim ddsFileName As String = Path.Combine(sfd.SelectedPath, String.Format("{0}_{1}.dds", _
-        '                                                                             currentElementCollection.CarName.Replace(CChar(" "), ""), _
-        '                                                                             txtDriverName.Text.Replace(CChar(" "), "")))
-        '    Dim iniFileName As String = Path.ChangeExtension(ddsFileName, "ini")
+        If sfd.ShowDialog = Windows.Forms.DialogResult.OK Then
+            'check whether the folder's empty, warn the user if it isn't
+            If Directory.EnumerateFiles(sfd.SelectedPath).Count > 0 AndAlso Not _
+                MessageBox.Show("The selected folder is not empty. Existing files might be overwritten. Continue anyway?", "Folder not empty", _
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
+                Exit Sub
+            End If
 
-        '    'Check for existing files & delete them
-        '    If File.Exists(ddsFileName) Then File.Delete(ddsFileName)
-        '    If File.Exists(iniFileName) Then File.Delete(iniFileName)
+            'Prepare the files' path strings
+            Dim ddsFileName As String = Path.Combine(sfd.SelectedPath, String.Format("{0}_{1}.dds", _
+                                                                                     _currentTemplate.CarName.Replace(CChar(" "), ""), _
+                                                                                     txtDriverName.Text.Replace(CChar(" "), "")))
+            Dim iniFileName As String = Path.ChangeExtension(ddsFileName, "ini")
 
-        '    'Create the ImageMagick image using the selected engine
-        '    Dim exportImage As ImageMagick.MagickImage
-        '    Select Case cmbGfxEngine.SelectedIndex
-        '        Case 0
-        '            exportImage = New ImageMagick.MagickImage(New Bitmap(GetLiveryImage))
-        '        Case 1
-        '            exportImage = New ImageMagick.MagickImage(New Bitmap(GetLiveryImageMagick))
-        '        Case Else
-        '            MessageBox.Show("Invalid graphics engine", "Invalid graphics engine", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        '            Exit Sub
-        '    End Select
+            'Check for existing files & delete them
+            If File.Exists(ddsFileName) Then File.Delete(ddsFileName)
+            If File.Exists(iniFileName) Then File.Delete(iniFileName)
 
-        '    'Open up a filestream for the DDS file
-        '    Dim tmpFs As New FileStream(ddsFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite)
+            'Create the ImageMagick image using the selected engine
+            Dim exportImage As New ImageMagick.MagickImage(New Bitmap(GetLiveryImage))
 
-        '    'Create export parameters
-        '    Select Case "b"
-        '        Case "b"
-        '            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
-        '            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt1")
-        '            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "false")
-        '            'Case "w"
-        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
-        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
-        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
-        '            'Case "i"
-        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "0")
-        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
-        '            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
-        '    End Select
-        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "cluster-fit", "true")
-        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "color-type", "6")
+            'Open up a filestream for the DDS file
+            Dim tmpFs As New FileStream(ddsFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite)
 
-        '    'Save the file
-        '    exportImage.Write(tmpFs, ImageMagick.MagickFormat.Dds)
+            'Create export parameters
+            Select Case "b"
+                Case "b"
+                    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
+                    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt1")
+                    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "false")
+                    'Case "w"
+                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
+                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
+                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
+                    'Case "i"
+                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "0")
+                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
+                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
+            End Select
+            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "cluster-fit", "true")
+            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "color-type", "6")
 
-        '    'Close & Dispose
-        '    tmpFs.Close()
-        '    exportImage.Dispose()
+            'Save the file
+            exportImage.Write(tmpFs, ImageMagick.MagickFormat.Dds)
 
-        '    'Write the INI file used by Race07
-        '    File.WriteAllText(iniFileName, String.Format("[[[{1}]]]{0}[[{2}]]{0}[BMW MINI COOPER]{0}body = {3}", Environment.NewLine, _
-        '                                                 txtTeamName.Text, _
-        '                                                 txtDriverName.Text, _
-        '                                                 Path.GetFileName(ddsFileName)))
+            'Close & Dispose
+            tmpFs.Close()
+            exportImage.Dispose()
 
-        '    'Offer to open the export's folder
-        '    If MessageBox.Show("Export completed. Do you want to open the livery's folder?", "Export completed", _
-        '                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
-        '        Process.Start(sfd.SelectedPath)
-        '    End If
-        'End If
+            'Write the INI file used by Race07
+            File.WriteAllText(iniFileName, String.Format("[[[{1}]]]{0}[[{2}]]{0}[{3}]{0}body = {4}", Environment.NewLine, _
+                                                         txtTeamName.Text, _
+                                                         txtDriverName.Text, _
+                                                         _currentTemplate.InGameCarName, _
+                                                         Path.GetFileName(ddsFileName)))
+
+            'Offer to open the export's folder
+            If MessageBox.Show("Export completed. Do you want to open the livery's folder?", "Export completed", _
+                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+                Process.Start(sfd.SelectedPath)
+            End If
+        End If
+
+        'enable ui
+        Me.Cursor = Cursors.Default
+        Me.Enabled = True
     End Sub
 
 #End Region
@@ -982,85 +960,8 @@ Public Class frmMain
 
 #End Region
 
-
     Private Sub btnDebug_Click(sender As Object, e As EventArgs) Handles btnDebug.Click
-        'Dim xmlDeser As New Xml.Serialization.XmlSerializer((New Template).GetType)
-        'Dim xmlStream As FileStream
-        'Dim tmpTemplate As Template
-        'Dim ofd As New OpenFileDialog
-        'ofd.InitialDirectory = Environment.CurrentDirectory
-        'If ofd.ShowDialog = Windows.Forms.DialogResult.OK Then
-        '    xmlStream = New FileStream(ofd.FileName, FileMode.Open, FileAccess.Read)
-        '    tmpTemplate = CType(xmlDeser.Deserialize(xmlStream), Template)
-        '    xmlStream.Close()
-        '    xmlStream.Dispose()
-
-        '    Dim tmpPreset As New Preset
-        '    tmpPreset.TemplateGuid = tmpTemplate.Guid
-        '    tmpPreset.Name = "Default"
-
-        '    Dim tmpPresetLayer As PresetLayer
-        '    For Each defLayer In tmpTemplate.Layers.Where(Function(x) x.isDefault)
-        '        tmpPresetLayer = New PresetLayer
-        '        tmpPresetLayer.LayerGuid = defLayer.Guid
-        '        If defLayer.Type = LayerType.Base Then
-        '            tmpPresetLayer.PresetColor = PresetColorType.Main
-        '            tmpPresetLayer.DefaultColor = Color.White.ToArgb
-        '        ElseIf defLayer.Type = LayerType.ColorDecal Then
-        '            tmpPresetLayer.PresetColor = PresetColorType.Accent
-        '            tmpPresetLayer.DefaultColor = Color.Black.ToArgb
-        '        Else
-        '            tmpPresetLayer.PresetColor = PresetColorType.NonColorable
-        '        End If
-        '        tmpPreset.Layers.Add(tmpPresetLayer)
-        '    Next
-
-        '    tmpTemplate.Presets.Add(tmpPreset)
-        '    tmpTemplate.DefaultPreset = tmpPreset.Guid
-
-        '    xmlDeser = New Xml.Serialization.XmlSerializer(tmpTemplate.GetType)
-        '    xmlStream = New FileStream("D:\testTemplate.xml", FileMode.OpenOrCreate, FileAccess.Write)
-        '    xmlDeser.Serialize(xmlStream, tmpTemplate)
-        '    xmlStream.Close()
-        '    xmlStream.Dispose()
-        'End If
-
-
-
-        'Dim tmpTemplate As New Template
-        'tmpTemplate.CarName = "BMW Mini Cooper"
-        'tmpTemplate.AuthorName = "Björn Golda"
-        'tmpTemplate.Description = "A basic template for BMW's Mini Cooper."
-        'tmpTemplate.Layers = New List(Of Layer)
-        'tmpTemplate.Presets = New List(Of Preset)
-        'tmpTemplate.LiveryScope = LiveryScope.Chassis
-
-        'Dim tmpLayer As Layer
-        'For i = 0 To 10
-        '    tmpLayer = New Layer
-        '    tmpLayer.Type = LayerType.Base
-        '    tmpLayer.FileName = "file.png"
-        '    tmpLayer.Description = "layerInfo"
-        '    tmpLayer.isDefault = False
-        '    tmpLayer.Name = "layerName"
-
-        '    If i = 6 Then
-        '        Dim tmpArea As New Area(20, 40, 30, 50)
-        '        tmpArea.AreaRotation = 90
-        '        tmpArea.AreaPadding = {5, 5, 5, 5}
-
-        '        tmpLayer.Areas = New List(Of Area)
-        '        tmpLayer.Areas.Add(tmpArea)
-        '    End If
-
-        '    tmpTemplate.Layers.Add(tmpLayer)
-        'Next
-
-        'Dim xmlSer As New Xml.Serialization.XmlSerializer(tmpTemplate.GetType)
-        'Dim xmlStream As New FileStream("D:\testTemplate.xml", FileMode.OpenOrCreate, FileAccess.Write)
-        'xmlSer.Serialize(xmlStream, tmpTemplate)
-        'xmlStream.Close()
-        'xmlStream.Dispose()
+        
     End Sub
 
 End Class
