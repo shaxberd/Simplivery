@@ -5,11 +5,15 @@
     Private _fontConverter As FontConverter
     Private _elementFont As Font
 
+    Private _selStart As Point
+    Private _selRect As Rectangle
+    Private _selBrush As Brush
+
     Friend Element As PresetElement
 
 #Region "Constructor"
 
-    Public Sub New(ByVal elementType As ElementType, ByVal elementGuid As Guid, ByVal currentElements As List(Of PresetElement))
+    Public Sub New(ByVal elementType As ElementType, ByVal elementGuid As Guid, ByVal currentElements As List(Of PresetElement), ByVal backgroundImage As Image)
 
         ' Dieser Aufruf ist für den Designer erforderlich.
         InitializeComponent()
@@ -19,6 +23,10 @@
         _fontConverter = New FontConverter
         _elementType = elementType
         Me.Text = String.Format("{0} {1}", Me.Text, elementType.ToString)
+        _selBrush = New SolidBrush(Color.FromArgb(150, 32, 74, 135))
+
+        'insert image
+        picElementPreview.Image = backgroundImage
 
         'load element (if edit)
         If Not elementGuid = Guid.Empty Then
@@ -40,6 +48,10 @@
             nudElementWidth.Value = Element.Area.AreaWidth
             nudElementHeight.Value = Element.Area.AreaHeight
             nudElementRotation.Value = Element.Area.AreaRotation
+
+            'draw selection
+            _selRect = Fullsize2Selection(New Rectangle(Element.Area.AreaX, Element.Area.AreaY, Element.Area.AreaWidth, Element.Area.AreaHeight))
+            picElementPreview.Invalidate()
         Else
             'new element
             _newElement = True
@@ -52,6 +64,7 @@
             btnApply.Text = "Add"
         End If
 
+        'remove unneeded pages
         Select Case elementType
             Case Simplivery.ElementType.Sponsor
                 tbcElementSettings.TabPages.RemoveAt(1)
@@ -175,5 +188,76 @@
     End Sub
 
 #End Region
+
+#Region "Selection"
+
+    Private Sub picElementPreview_MouseDown(sender As Object, e As MouseEventArgs) Handles picElementPreview.MouseDown
+        'initialize new selection
+        _selRect = New Rectangle
+        _selStart = e.Location
+        picElementPreview.Invalidate()
+    End Sub
+
+    Private Sub picElementPreview_MouseMove(sender As Object, e As MouseEventArgs) Handles picElementPreview.MouseMove
+        'evaluate mouse movement
+        If e.Button <> MouseButtons.Left Then
+            Return
+        End If
+        Dim tmpSelEnd As Point = e.Location
+        _selRect.Location = New Point(Math.Min(_selStart.X, tmpSelEnd.X), Math.Min(_selStart.Y, tmpSelEnd.Y))
+        _selRect.Size = New Size(Math.Abs(_selStart.X - tmpSelEnd.X), Math.Abs(_selStart.Y - tmpSelEnd.Y))
+        picElementPreview.Invalidate()
+    End Sub
+
+    Private Sub picElementPreview_MouseUp(sender As Object, e As MouseEventArgs) Handles picElementPreview.MouseUp
+        'translate rectangle
+        Dim tmpRect As Rectangle = Selection2Fullsize(_selRect)
+        'check rectangle on oversize
+        If tmpRect.X + tmpRect.Width > 2048 Then tmpRect.Width = 2048 - tmpRect.X
+        If tmpRect.Y + tmpRect.Height > 1024 Then tmpRect.Height = 1024 - tmpRect.Y
+        If tmpRect.X < 0 Then
+            tmpRect.Width = tmpRect.Width + tmpRect.X
+            tmpRect.X = 0
+        End If
+        If tmpRect.Y < 0 Then
+            tmpRect.Height = tmpRect.Height + tmpRect.Y
+            tmpRect.Y = 0
+        End If
+        'apply values
+        nudElementPositionX.Value = tmpRect.X
+        nudElementPositionY.Value = tmpRect.Y
+        nudElementWidth.Value = tmpRect.Width
+        nudElementHeight.Value = tmpRect.Height
+    End Sub
+
+    Private Sub picElementPreview_Paint(sender As Object, e As PaintEventArgs) Handles picElementPreview.Paint
+        'draw rectangle
+        If picElementPreview.Image IsNot Nothing Then
+            If _selRect.Width > 0 AndAlso _selRect.Height > 0 Then
+                e.Graphics.FillRectangle(_selBrush, _selRect)
+            End If
+        End If
+    End Sub
+
+    Private Function Selection2Fullsize(ByVal inRect As Rectangle) As Rectangle
+        Dim factor As Double = 2048 / picElementPreview.Width
+        inRect.Width = CInt(inRect.Width * factor)
+        inRect.Height = CInt(inRect.Height * factor)
+        inRect.X = CInt(inRect.X * factor)
+        inRect.Y = CInt(inRect.Y * factor)
+        Return inRect
+    End Function
+
+    Private Function Fullsize2Selection(ByVal inRect As Rectangle) As Rectangle
+        Dim factor As Double = picElementPreview.Width / 2048
+        inRect.Width = CInt(inRect.Width * factor)
+        inRect.Height = CInt(inRect.Height * factor)
+        inRect.X = CInt(inRect.X * factor)
+        inRect.Y = CInt(inRect.Y * factor)
+        Return inRect
+    End Function
+
+#End Region
+
 
 End Class

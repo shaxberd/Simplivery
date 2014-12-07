@@ -866,7 +866,7 @@ Public Class frmMain
 
     Private Sub OpenElementDialog(ByVal elementType As ElementType, ByVal elementGuid As Guid)
         'opens up the element add/edit dialog
-        Dim ed As New frmElementDialog(elementType, elementGuid, _currentSet.Elements)
+        Dim ed As New frmElementDialog(elementType, elementGuid, _currentSet.Elements, GetLiveryImage)
         If ed.ShowDialog = Windows.Forms.DialogResult.OK Then
             'add/edit element
             If elementGuid = Guid.Empty Then
@@ -1027,9 +1027,5 @@ Public Class frmMain
     End Sub
 
 #End Region
-
-    Private Sub btnDebug_Click(sender As Object, e As EventArgs) Handles btnDebug.Click
-
-    End Sub
 
 End Class

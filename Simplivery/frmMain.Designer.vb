@@ -23,7 +23,6 @@ Partial Class frmMain
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.spcMain = New System.Windows.Forms.SplitContainer()
-        Me.btnDebug = New System.Windows.Forms.Button()
         Me.picHeader = New System.Windows.Forms.PictureBox()
         Me.tbcLiveryDesign = New System.Windows.Forms.TabControl()
         Me.tbpLiveryBasics = New System.Windows.Forms.TabPage()
@@ -167,7 +166,6 @@ Partial Class frmMain
         '
         'spcMain.Panel1
         '
-        Me.spcMain.Panel1.Controls.Add(Me.btnDebug)
         Me.spcMain.Panel1.Controls.Add(Me.picHeader)
         Me.spcMain.Panel1.Padding = New System.Windows.Forms.Padding(0, 5, 0, 0)
         '
@@ -181,15 +179,6 @@ Partial Class frmMain
         Me.spcMain.SplitterDistance = 60
         Me.spcMain.TabIndex = 0
         Me.spcMain.TabStop = False
-        '
-        'btnDebug
-        '
-        Me.btnDebug.Location = New System.Drawing.Point(12, 12)
-        Me.btnDebug.Name = "btnDebug"
-        Me.btnDebug.Size = New System.Drawing.Size(75, 23)
-        Me.btnDebug.TabIndex = 1
-        Me.btnDebug.Text = "Debug"
-        Me.btnDebug.UseVisualStyleBackColor = True
         '
         'picHeader
         '
@@ -1280,7 +1269,6 @@ Partial Class frmMain
     Friend WithEvents lblThirdColor As System.Windows.Forms.Label
     Friend WithEvents pnlThirdColor As System.Windows.Forms.Panel
     Friend WithEvents btnThirdColor As System.Windows.Forms.Button
-    Friend WithEvents btnDebug As System.Windows.Forms.Button
     Friend WithEvents lblPresetSelection As System.Windows.Forms.ToolStripLabel
     Friend WithEvents clhGuid As System.Windows.Forms.ColumnHeader
     Friend WithEvents clhName As System.Windows.Forms.ColumnHeader
