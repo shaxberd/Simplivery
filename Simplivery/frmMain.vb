@@ -1,6 +1,7 @@
 ﻿Imports System.Drawing
 Imports System.IO
 Imports System.Drawing.Imaging
+Imports System.IO.Compression
 
 Public Class frmMain
 
@@ -266,7 +267,7 @@ Public Class frmMain
         MoveElement(True)
     End Sub
 
-    Private Sub btnChassisEditLayer_Click(sender As Object, e As EventArgs) Handles btnChassisEditLayer.Click
+    Private Sub btnChassisEditLayer_Click(sender As Object, e As EventArgs) Handles btnChassisEditLayer.Click, lviChassisLayers.DoubleClick
         OpenLayerEditDialog()
     End Sub
 
@@ -274,7 +275,7 @@ Public Class frmMain
         RemoveLayer()
     End Sub
 
-    Private Sub btnChassisEditElement_Click(sender As Object, e As EventArgs) Handles btnChassisEditElement.Click
+    Private Sub btnChassisEditElement_Click(sender As Object, e As EventArgs) Handles btnChassisEditElement.Click, lviChassisElements.DoubleClick
         If lviChassisElements.SelectedItems.Count = 1 Then
             OpenElementDialog(_currentSet.Elements.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")).ElementType, Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D"))
         End If
@@ -601,75 +602,98 @@ Public Class frmMain
         Me.Cursor = Cursors.WaitCursor
         Me.Enabled = False
 
-        'create default folder string
-        Dim tmpSkinFolder As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SimBin", "RACE 07", "CustomSkins")
-
-        'create & open a folder browser
-        Dim sfd As New FolderBrowserDialog
-        sfd.Description = "Please select a folder to save your livery to:"
-        If Directory.Exists(tmpSkinFolder) Then sfd.SelectedPath = tmpSkinFolder
-
-        If sfd.ShowDialog = Windows.Forms.DialogResult.OK Then
-            'check whether the folder's empty, warn the user if it isn't
-            If Directory.EnumerateFiles(sfd.SelectedPath).Count > 0 AndAlso Not _
-                MessageBox.Show("The selected folder is not empty. Existing files might be overwritten. Continue anyway?", "Folder not empty", _
-                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
-                Exit Sub
+        'check for driver info
+        If Not String.IsNullOrWhiteSpace(txtDriverName.Text) AndAlso Not String.IsNullOrWhiteSpace(txtTeamName.Text) Then
+            'create default folder string
+            Dim tmpSkinFolder As String
+            If _settings.UseCustomFolder Then
+                tmpSkinFolder = _settings.CustomFolder
+            Else
+                tmpSkinFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SimBin", "RACE 07", "CustomSkins")
             End If
 
-            'Prepare the files' path strings
-            Dim ddsFileName As String = Path.Combine(sfd.SelectedPath, String.Format("{0}_{1}.dds", _
-                                                                                     _currentTemplate.CarName.Replace(CChar(" "), ""), _
-                                                                                     txtDriverName.Text.Replace(CChar(" "), "")))
-            Dim iniFileName As String = Path.ChangeExtension(ddsFileName, "ini")
+            'create & open a folder browser
+            Dim sfd As New FolderBrowserDialog
+            sfd.Description = "Please select a folder to save your livery to:"
+            If Directory.Exists(tmpSkinFolder) Then sfd.SelectedPath = tmpSkinFolder
 
-            'Check for existing files & delete them
-            If File.Exists(ddsFileName) Then File.Delete(ddsFileName)
-            If File.Exists(iniFileName) Then File.Delete(iniFileName)
+            If sfd.ShowDialog = Windows.Forms.DialogResult.OK Then
+                'check whether the folder's empty, warn the user if it isn't
+                If Directory.EnumerateFiles(sfd.SelectedPath).Count > 0 AndAlso Not _
+                    MessageBox.Show("The selected folder is not empty. Existing files might be overwritten. Continue anyway?", "Folder not empty", _
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
 
-            'Create the ImageMagick image using the selected engine
-            Dim exportImage As New ImageMagick.MagickImage(New Bitmap(GetLiveryImage))
+                    'enable ui
+                    Me.Cursor = Cursors.Default
+                    Me.Enabled = True
 
-            'Open up a filestream for the DDS file
-            Dim tmpFs As New FileStream(ddsFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite)
+                    Exit Sub
+                End If
 
-            'Create export parameters
-            Select Case "b"
-                Case "b"
-                    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
-                    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt1")
-                    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "false")
-                    'Case "w"
-                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
-                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
-                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
-                    'Case "i"
-                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "0")
-                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
-                    '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
-            End Select
-            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "cluster-fit", "true")
-            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "color-type", "6")
+                'prepare the files' path strings
+                Dim ddsFileName As String = Path.Combine(sfd.SelectedPath, String.Format("{0}_{1}.dds", _
+                                                                                         _currentTemplate.CarName.Replace(CChar(" "), ""), _
+                                                                                         txtDriverName.Text.Replace(CChar(" "), "")))
+                Dim iniFileName As String = Path.ChangeExtension(ddsFileName, "ini")
 
-            'Save the file
-            exportImage.Write(tmpFs, ImageMagick.MagickFormat.Dds)
+                'check for existing files & delete them
+                If File.Exists(ddsFileName) Then File.Delete(ddsFileName)
+                If File.Exists(iniFileName) Then File.Delete(iniFileName)
 
-            'Close & Dispose
-            tmpFs.Close()
-            exportImage.Dispose()
+                'create the ImageMagick image using the selected engine
+                Dim exportImage As New ImageMagick.MagickImage(New Bitmap(GetLiveryImage))
 
-            'Write the INI file used by Race07
-            File.WriteAllText(iniFileName, String.Format("[[[{1}]]]{0}[[{2}]]{0}[{3}]{0}body = {4}", Environment.NewLine, _
-                                                         txtTeamName.Text, _
-                                                         txtDriverName.Text, _
-                                                         _currentTemplate.InGameCarName, _
-                                                         Path.GetFileName(ddsFileName)))
+                'open up a filestream for the DDS file
+                Dim tmpFs As New FileStream(ddsFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite)
 
-            'Offer to open the export's folder
-            If MessageBox.Show("Export completed. Do you want to open the livery's folder?", "Export completed", _
-                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
-                Process.Start(sfd.SelectedPath)
+                'create export parameters
+                Select Case "b"
+                    Case "b"
+                        exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
+                        exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt1")
+                        exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "false")
+                        'Case "w"
+                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
+                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
+                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
+                        'Case "i"
+                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "0")
+                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
+                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
+                End Select
+                exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "cluster-fit", "true")
+                exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "color-type", "6")
+
+                'save the file
+                exportImage.Write(tmpFs, ImageMagick.MagickFormat.Dds)
+
+                'close & Dispose
+                tmpFs.Close()
+                exportImage.Dispose()
+
+                'write the INI file used by Race07
+                File.WriteAllText(iniFileName, String.Format("[[[{1}]]]{0}[[{2}]]{0}[{3}]{0}body = {4}", Environment.NewLine, _
+                                                             txtTeamName.Text, _
+                                                             txtDriverName.Text, _
+                                                             _currentTemplate.InGameCarName, _
+                                                             Path.GetFileName(ddsFileName)))
+
+                'create Zip File
+                If _settings.CreateZip Then
+                    Using newFile As ZipArchive = ZipFile.Open(Path.ChangeExtension(iniFileName, "zip"), ZipArchiveMode.Create)
+                        newFile.CreateEntryFromFile(iniFileName, Path.GetFileName(iniFileName), Compression.CompressionLevel.Fastest)
+                        newFile.CreateEntryFromFile(ddsFileName, Path.GetFileName(ddsFileName), Compression.CompressionLevel.Fastest)
+                    End Using
+                End If
+
+                'offer to open the export's folder
+                If MessageBox.Show("Export completed. Do you want to open the livery's folder?", "Export completed", _
+                                   MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+                    Process.Start(sfd.SelectedPath)
+                End If
             End If
+        Else
+            MessageBox.Show("Please provide a driver and team name.", "Missing information", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
 
         'enable ui
@@ -808,6 +832,9 @@ Public Class frmMain
                     tmpLayer.PresetColor = PresetColorType.CustomPreset
                 End If
             Next
+
+            'auto-update
+            If _settings.AutoUpdate Then UpdateChassisPreview()
         Catch ex As Exception
             MessageBox.Show(String.Format("Error loading preset: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -892,6 +919,9 @@ Public Class frmMain
     Private Sub UpdateLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
         'update the edited layer's color, no reload necessary
         _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).Color = layerColor.ToArgb
+
+        'auto-update
+        If _settings.AutoUpdate Then UpdateChassisPreview()
     End Sub
 
     Private Sub UpdateElement(ByVal element As PresetElement)
@@ -999,7 +1029,7 @@ Public Class frmMain
 #End Region
 
     Private Sub btnDebug_Click(sender As Object, e As EventArgs) Handles btnDebug.Click
-        
+
     End Sub
 
 End Class

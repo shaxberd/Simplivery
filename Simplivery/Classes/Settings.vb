@@ -11,6 +11,10 @@
     Public Property BaseColor As Integer
     Public Property AccentColor As Integer
     Public Property ThirdColor As Integer
+    Public Property AutoUpdate As Boolean
+    Public Property UseCustomFolder As Boolean
+    Public Property CustomFolder As String
+    Public Property CreateZip As Boolean
 
     Public Sub New()
         SaveDriverInfo = False
@@ -24,5 +28,9 @@
         BaseColor = 0
         AccentColor = 0
         ThirdColor = 0
+        AutoUpdate = False
+        UseCustomFolder = False
+        CustomFolder = String.Empty
+        CreateZip = False
     End Sub
 End Class
