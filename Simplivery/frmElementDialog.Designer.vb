@@ -59,6 +59,7 @@ Partial Class frmElementDialog
         Me.lblElementImage = New System.Windows.Forms.Label()
         Me.txtElementImage = New System.Windows.Forms.TextBox()
         Me.picElementPreview = New System.Windows.Forms.PictureBox()
+        Me.btnOnlineElementImage = New System.Windows.Forms.Button()
         Me.tbcElementSettings.SuspendLayout()
         Me.tbpElementLocation.SuspendLayout()
         CType(Me.tbrElementRotation, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -403,6 +404,7 @@ Partial Class frmElementDialog
         '
         'tbpElementImage
         '
+        Me.tbpElementImage.Controls.Add(Me.btnOnlineElementImage)
         Me.tbpElementImage.Controls.Add(Me.btnLibraryElementImage)
         Me.tbpElementImage.Controls.Add(Me.btnBrowseElementImage)
         Me.tbpElementImage.Controls.Add(Me.lblElementImage)
@@ -463,6 +465,16 @@ Partial Class frmElementDialog
         Me.picElementPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picElementPreview.TabIndex = 29
         Me.picElementPreview.TabStop = False
+        '
+        'btnOnlineElementImage
+        '
+        Me.btnOnlineElementImage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnOnlineElementImage.Location = New System.Drawing.Point(479, 58)
+        Me.btnOnlineElementImage.Name = "btnOnlineElementImage"
+        Me.btnOnlineElementImage.Size = New System.Drawing.Size(67, 20)
+        Me.btnOnlineElementImage.TabIndex = 35
+        Me.btnOnlineElementImage.Text = "Online"
+        Me.btnOnlineElementImage.UseVisualStyleBackColor = True
         '
         'frmElementDialog
         '
@@ -538,4 +550,5 @@ Partial Class frmElementDialog
     Friend WithEvents nudElementPaddingTop As System.Windows.Forms.NumericUpDown
     Friend WithEvents btnElementTextFont As System.Windows.Forms.Button
     Friend WithEvents txtElementTextFont As System.Windows.Forms.TextBox
+    Friend WithEvents btnOnlineElementImage As System.Windows.Forms.Button
 End Class

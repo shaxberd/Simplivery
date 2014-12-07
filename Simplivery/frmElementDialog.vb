@@ -1,4 +1,6 @@
-﻿Public Class frmElementDialog
+﻿Imports System.IO
+
+Public Class frmElementDialog
 
     Private _newElement As Boolean
     Private _elementType As ElementType
@@ -185,6 +187,19 @@
         Element.Area.AreaRotation = tbrElementRotation.Value
 
         Me.DialogResult = Windows.Forms.DialogResult.OK
+    End Sub
+
+    Private Sub btnOnlineElementImage_Click(sender As Object, e As EventArgs) Handles btnOnlineElementImage.Click
+        Dim oid As New frmOnlineImageDialog(Path.Combine(Environment.CurrentDirectory, "Temp"), Path.Combine(Environment.CurrentDirectory, "Images"))
+        If oid.ShowDialog = Windows.Forms.DialogResult.OK Then
+            txtElementImage.Text = oid.SelectedPath
+        End If
+        oid.Dispose()
+
+        'empty temp
+        For Each tmpFile In Directory.EnumerateFiles(Path.Combine(Environment.CurrentDirectory, "Temp"))
+            File.Delete(tmpFile)
+        Next
     End Sub
 
 #End Region
