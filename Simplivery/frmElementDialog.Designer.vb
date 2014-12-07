@@ -48,6 +48,7 @@ Partial Class frmElementDialog
         Me.tbrElementPositionX = New System.Windows.Forms.TrackBar()
         Me.nudElementPositionX = New System.Windows.Forms.NumericUpDown()
         Me.tbpElementText = New System.Windows.Forms.TabPage()
+        Me.txtElementTextFont = New System.Windows.Forms.TextBox()
         Me.btnElementTextFont = New System.Windows.Forms.Button()
         Me.lblElementTextFont = New System.Windows.Forms.Label()
         Me.lblElementText = New System.Windows.Forms.Label()
@@ -58,7 +59,6 @@ Partial Class frmElementDialog
         Me.lblElementImage = New System.Windows.Forms.Label()
         Me.txtElementImage = New System.Windows.Forms.TextBox()
         Me.picElementPreview = New System.Windows.Forms.PictureBox()
-        Me.txtElementTextFont = New System.Windows.Forms.TextBox()
         Me.tbcElementSettings.SuspendLayout()
         Me.tbpElementLocation.SuspendLayout()
         CType(Me.tbrElementRotation, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -358,6 +358,14 @@ Partial Class frmElementDialog
         Me.tbpElementText.Text = "Text"
         Me.tbpElementText.UseVisualStyleBackColor = True
         '
+        'txtElementTextFont
+        '
+        Me.txtElementTextFont.Location = New System.Drawing.Point(379, 32)
+        Me.txtElementTextFont.Name = "txtElementTextFont"
+        Me.txtElementTextFont.ReadOnly = True
+        Me.txtElementTextFont.Size = New System.Drawing.Size(94, 20)
+        Me.txtElementTextFont.TabIndex = 33
+        '
         'btnElementTextFont
         '
         Me.btnElementTextFont.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -457,14 +465,6 @@ Partial Class frmElementDialog
         Me.picElementPreview.TabIndex = 29
         Me.picElementPreview.TabStop = False
         '
-        'txtElementTextFont
-        '
-        Me.txtElementTextFont.Location = New System.Drawing.Point(379, 32)
-        Me.txtElementTextFont.Name = "txtElementTextFont"
-        Me.txtElementTextFont.ReadOnly = True
-        Me.txtElementTextFont.Size = New System.Drawing.Size(94, 20)
-        Me.txtElementTextFont.TabIndex = 33
-        '
         'frmElementDialog
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
@@ -475,7 +475,7 @@ Partial Class frmElementDialog
         Me.Controls.Add(Me.btnApply)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
         Me.MaximizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(600, 407)
+        Me.MinimumSize = New System.Drawing.Size(600, 499)
         Me.Name = "frmElementDialog"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "New element:"

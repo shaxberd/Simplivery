@@ -19,7 +19,7 @@ Public Class frmMain
 
 #End Region
 
-#Region "Constructor"
+#Region "Constructor & Closing"
 
     Public Sub New()
 
@@ -35,7 +35,7 @@ Public Class frmMain
         _noFont = New Font("Impact", 40)
         _nameFont = New Font("Arial", 16)
 
-        'lad settings
+        'load settings
         _settings = New Settings
         LoadSettings()
         If _settings.SaveDriverInfo Then
@@ -58,6 +58,16 @@ Public Class frmMain
 
         'Loading
         LoadTemplates()
+    End Sub
+
+    Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        UpdateSettings()
+
+        Dim xmlSer As New Xml.Serialization.XmlSerializer(_settings.GetType)
+        Dim xmlStream As New FileStream(Path.Combine(Environment.CurrentDirectory, "settings.xml"), FileMode.OpenOrCreate, FileAccess.ReadWrite)
+        xmlSer.Serialize(xmlStream, _settings)
+        xmlStream.Close()
+        xmlStream.Dispose()
     End Sub
 
 #End Region
@@ -195,6 +205,15 @@ Public Class frmMain
         End If
     End Sub
 
+    Private Sub btnSettings_Click(sender As Object, e As EventArgs) Handles btnSettings.Click
+        Dim sd As New frmSettingsDialog(_settings)
+        If sd.ShowDialog = Windows.Forms.DialogResult.OK Then
+            'apply settings
+            _settings = sd.Settings
+            UpdateSettings()
+        End If
+    End Sub
+
 #End Region
 
 #Region "GUI - Adding, Editing & Moving Stuff"
@@ -280,6 +299,25 @@ Public Class frmMain
             xmlStream.Close()
             xmlStream.Dispose()
         End If
+    End Sub
+
+    Private Sub UpdateSettings()
+        With _settings
+            If .SaveColorInfo Then
+                .BaseColor = pnlBaseColor.BackColor.ToArgb
+                .AccentColor = pnlAccentColor.BackColor.ToArgb
+                .ThirdColor = pnlThirdColor.BackColor.ToArgb
+            End If
+            If .SaveDriverInfo Then
+                .DriverName = txtDriverName.Text
+                .DriverNo = CInt(nudDriverNo.Value)
+                .DriverTeam = txtTeamName.Text
+            End If
+            If .SaveFontInfo Then
+                .NoFont = _fontConverter.ConvertToString(_noFont)
+                .NameFont = _fontConverter.ConvertToString(_nameFont)
+            End If
+        End With
     End Sub
 
 #End Region
