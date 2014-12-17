@@ -438,6 +438,7 @@ Public Class frmMain
             'enable quality options
             tmpGfx.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
             tmpGfx.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+            tmpGfx.PixelOffsetMode = Drawing2D.PixelOffsetMode.HighQuality
 
             'add each image on top of the previous ones
             For Each layerImage In _currentSet.Layers
