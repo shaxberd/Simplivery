@@ -31,6 +31,10 @@ Partial Class frmOnlineImageDialog
         Me.btnSearch = New System.Windows.Forms.Button()
         Me.lblSearchTerm = New System.Windows.Forms.Label()
         Me.lblPoweredBy = New System.Windows.Forms.Label()
+        Me.lblCurrentPage = New System.Windows.Forms.Label()
+        Me.btnPrevPage = New System.Windows.Forms.Button()
+        Me.btnNextPage = New System.Windows.Forms.Button()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'btnCancel
@@ -50,7 +54,7 @@ Partial Class frmOnlineImageDialog
         Me.btnAdd.Name = "btnAdd"
         Me.btnAdd.Size = New System.Drawing.Size(100, 32)
         Me.btnAdd.TabIndex = 24
-        Me.btnAdd.Text = "Add to Library"
+        Me.btnAdd.Text = "Add"
         Me.btnAdd.UseVisualStyleBackColor = True
         '
         'lviImageList
@@ -84,13 +88,13 @@ Partial Class frmOnlineImageDialog
         '
         Me.txtSearchTerm.Location = New System.Drawing.Point(82, 12)
         Me.txtSearchTerm.Name = "txtSearchTerm"
-        Me.txtSearchTerm.Size = New System.Drawing.Size(417, 20)
+        Me.txtSearchTerm.Size = New System.Drawing.Size(295, 20)
         Me.txtSearchTerm.TabIndex = 27
         '
         'btnSearch
         '
         Me.btnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnSearch.Location = New System.Drawing.Point(505, 12)
+        Me.btnSearch.Location = New System.Drawing.Point(383, 12)
         Me.btnSearch.Name = "btnSearch"
         Me.btnSearch.Size = New System.Drawing.Size(67, 20)
         Me.btnSearch.TabIndex = 28
@@ -111,14 +115,57 @@ Partial Class frmOnlineImageDialog
         Me.lblPoweredBy.AutoSize = True
         Me.lblPoweredBy.Location = New System.Drawing.Point(9, 317)
         Me.lblPoweredBy.Name = "lblPoweredBy"
-        Me.lblPoweredBy.Size = New System.Drawing.Size(100, 13)
+        Me.lblPoweredBy.Size = New System.Drawing.Size(109, 13)
         Me.lblPoweredBy.TabIndex = 30
-        Me.lblPoweredBy.Text = "Powered by Google"
+        Me.lblPoweredBy.Text = "Powered by Google™"
+        '
+        'lblCurrentPage
+        '
+        Me.lblCurrentPage.Enabled = False
+        Me.lblCurrentPage.Location = New System.Drawing.Point(489, 12)
+        Me.lblCurrentPage.Name = "lblCurrentPage"
+        Me.lblCurrentPage.Size = New System.Drawing.Size(50, 20)
+        Me.lblCurrentPage.TabIndex = 31
+        Me.lblCurrentPage.Text = "Page"
+        Me.lblCurrentPage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'btnPrevPage
+        '
+        Me.btnPrevPage.Enabled = False
+        Me.btnPrevPage.Location = New System.Drawing.Point(456, 12)
+        Me.btnPrevPage.Name = "btnPrevPage"
+        Me.btnPrevPage.Size = New System.Drawing.Size(27, 20)
+        Me.btnPrevPage.TabIndex = 32
+        Me.btnPrevPage.Text = "<"
+        Me.btnPrevPage.UseVisualStyleBackColor = True
+        '
+        'btnNextPage
+        '
+        Me.btnNextPage.Enabled = False
+        Me.btnNextPage.Location = New System.Drawing.Point(545, 12)
+        Me.btnNextPage.Name = "btnNextPage"
+        Me.btnNextPage.Size = New System.Drawing.Size(27, 20)
+        Me.btnNextPage.TabIndex = 33
+        Me.btnNextPage.Text = ">"
+        Me.btnNextPage.UseVisualStyleBackColor = True
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(9, 336)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(257, 13)
+        Me.Label1.TabIndex = 34
+        Me.Label1.Text = "Image sizes will not be displayed correctly until added"
         '
         'frmOnlineImageDialog
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.ClientSize = New System.Drawing.Size(584, 361)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.btnNextPage)
+        Me.Controls.Add(Me.btnPrevPage)
+        Me.Controls.Add(Me.lblCurrentPage)
         Me.Controls.Add(Me.lblPoweredBy)
         Me.Controls.Add(Me.lblSearchTerm)
         Me.Controls.Add(Me.btnSearch)
@@ -145,4 +192,8 @@ Partial Class frmOnlineImageDialog
     Friend WithEvents btnSearch As System.Windows.Forms.Button
     Friend WithEvents lblSearchTerm As System.Windows.Forms.Label
     Friend WithEvents lblPoweredBy As System.Windows.Forms.Label
+    Friend WithEvents lblCurrentPage As System.Windows.Forms.Label
+    Friend WithEvents btnPrevPage As System.Windows.Forms.Button
+    Friend WithEvents btnNextPage As System.Windows.Forms.Button
+    Friend WithEvents Label1 As System.Windows.Forms.Label
 End Class

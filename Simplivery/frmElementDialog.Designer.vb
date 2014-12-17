@@ -33,9 +33,6 @@ Partial Class frmElementDialog
         Me.nudElementRotation = New System.Windows.Forms.NumericUpDown()
         Me.tbrElementPositionY = New System.Windows.Forms.TrackBar()
         Me.nudElementPositionY = New System.Windows.Forms.NumericUpDown()
-        Me.nudElementPaddingBottom = New System.Windows.Forms.NumericUpDown()
-        Me.lblElementPadding = New System.Windows.Forms.Label()
-        Me.nudElementPaddingTop = New System.Windows.Forms.NumericUpDown()
         Me.lblElementHeight = New System.Windows.Forms.Label()
         Me.tbrElementHeight = New System.Windows.Forms.TrackBar()
         Me.nudElementHeight = New System.Windows.Forms.NumericUpDown()
@@ -54,20 +51,18 @@ Partial Class frmElementDialog
         Me.lblElementText = New System.Windows.Forms.Label()
         Me.txtElementText = New System.Windows.Forms.TextBox()
         Me.tbpElementImage = New System.Windows.Forms.TabPage()
+        Me.btnOnlineElementImage = New System.Windows.Forms.Button()
         Me.btnLibraryElementImage = New System.Windows.Forms.Button()
         Me.btnBrowseElementImage = New System.Windows.Forms.Button()
         Me.lblElementImage = New System.Windows.Forms.Label()
         Me.txtElementImage = New System.Windows.Forms.TextBox()
         Me.picElementPreview = New System.Windows.Forms.PictureBox()
-        Me.btnOnlineElementImage = New System.Windows.Forms.Button()
         Me.tbcElementSettings.SuspendLayout()
         Me.tbpElementLocation.SuspendLayout()
         CType(Me.tbrElementRotation, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.nudElementRotation, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbrElementPositionY, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.nudElementPositionY, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.nudElementPaddingBottom, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.nudElementPaddingTop, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbrElementHeight, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.nudElementHeight, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbrElementWidth, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -146,9 +141,6 @@ Partial Class frmElementDialog
         Me.tbpElementLocation.Controls.Add(Me.nudElementRotation)
         Me.tbpElementLocation.Controls.Add(Me.tbrElementPositionY)
         Me.tbpElementLocation.Controls.Add(Me.nudElementPositionY)
-        Me.tbpElementLocation.Controls.Add(Me.nudElementPaddingBottom)
-        Me.tbpElementLocation.Controls.Add(Me.lblElementPadding)
-        Me.tbpElementLocation.Controls.Add(Me.nudElementPaddingTop)
         Me.tbpElementLocation.Controls.Add(Me.lblElementHeight)
         Me.tbpElementLocation.Controls.Add(Me.tbrElementHeight)
         Me.tbpElementLocation.Controls.Add(Me.nudElementHeight)
@@ -209,29 +201,6 @@ Partial Class frmElementDialog
         Me.nudElementPositionY.Name = "nudElementPositionY"
         Me.nudElementPositionY.Size = New System.Drawing.Size(60, 20)
         Me.nudElementPositionY.TabIndex = 22
-        '
-        'nudElementPaddingBottom
-        '
-        Me.nudElementPaddingBottom.Location = New System.Drawing.Point(486, 58)
-        Me.nudElementPaddingBottom.Name = "nudElementPaddingBottom"
-        Me.nudElementPaddingBottom.Size = New System.Drawing.Size(60, 20)
-        Me.nudElementPaddingBottom.TabIndex = 21
-        '
-        'lblElementPadding
-        '
-        Me.lblElementPadding.AutoSize = True
-        Me.lblElementPadding.Location = New System.Drawing.Point(301, 62)
-        Me.lblElementPadding.Name = "lblElementPadding"
-        Me.lblElementPadding.Size = New System.Drawing.Size(106, 13)
-        Me.lblElementPadding.TabIndex = 19
-        Me.lblElementPadding.Text = "Padding Top/Bottom"
-        '
-        'nudElementPaddingTop
-        '
-        Me.nudElementPaddingTop.Location = New System.Drawing.Point(420, 58)
-        Me.nudElementPaddingTop.Name = "nudElementPaddingTop"
-        Me.nudElementPaddingTop.Size = New System.Drawing.Size(60, 20)
-        Me.nudElementPaddingTop.TabIndex = 18
         '
         'lblElementHeight
         '
@@ -417,6 +386,16 @@ Partial Class frmElementDialog
         Me.tbpElementImage.Text = "Image"
         Me.tbpElementImage.UseVisualStyleBackColor = True
         '
+        'btnOnlineElementImage
+        '
+        Me.btnOnlineElementImage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnOnlineElementImage.Location = New System.Drawing.Point(479, 58)
+        Me.btnOnlineElementImage.Name = "btnOnlineElementImage"
+        Me.btnOnlineElementImage.Size = New System.Drawing.Size(67, 20)
+        Me.btnOnlineElementImage.TabIndex = 35
+        Me.btnOnlineElementImage.Text = "Online"
+        Me.btnOnlineElementImage.UseVisualStyleBackColor = True
+        '
         'btnLibraryElementImage
         '
         Me.btnLibraryElementImage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -426,6 +405,7 @@ Partial Class frmElementDialog
         Me.btnLibraryElementImage.TabIndex = 34
         Me.btnLibraryElementImage.Text = "Library"
         Me.btnLibraryElementImage.UseVisualStyleBackColor = True
+        Me.btnLibraryElementImage.Visible = False
         '
         'btnBrowseElementImage
         '
@@ -466,16 +446,6 @@ Partial Class frmElementDialog
         Me.picElementPreview.TabIndex = 29
         Me.picElementPreview.TabStop = False
         '
-        'btnOnlineElementImage
-        '
-        Me.btnOnlineElementImage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnOnlineElementImage.Location = New System.Drawing.Point(479, 58)
-        Me.btnOnlineElementImage.Name = "btnOnlineElementImage"
-        Me.btnOnlineElementImage.Size = New System.Drawing.Size(67, 20)
-        Me.btnOnlineElementImage.TabIndex = 35
-        Me.btnOnlineElementImage.Text = "Online"
-        Me.btnOnlineElementImage.UseVisualStyleBackColor = True
-        '
         'frmElementDialog
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
@@ -497,8 +467,6 @@ Partial Class frmElementDialog
         CType(Me.nudElementRotation, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbrElementPositionY, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.nudElementPositionY, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.nudElementPaddingBottom, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.nudElementPaddingTop, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbrElementHeight, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.nudElementHeight, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbrElementWidth, System.ComponentModel.ISupportInitialize).EndInit()
@@ -545,9 +513,6 @@ Partial Class frmElementDialog
     Friend WithEvents nudElementRotation As System.Windows.Forms.NumericUpDown
     Friend WithEvents tbrElementPositionY As System.Windows.Forms.TrackBar
     Friend WithEvents nudElementPositionY As System.Windows.Forms.NumericUpDown
-    Friend WithEvents nudElementPaddingBottom As System.Windows.Forms.NumericUpDown
-    Friend WithEvents lblElementPadding As System.Windows.Forms.Label
-    Friend WithEvents nudElementPaddingTop As System.Windows.Forms.NumericUpDown
     Friend WithEvents btnElementTextFont As System.Windows.Forms.Button
     Friend WithEvents txtElementTextFont As System.Windows.Forms.TextBox
     Friend WithEvents btnOnlineElementImage As System.Windows.Forms.Button

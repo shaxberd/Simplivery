@@ -10,6 +10,7 @@ Public Class frmOnlineImageDialog
     Private MyTempPath As String
     Private MyImagePath As String
     Private MyLastSearch As String
+    Private MySearchPage As Integer
 
 #End Region
 
@@ -51,7 +52,21 @@ Public Class frmOnlineImageDialog
         End If
     End Sub
 
+    Private Sub btnPrevPage_Click(sender As Object, e As EventArgs) Handles btnPrevPage.Click
+        If Not String.IsNullOrWhiteSpace(MyLastSearch) Then
+            Search(txtSearchTerm.Text, MySearchPage - 1)
+        End If
+    End Sub
+
+    Private Sub btnNextPage_Click(sender As Object, e As EventArgs) Handles btnNextPage.Click
+        If Not String.IsNullOrWhiteSpace(MyLastSearch) Then
+            Search(txtSearchTerm.Text, MySearchPage + 1)
+        End If
+    End Sub
+
 #End Region
+
+#Region "Methods"
 
     Private Sub Search(ByVal searchTerm As String, ByVal page As Integer)
         'disable ui
@@ -89,7 +104,7 @@ Public Class frmOnlineImageDialog
                     tmpFile = Path.Combine(MyTempPath, String.Format("{0}.png", Guid.NewGuid.ToString))
                     httpClient.DownloadFile(tmpMatch.Value, tmpFile)
 
-                    'load image & dispose (otherwise it will stay blocked)
+                    'load image & dispose (otherwise it will stay blocked later on)
                     tmpImage = Image.FromFile(tmpFile)
                     tmpImageList.Images.Add(New Bitmap(tmpImage))
                     tmpImage.Dispose()
@@ -106,9 +121,17 @@ Public Class frmOnlineImageDialog
             'set imagelist
             lviImageList.LargeImageList = tmpImageList
 
-            'save search if it's a new one
+            'save search & infos; handle page buttons
+            If lblCurrentPage.Enabled = False Then lblCurrentPage.Enabled = True
+            lblCurrentPage.Text = String.Format("Page {0}", page.ToString)
             If page = 0 Then
                 MyLastSearch = searchTerm
+                MySearchPage = 0
+                btnPrevPage.Enabled = False
+                btnNextPage.Enabled = True
+            Else
+                MySearchPage = page
+                btnPrevPage.Enabled = True
             End If
         Catch ex As Exception
             MessageBox.Show(String.Format("Error retrieving or displaying results: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -122,4 +145,8 @@ Public Class frmOnlineImageDialog
         Me.Enabled = True
         Me.Cursor = Cursors.Default
     End Sub
+
+#End Region
+
+
 End Class
