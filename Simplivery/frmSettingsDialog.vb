@@ -1,6 +1,12 @@
 ﻿Public Class frmSettingsDialog
 
+#Region "Fields"
+
     Friend Settings As Settings
+
+#End Region
+
+#Region "Constructor"
 
     Public Sub New(ByVal currentSettings As Settings)
 
@@ -18,6 +24,10 @@
         txtCustomFolder.Text = currentSettings.CustomFolder
         chkCreateZip.Checked = currentSettings.CreateZip
     End Sub
+
+#End Region
+
+#Region "Buttons"
 
     Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
         Me.DialogResult = Windows.Forms.DialogResult.Cancel
@@ -47,4 +57,7 @@
             txtCustomFolder.Text = fbd.SelectedPath
         End If
     End Sub
+
+#End Region
+
 End Class

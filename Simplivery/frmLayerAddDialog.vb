@@ -1,51 +1,63 @@
 ﻿Public Class frmLayerAddDialog
 
+#Region "Fields"
+
     Private _availableLayers As List(Of Layer)
 
     Friend SelectedLayer As Guid
     Friend SelectedColor As Color
 
-    Public Sub New(ByVal templatePath As String, ByVal layerType As LayerType, ByVal currentTemplate As Template, ByVal currentSetLayers As List(Of PresetLayer))
+#End Region
 
-        ' Dieser Aufruf ist für den Designer erforderlich.
+#Region "Constructor"
+
+    Public Sub New(ByVal templatePath As String, ByVal layerType As LayerType, ByVal currentTemplate As Template, ByVal currentSetLayers As List(Of PresetLayer))
         InitializeComponent()
 
-        ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
-        'initialize
-        Dim tmpImageList As New ImageList
-        tmpImageList.ImageSize = New Size(120, 60)
-        Dim tmpListViewItem As ListViewItem
+        Try
+            'initialize
+            Dim tmpImageList As New ImageList
+            tmpImageList.ImageSize = New Size(120, 60)
+            Dim tmpListViewItem As ListViewItem
 
-        'GUI
-        Me.Text = String.Format("{0} {1}", Me.Text, layerType.ToString)
-        
-        'determine usable layers
-        Dim tmpUsedLayers As List(Of Guid) = (From presetLayer In currentSetLayers Select presetLayer.LayerGuid).ToList
-        _availableLayers = currentTemplate.Layers.Where(Function(x) x.Type = layerType AndAlso Not tmpUsedLayers.Contains(x.Guid)).ToList
+            'GUI
+            Me.Text = String.Format("{0} {1}", Me.Text, layerType.ToString)
 
-        For Each tmpLayer In _availableLayers
-            'add image to list
-            tmpImageList.Images.Add(Image.FromFile(IO.Path.Combine(templatePath, currentTemplate.Guid.ToString, tmpLayer.FileName)))
+            'determine usable layers
+            Dim tmpUsedLayers As List(Of Guid) = (From presetLayer In currentSetLayers Select presetLayer.LayerGuid).ToList
+            _availableLayers = currentTemplate.Layers.Where(Function(x) x.Type = layerType AndAlso Not tmpUsedLayers.Contains(x.Guid)).ToList
 
-            'add item
-            tmpListViewItem = New ListViewItem({tmpLayer.Name, tmpLayer.Description}, tmpImageList.Images.Count - 1)
-            tmpListViewItem.Tag = tmpLayer.Guid
-            lviLayerList.Items.Add(tmpListViewItem)
-        Next
+            For Each tmpLayer In _availableLayers
+                'add image to list
+                tmpImageList.Images.Add(Image.FromFile(IO.Path.Combine(templatePath, currentTemplate.Guid.ToString, tmpLayer.FileName)))
 
-        'set imagelist
-        lviLayerList.LargeImageList = tmpImageList
+                'add item
+                tmpListViewItem = New ListViewItem({tmpLayer.Name, tmpLayer.Description}, tmpImageList.Images.Count - 1)
+                tmpListViewItem.Tag = tmpLayer.Guid
+                lviLayerList.Items.Add(tmpListViewItem)
+            Next
 
-        'disable color choosing or adjust color
-        If Not layerType = Simplivery.LayerType.ColorDecal Then
-            btnLayerColor.Enabled = False
-            pnlLayerColor.Enabled = False
-            lblLayerColor.Enabled = False
-        Else
-            pnlLayerColor.BackColor = frmMain.pnlAccentColor.BackColor
-            SelectedColor = pnlLayerColor.BackColor
-        End If
+            'set imagelist
+            lviLayerList.LargeImageList = tmpImageList
+
+            'disable color choosing or adjust color
+            If Not layerType = Simplivery.LayerType.ColorDecal Then
+                btnLayerColor.Enabled = False
+                pnlLayerColor.Enabled = False
+                lblLayerColor.Enabled = False
+            Else
+                pnlLayerColor.BackColor = frmMain.pnlAccentColor.BackColor
+                SelectedColor = pnlLayerColor.BackColor
+            End If
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error initializing layer dialog: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Me.DialogResult = Windows.Forms.DialogResult.Abort
+        End Try
     End Sub
+
+#End Region
+
+#Region "Buttons & GUI"
 
     Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
         Me.DialogResult = Windows.Forms.DialogResult.Cancel
@@ -79,4 +91,8 @@
             SelectedLayer = DirectCast(lviLayerList.SelectedItems(0).Tag, Guid)
         End If
     End Sub
+
+#End Region
+
+
 End Class

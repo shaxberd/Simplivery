@@ -23,47 +23,52 @@ Public Class frmMain
 #Region "Constructor & Closing"
 
     Public Sub New()
-
-        ' Dieser Aufruf ist für den Designer erforderlich.
         InitializeComponent()
 
-        'Initializing
-        _fontConverter = New FontConverter
-        _templatePath = Path.Combine(Environment.CurrentDirectory, "Templates")
-        _allTemplates = New List(Of Template)
-        _availableTemplates = New Dictionary(Of Guid, String)
-        _availablePresets = New Dictionary(Of Guid, String)
-        _noFont = New Font("Impact", 40)
-        _nameFont = New Font("Arial", 16)
+        Try
+            'Initializing
+            _fontConverter = New FontConverter
+            _templatePath = Path.Combine(Environment.CurrentDirectory, "Templates")
+            _allTemplates = New List(Of Template)
+            _availableTemplates = New Dictionary(Of Guid, String)
+            _availablePresets = New Dictionary(Of Guid, String)
+            _noFont = New Font("Impact", 40)
+            _nameFont = New Font("Arial", 16)
 
-        'load settings
-        _settings = New Settings
-        LoadSettings()
-        If _settings.SaveDriverInfo Then
-            nudDriverNo.Value = _settings.DriverNo
-            txtDriverName.Text = _settings.DriverName
-            txtTeamName.Text = _settings.DriverTeam
-        End If
-        If _settings.SaveFontInfo Then
-            If Not String.IsNullOrWhiteSpace(_settings.NameFont) Then _nameFont = TryCast(_fontConverter.ConvertFromString(_settings.NameFont), Font)
-            If Not String.IsNullOrWhiteSpace(_settings.NoFont) Then _noFont = TryCast(_fontConverter.ConvertFromString(_settings.NoFont), Font)
-        End If
-        'display settings/default values
-        txtNoFont.Text = _noFont.Name
-        txtNameFont.Text = _nameFont.Name
-        If _settings.SaveColorInfo Then
-            pnlBaseColor.BackColor = Color.FromArgb(_settings.BaseColor)
-            pnlAccentColor.BackColor = Color.FromArgb(_settings.AccentColor)
-            pnlThirdColor.BackColor = Color.FromArgb(_settings.ThirdColor)
-        End If
+            'load settings
+            _settings = New Settings
+            LoadSettings()
+            If _settings.SaveDriverInfo Then
+                nudDriverNo.Value = _settings.DriverNo
+                txtDriverName.Text = _settings.DriverName
+                txtTeamName.Text = _settings.DriverTeam
+            End If
+            If _settings.SaveFontInfo Then
+                If Not String.IsNullOrWhiteSpace(_settings.NameFont) Then _nameFont = TryCast(_fontConverter.ConvertFromString(_settings.NameFont), Font)
+                If Not String.IsNullOrWhiteSpace(_settings.NoFont) Then _noFont = TryCast(_fontConverter.ConvertFromString(_settings.NoFont), Font)
+            End If
+            'display settings/default values
+            txtNoFont.Text = _noFont.Name
+            txtNameFont.Text = _nameFont.Name
+            If _settings.SaveColorInfo Then
+                pnlBaseColor.BackColor = Color.FromArgb(_settings.BaseColor)
+                pnlAccentColor.BackColor = Color.FromArgb(_settings.AccentColor)
+                pnlThirdColor.BackColor = Color.FromArgb(_settings.ThirdColor)
+            End If
 
-        'Loading
-        LoadTemplates()
+            'loading
+            LoadTemplates()
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error intializing: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End
+        End Try
     End Sub
 
     Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        'update settings as values to be saved might have changed
         UpdateSettings()
 
+        'save settings
         Dim xmlSer As New Xml.Serialization.XmlSerializer(_settings.GetType)
         Dim xmlStream As New FileStream(Path.Combine(Environment.CurrentDirectory, "settings.xml"), FileMode.OpenOrCreate, FileAccess.ReadWrite)
         xmlSer.Serialize(xmlStream, _settings)
@@ -103,7 +108,7 @@ Public Class frmMain
     End Sub
 
     Private Sub btnLiveryBasicsPreview_Click(sender As Object, e As EventArgs) Handles btnLiveryBasicsPreview.Click
-        'Update basic settings' preview
+        'update basic settings' preview
         If Not String.IsNullOrWhiteSpace(txtDriverName.Text) Then
             UpdateBasicPreview()
         Else
@@ -182,6 +187,7 @@ Public Class frmMain
             End If
         Catch ex As Exception
             MessageBox.Show(String.Format("Error loading configuration: {0}{1}The default preset of the current livery will be loaded.", ex.Message, Environment.NewLine), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            LoadTemplateDefault()
         End Try
     End Sub
 
@@ -360,40 +366,44 @@ Public Class frmMain
         Me.Cursor = Cursors.WaitCursor
         Me.Enabled = False
 
-        'Initialize
-        Dim basicsPreview As New Bitmap(370, 141)
-        Dim bpGfx As Graphics = Graphics.FromImage(basicsPreview)
-        Dim baseBrush As New SolidBrush(pnlBaseColor.BackColor)
-        Dim accentBrush As New SolidBrush(pnlAccentColor.BackColor)
-        Dim textBrush As New SolidBrush(pnlThirdColor.BackColor)
-        Dim nameFont As Font = _nameFont
-        Dim noFont As Font = _noFont
+        Try
+            'Initialize
+            Dim basicsPreview As New Bitmap(370, 141)
+            Dim bpGfx As Graphics = Graphics.FromImage(basicsPreview)
+            Dim baseBrush As New SolidBrush(pnlBaseColor.BackColor)
+            Dim accentBrush As New SolidBrush(pnlAccentColor.BackColor)
+            Dim textBrush As New SolidBrush(pnlThirdColor.BackColor)
+            Dim nameFont As Font = _nameFont
+            Dim noFont As Font = _noFont
 
-        'Ensure centered text (Number)
-        Dim noFormat As New StringFormat()
-        noFormat.LineAlignment = StringAlignment.Center
-        noFormat.Alignment = StringAlignment.Center
-        'Enable Antialiasing
-        bpGfx.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+            'Ensure centered text (Number)
+            Dim noFormat As New StringFormat()
+            noFormat.LineAlignment = StringAlignment.Center
+            noFormat.Alignment = StringAlignment.Center
+            'Enable Antialiasing
+            bpGfx.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
 
-        'Fill with base color
-        bpGfx.FillRegion(baseBrush, New Region(New Rectangle(0, 0, 370, 141)))
-        'Lines (accent color)
-        bpGfx.DrawLine(New Pen(accentBrush, 25), 0, 70, 370, 70)
-        bpGfx.DrawLine(New Pen(accentBrush, 25), 0, 105, 370, 105)
-        'Numberplate (black/white)
-        bpGfx.FillRectangle(Brushes.White, New Rectangle(30, 52, 70, 70))
-        bpGfx.DrawRectangle(New Pen(Brushes.Black, 2), New Rectangle(30, 52, 70, 70))
-        'Number image (black)
-        bpGfx.DrawString(nudDriverNo.Value.ToString, noFont, Brushes.Black, New Rectangle(20, 52, 90, 70), noFormat)
-        'Name (text color)
-        bpGfx.DrawString(txtDriverName.Text, nameFont, textBrush, New Rectangle(30, 10, 300, 30))
+            'Fill with base color
+            bpGfx.FillRegion(baseBrush, New Region(New Rectangle(0, 0, 370, 141)))
+            'Lines (accent color)
+            bpGfx.DrawLine(New Pen(accentBrush, 25), 0, 70, 370, 70)
+            bpGfx.DrawLine(New Pen(accentBrush, 25), 0, 105, 370, 105)
+            'Numberplate (black/white)
+            bpGfx.FillRectangle(Brushes.White, New Rectangle(30, 52, 70, 70))
+            bpGfx.DrawRectangle(New Pen(Brushes.Black, 2), New Rectangle(30, 52, 70, 70))
+            'Number image (black)
+            bpGfx.DrawString(nudDriverNo.Value.ToString, noFont, Brushes.Black, New Rectangle(20, 52, 90, 70), noFormat)
+            'Name (text color)
+            bpGfx.DrawString(txtDriverName.Text, nameFont, textBrush, New Rectangle(30, 10, 300, 30))
 
-        'Cleanup
-        bpGfx.Dispose()
+            'Cleanup
+            bpGfx.Dispose()
 
-        'Set image
-        picLiveryBasicsPreview.Image = basicsPreview
+            'Set image
+            picLiveryBasicsPreview.Image = basicsPreview
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error updating basic preview: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
 
         'enable ui
         Me.Cursor = Cursors.Default
@@ -413,65 +423,70 @@ Public Class frmMain
     End Sub
 
     Private Function GetLiveryImage() As Image
-        'declarations
-        Dim elementsApplied As Boolean = False
-        Dim tmpLayer As Layer
-        Dim numImage As Bitmap
-        'create base image & initialize
-        Dim tmpImage As Image = Image.FromFile(Path.Combine(_templatePath, _currentTemplate.Guid.ToString, _
-                                                            _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = _currentSet.Layers(0).LayerGuid).FileName))
-        Dim tmpBitmap As New Bitmap(tmpImage.Width, tmpImage.Height)
-        Dim tmpGfx As Graphics = Graphics.FromImage(tmpBitmap)
-        Dim tmpRect As New Rectangle(0, 0, tmpImage.Width, tmpImage.Height)
+        Try
+            'declarations
+            Dim elementsApplied As Boolean = False
+            Dim tmpLayer As Layer
+            Dim numImage As Bitmap
+            'create base image & initialize
+            Dim tmpImage As Image = Image.FromFile(Path.Combine(_templatePath, _currentTemplate.Guid.ToString, _
+                                                                _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = _currentSet.Layers(0).LayerGuid).FileName))
+            Dim tmpBitmap As New Bitmap(tmpImage.Width, tmpImage.Height)
+            Dim tmpGfx As Graphics = Graphics.FromImage(tmpBitmap)
+            Dim tmpRect As New Rectangle(0, 0, tmpImage.Width, tmpImage.Height)
 
-        'enable quality options
-        tmpGfx.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
-        tmpGfx.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+            'enable quality options
+            tmpGfx.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+            tmpGfx.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
 
-        'add each image on top of the previous ones
-        For Each layerImage In _currentSet.Layers
-            'get matching layer
-            tmpLayer = _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = layerImage.LayerGuid)
+            'add each image on top of the previous ones
+            For Each layerImage In _currentSet.Layers
+                'get matching layer
+                tmpLayer = _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = layerImage.LayerGuid)
 
-            'check layer type and insert elements if it's a numberplate
-            If tmpLayer.Type > 3 AndAlso Not elementsApplied Then
-                'add all elements before applying numberplate or higher
-                tmpGfx.DrawImage(GetElementsImage, tmpRect, tmpRect, GraphicsUnit.Pixel)
-                'set elementsAplied true -> only call this block once 
-                elementsApplied = True
-            End If
+                'check layer type and insert elements if it's a numberplate
+                If tmpLayer.Type > 3 AndAlso Not elementsApplied Then
+                    'add all elements before applying numberplate or higher
+                    tmpGfx.DrawImage(GetElementsImage, tmpRect, tmpRect, GraphicsUnit.Pixel)
+                    'set elementsAplied true -> only call this block once 
+                    elementsApplied = True
+                End If
 
-            'create image
-            tmpImage = Image.FromFile(Path.Combine(_templatePath, _currentTemplate.Guid.ToString, tmpLayer.FileName))
+                'create image
+                tmpImage = Image.FromFile(Path.Combine(_templatePath, _currentTemplate.Guid.ToString, tmpLayer.FileName))
 
-            'check whether the current layer is colorable
-            If tmpLayer.Type = LayerType.Base OrElse tmpLayer.Type = LayerType.ColorDecal Then
-                tmpGfx.DrawImage(tmpImage, tmpRect, 0, 0, tmpImage.Width, tmpImage.Height, GraphicsUnit.Pixel, _
-                                     GetImageMatrix(Color.FromArgb(layerImage.Color)))
-            Else
-                tmpGfx.DrawImage(tmpImage, tmpRect, 0, 0, tmpImage.Width, tmpImage.Height, GraphicsUnit.Pixel)
-            End If
+                'check whether the current layer is colorable
+                If tmpLayer.Type = LayerType.Base OrElse tmpLayer.Type = LayerType.ColorDecal Then
+                    tmpGfx.DrawImage(tmpImage, tmpRect, 0, 0, tmpImage.Width, tmpImage.Height, GraphicsUnit.Pixel, _
+                                         GetColorMatrix(Color.FromArgb(layerImage.Color)))
+                Else
+                    tmpGfx.DrawImage(tmpImage, tmpRect, 0, 0, tmpImage.Width, tmpImage.Height, GraphicsUnit.Pixel)
+                End If
 
-            'check whether the current layer is a number and add the actual number to it
-            If tmpLayer.Type = LayerType.Numberplate Then
-                'add number to each area
-                For Each tmpArea In tmpLayer.Areas
-                    'get image
-                    numImage = GetNumberImage(tmpArea.AreaWidth, tmpArea.AreaHeight)
+                'check whether the current layer is a number and add the actual number to it
+                If tmpLayer.Type = LayerType.Numberplate Then
+                    'add number to each area
+                    For Each tmpArea In tmpLayer.Areas
+                        'get image
+                        numImage = GetNumberImage(tmpArea.AreaWidth, tmpArea.AreaHeight)
 
-                    'rotate if necessary
-                    numImage = RotateImage(numImage, tmpArea.AreaRotation)
+                        'rotate if necessary
+                        numImage = RotateImage(numImage, tmpArea.AreaRotation)
 
-                    'add number
-                    tmpGfx.DrawImage(numImage, tmpArea.AreaX, tmpArea.AreaY)
-                Next
-            End If
-        Next
+                        'add number
+                        tmpGfx.DrawImage(numImage, tmpArea.AreaX, tmpArea.AreaY)
+                    Next
+                End If
+            Next
 
-        'dispose objects & return the livery image
-        tmpGfx.Dispose()
-        tmpImage.Dispose()
-        Return tmpBitmap
+            'dispose objects & return the livery image
+            tmpGfx.Dispose()
+            tmpImage.Dispose()
+            Return tmpBitmap
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error creating livery image: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return Nothing
+        End Try
     End Function
 
     Private Function RotateImage(ByVal image As Bitmap, ByVal rotation As Integer) As Bitmap
@@ -479,34 +494,44 @@ Public Class frmMain
         If rotation = 0 Then
             Return image
         Else
-            Dim tmpImg As New ImageMagick.MagickImage(image)
-            tmpImg.BackgroundColor = Color.Transparent
-            tmpImg.Alpha(ImageMagick.AlphaOption.Background)
-            tmpImg.Rotate(rotation)
-            Return tmpImg.ToBitmap
+            Try
+                Dim tmpImg As New ImageMagick.MagickImage(image)
+                tmpImg.BackgroundColor = Color.Transparent
+                tmpImg.Alpha(ImageMagick.AlphaOption.Background)
+                tmpImg.Rotate(rotation)
+                Return tmpImg.ToBitmap
+            Catch ex As Exception
+                MessageBox.Show(String.Format("Error rotating image: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return image
+            End Try
         End If
     End Function
 
     Private Function ResizeImage(ByVal image As Bitmap, ByVal maxSize As Size) As Bitmap
-        'resize image, if necessary at all
-        If image.Width < maxSize.Width AndAlso image.Height < maxSize.Height Then Return image
+        Try
+            'resize image, if necessary at all
+            If image.Width < maxSize.Width AndAlso image.Height < maxSize.Height Then Return image
 
-        'create IM image
-        Dim tmpImg As New ImageMagick.MagickImage(image)
+            'create IM image
+            Dim tmpImg As New ImageMagick.MagickImage(image)
 
-        'determine how to resize
-        If maxSize.Width / tmpImg.Width < maxSize.Height / tmpImg.Height Then
-            'resize by width
-            tmpImg.Resize(maxSize.Width, CInt(tmpImg.Height * (tmpImg.Width / maxSize.Width)))
-        Else
-            'resize by height
-            tmpImg.Resize(CInt(tmpImg.Width * (tmpImg.Height / maxSize.Height)), maxSize.Height)
-        End If
+            'determine how to resize
+            If maxSize.Width / tmpImg.Width < maxSize.Height / tmpImg.Height Then
+                'resize by width
+                tmpImg.Resize(maxSize.Width, CInt(tmpImg.Height * (tmpImg.Width / maxSize.Width)))
+            Else
+                'resize by height
+                tmpImg.Resize(CInt(tmpImg.Width * (tmpImg.Height / maxSize.Height)), maxSize.Height)
+            End If
 
-        Return tmpImg.ToBitmap
+            Return tmpImg.ToBitmap
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error resizing image: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return image
+        End Try
     End Function
 
-    Private Function GetImageMatrix(ByVal matrixColor As Color) As Imaging.ImageAttributes
+    Private Function GetColorMatrix(ByVal matrixColor As Color) As Imaging.ImageAttributes
         Try
             'Calculate re-colorization array
             Dim tmpColorize() As Single = {CSng(matrixColor.R / 255), CSng(matrixColor.G / 255), CSng(matrixColor.B / 255), 0, 1}
@@ -533,68 +558,78 @@ Public Class frmMain
     End Function
 
     Private Function GetTextImage(ByVal width As Integer, ByVal height As Integer, ByVal text As String, ByVal font As Font, ByVal color As Color, ByVal centered As Boolean) As Bitmap
-        'Initialize
-        Dim txtImage As New Bitmap(width, height)
-        Dim txtGfx As Graphics = Graphics.FromImage(txtImage)
-        Dim txtFormat As New StringFormat()
+        Try
+            'Initialize
+            Dim txtImage As New Bitmap(width, height)
+            Dim txtGfx As Graphics = Graphics.FromImage(txtImage)
+            Dim txtFormat As New StringFormat()
 
-        If centered Then
-            'Ensure centered text
-            txtFormat.LineAlignment = StringAlignment.Center
-            txtFormat.Alignment = StringAlignment.Center
-        End If
+            If centered Then
+                'Ensure centered text
+                txtFormat.LineAlignment = StringAlignment.Center
+                txtFormat.Alignment = StringAlignment.Center
+            End If
 
-        'Enable Antialiasing
-        txtGfx.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+            'Enable Antialiasing
+            txtGfx.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
 
-        'Draw number image
-        Dim tmpFont As New Font(font.FontFamily, height, font.Style, GraphicsUnit.Pixel)
-        txtGfx.DrawString(text, tmpFont, New SolidBrush(color), New Rectangle(0, 0, width, height), txtFormat)
+            'Draw number image
+            Dim tmpFont As New Font(font.FontFamily, height, font.Style, GraphicsUnit.Pixel)
+            txtGfx.DrawString(text, tmpFont, New SolidBrush(color), New Rectangle(0, 0, width, height), txtFormat)
 
-        txtGfx.Dispose()
-        Return txtImage
+            txtGfx.Dispose()
+            Return txtImage
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error creating text image/layer: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return Nothing
+        End Try
     End Function
 
     Private Function GetElementsImage() As Bitmap
-        'initialize
-        Dim elementImage As Bitmap
+        Try
+            'initialize
+            Dim elementImage As Bitmap
 
-        'create new empty image & graphics
-        Dim tmpImage As New Bitmap(2048, 1024)
-        Dim tmpGfx As Graphics = Graphics.FromImage(tmpImage)
-        tmpGfx.Clear(Color.Transparent)
+            'create new empty image & graphics
+            Dim tmpImage As New Bitmap(2048, 1024)
+            Dim tmpGfx As Graphics = Graphics.FromImage(tmpImage)
+            tmpGfx.Clear(Color.Transparent)
 
-        'quality
-        tmpGfx.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
-        tmpGfx.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
-        tmpGfx.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+            'quality
+            tmpGfx.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+            tmpGfx.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+            tmpGfx.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
 
-        For Each tmpElement In _currentSet.Elements
-            Select Case tmpElement.ElementType
-                Case ElementType.Sponsor
-                    'load image
-                    elementImage = New Bitmap(tmpElement.Content)
+            For Each tmpElement In _currentSet.Elements
+                Select Case tmpElement.ElementType
+                    Case ElementType.Sponsor
+                        'load image
+                        elementImage = New Bitmap(tmpElement.Content)
 
-                    'resize image if necessary
-                    elementImage = ResizeImage(elementImage, New Size(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight))
-                Case ElementType.Text
-                    'create image
-                    elementImage = GetTextImage(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight, tmpElement.Content, TryCast(_fontConverter.ConvertFromString(tmpElement.Settings), Font), Color.FromArgb(tmpElement.Color), False)
-                Case Else
-                    Continue For
-            End Select
+                        'resize image if necessary
+                        elementImage = ResizeImage(elementImage, New Size(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight))
+                    Case ElementType.Text
+                        'create image
+                        elementImage = GetTextImage(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight, tmpElement.Content, TryCast(_fontConverter.ConvertFromString(tmpElement.Settings), Font), Color.FromArgb(tmpElement.Color), False)
+                    Case Else
+                        Continue For
+                End Select
 
-            'rotate image, if necessary
-            elementImage = RotateImage(elementImage, tmpElement.Area.AreaRotation)
+                'rotate image, if necessary
+                elementImage = RotateImage(elementImage, tmpElement.Area.AreaRotation)
 
-            'draw image (centered)
-            tmpGfx.DrawImage(elementImage, tmpElement.Area.AreaX + (tmpElement.Area.AreaWidth - elementImage.Width), _
-                             tmpElement.Area.AreaY + (tmpElement.Area.AreaHeight - elementImage.Height))
-        Next
+                'draw image (centered)
+                tmpGfx.DrawImage(elementImage, tmpElement.Area.AreaX + (tmpElement.Area.AreaWidth - elementImage.Width), _
+                                 tmpElement.Area.AreaY + (tmpElement.Area.AreaHeight - elementImage.Height))
+            Next
 
-        'clean up & return image
-        tmpGfx.Dispose()
-        Return tmpImage
+            'clean up & return image
+            tmpGfx.Dispose()
+            Return tmpImage
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error creating element image/layer: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return Nothing
+        End Try
     End Function
 
     Private Sub ExportLivery()
@@ -602,99 +637,103 @@ Public Class frmMain
         Me.Cursor = Cursors.WaitCursor
         Me.Enabled = False
 
-        'check for driver info
-        If Not String.IsNullOrWhiteSpace(txtDriverName.Text) AndAlso Not String.IsNullOrWhiteSpace(txtTeamName.Text) Then
-            'create default folder string
-            Dim tmpSkinFolder As String
-            If _settings.UseCustomFolder Then
-                tmpSkinFolder = _settings.CustomFolder
+        Try
+            'check for driver info
+            If Not String.IsNullOrWhiteSpace(txtDriverName.Text) AndAlso Not String.IsNullOrWhiteSpace(txtTeamName.Text) Then
+                'create default folder string
+                Dim tmpSkinFolder As String
+                If _settings.UseCustomFolder Then
+                    tmpSkinFolder = _settings.CustomFolder
+                Else
+                    tmpSkinFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SimBin", "RACE 07", "CustomSkins")
+                End If
+
+                'create & open a folder browser
+                Dim sfd As New FolderBrowserDialog
+                sfd.Description = "Please select a folder to save your livery to:"
+                If Directory.Exists(tmpSkinFolder) Then sfd.SelectedPath = tmpSkinFolder
+
+                If sfd.ShowDialog = Windows.Forms.DialogResult.OK Then
+                    'check whether the folder's empty, warn the user if it isn't
+                    If Directory.EnumerateFiles(sfd.SelectedPath).Count > 0 AndAlso Not _
+                        MessageBox.Show("The selected folder is not empty. Existing files might be overwritten. Continue anyway?", "Folder not empty", _
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
+
+                        'enable ui
+                        Me.Cursor = Cursors.Default
+                        Me.Enabled = True
+
+                        Exit Sub
+                    End If
+
+                    'prepare the files' path strings
+                    Dim ddsFileName As String = Path.Combine(sfd.SelectedPath, String.Format("{0}_{1}.dds", _
+                                                                                             _currentTemplate.CarName.Replace(CChar(" "), ""), _
+                                                                                             txtDriverName.Text.Replace(CChar(" "), "")))
+                    Dim iniFileName As String = Path.ChangeExtension(ddsFileName, "ini")
+
+                    'check for existing files & delete them
+                    If File.Exists(ddsFileName) Then File.Delete(ddsFileName)
+                    If File.Exists(iniFileName) Then File.Delete(iniFileName)
+
+                    'create the ImageMagick image using the selected engine
+                    Dim exportImage As New ImageMagick.MagickImage(New Bitmap(GetLiveryImage))
+
+                    'open up a filestream for the DDS file
+                    Dim tmpFs As New FileStream(ddsFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite)
+
+                    'create export parameters
+                    Select Case "b"
+                        Case "b"
+                            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
+                            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt1")
+                            exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "false")
+                            'Case "w"
+                            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
+                            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
+                            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
+                            'Case "i"
+                            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "0")
+                            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
+                            '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
+                    End Select
+                    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "cluster-fit", "true")
+                    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "color-type", "6")
+
+                    'save the file
+                    exportImage.Write(tmpFs, ImageMagick.MagickFormat.Dds)
+
+                    'close & Dispose
+                    tmpFs.Close()
+                    exportImage.Dispose()
+
+                    'write the INI file used by Race07
+                    File.WriteAllText(iniFileName, String.Format("[[[{1}]]]{0}[[{2}]]{0}[{3}]{0}body = {4}", Environment.NewLine, _
+                                                                 txtTeamName.Text, _
+                                                                 txtDriverName.Text, _
+                                                                 _currentTemplate.InGameCarName, _
+                                                                 Path.GetFileName(ddsFileName)))
+
+                    'create Zip File
+                    If _settings.CreateZip Then
+                        Using newFile As ZipArchive = ZipFile.Open(Path.ChangeExtension(iniFileName, "zip"), ZipArchiveMode.Create)
+                            newFile.CreateEntryFromFile(iniFileName, Path.GetFileName(iniFileName), Compression.CompressionLevel.Fastest)
+                            newFile.CreateEntryFromFile(ddsFileName, Path.GetFileName(ddsFileName), Compression.CompressionLevel.Fastest)
+                        End Using
+                    End If
+
+                    'offer to open the export's folder
+                    If MessageBox.Show("Export completed. Do you want to open the livery's folder?", "Export completed", _
+                                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+                        Process.Start(sfd.SelectedPath)
+                    End If
+                End If
             Else
-                tmpSkinFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SimBin", "RACE 07", "CustomSkins")
+                MessageBox.Show("Please provide a driver and team name.", "Missing information", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
-
-            'create & open a folder browser
-            Dim sfd As New FolderBrowserDialog
-            sfd.Description = "Please select a folder to save your livery to:"
-            If Directory.Exists(tmpSkinFolder) Then sfd.SelectedPath = tmpSkinFolder
-
-            If sfd.ShowDialog = Windows.Forms.DialogResult.OK Then
-                'check whether the folder's empty, warn the user if it isn't
-                If Directory.EnumerateFiles(sfd.SelectedPath).Count > 0 AndAlso Not _
-                    MessageBox.Show("The selected folder is not empty. Existing files might be overwritten. Continue anyway?", "Folder not empty", _
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
-
-                    'enable ui
-                    Me.Cursor = Cursors.Default
-                    Me.Enabled = True
-
-                    Exit Sub
-                End If
-
-                'prepare the files' path strings
-                Dim ddsFileName As String = Path.Combine(sfd.SelectedPath, String.Format("{0}_{1}.dds", _
-                                                                                         _currentTemplate.CarName.Replace(CChar(" "), ""), _
-                                                                                         txtDriverName.Text.Replace(CChar(" "), "")))
-                Dim iniFileName As String = Path.ChangeExtension(ddsFileName, "ini")
-
-                'check for existing files & delete them
-                If File.Exists(ddsFileName) Then File.Delete(ddsFileName)
-                If File.Exists(iniFileName) Then File.Delete(iniFileName)
-
-                'create the ImageMagick image using the selected engine
-                Dim exportImage As New ImageMagick.MagickImage(New Bitmap(GetLiveryImage))
-
-                'open up a filestream for the DDS file
-                Dim tmpFs As New FileStream(ddsFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite)
-
-                'create export parameters
-                Select Case "b"
-                    Case "b"
-                        exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
-                        exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt1")
-                        exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "false")
-                        'Case "w"
-                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "6")
-                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
-                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
-                        'Case "i"
-                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "mipmaps", "0")
-                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "compression", "dxt5")
-                        '    exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "weight-by-alpha", "true")
-                End Select
-                exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "cluster-fit", "true")
-                exportImage.SetDefine(ImageMagick.MagickFormat.Dds, "color-type", "6")
-
-                'save the file
-                exportImage.Write(tmpFs, ImageMagick.MagickFormat.Dds)
-
-                'close & Dispose
-                tmpFs.Close()
-                exportImage.Dispose()
-
-                'write the INI file used by Race07
-                File.WriteAllText(iniFileName, String.Format("[[[{1}]]]{0}[[{2}]]{0}[{3}]{0}body = {4}", Environment.NewLine, _
-                                                             txtTeamName.Text, _
-                                                             txtDriverName.Text, _
-                                                             _currentTemplate.InGameCarName, _
-                                                             Path.GetFileName(ddsFileName)))
-
-                'create Zip File
-                If _settings.CreateZip Then
-                    Using newFile As ZipArchive = ZipFile.Open(Path.ChangeExtension(iniFileName, "zip"), ZipArchiveMode.Create)
-                        newFile.CreateEntryFromFile(iniFileName, Path.GetFileName(iniFileName), Compression.CompressionLevel.Fastest)
-                        newFile.CreateEntryFromFile(ddsFileName, Path.GetFileName(ddsFileName), Compression.CompressionLevel.Fastest)
-                    End Using
-                End If
-
-                'offer to open the export's folder
-                If MessageBox.Show("Export completed. Do you want to open the livery's folder?", "Export completed", _
-                                   MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
-                    Process.Start(sfd.SelectedPath)
-                End If
-            End If
-        Else
-            MessageBox.Show("Please provide a driver and team name.", "Missing information", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End If
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error exporting livery: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
 
         'enable ui
         Me.Cursor = Cursors.Default
@@ -879,33 +918,37 @@ Public Class frmMain
     End Sub
 
     Private Sub AddLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
-        'initialise
-        Dim insertIndex As Integer
-        Dim currentSetTypes As New List(Of LayerType)
-        Dim newPresetLayer As New PresetLayer
-        Dim tmpLayer As Layer = _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = layerGuid)
+        Try
+            'initialise
+            Dim insertIndex As Integer
+            Dim currentSetTypes As New List(Of LayerType)
+            Dim newPresetLayer As New PresetLayer
+            Dim tmpLayer As Layer = _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = layerGuid)
 
-        newPresetLayer.LayerGuid = layerGuid
-        newPresetLayer.PresetColor = PresetColorType.NonColorable
+            newPresetLayer.LayerGuid = layerGuid
+            newPresetLayer.PresetColor = PresetColorType.NonColorable
 
-        'get current set's layertypes
-        For Each tmpPresetLayer In _currentSet.Layers
-            currentSetTypes.Add(_currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = tmpPresetLayer.LayerGuid).Type)
-        Next
+            'get current set's layertypes
+            For Each tmpPresetLayer In _currentSet.Layers
+                currentSetTypes.Add(_currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = tmpPresetLayer.LayerGuid).Type)
+            Next
 
-        'determine where to insert the new layer
-        insertIndex = currentSetTypes.FindIndex(Function(x) CInt(x) > CInt(tmpLayer.Type))
-        If tmpLayer.Type = LayerType.ColorDecal Then
-            newPresetLayer.PresetColor = PresetColorType.CustomPreset
-            newPresetLayer.Color = layerColor.ToArgb
-        End If
-        If insertIndex = -1 Then insertIndex = lviChassisLayers.Items.Count
+            'determine where to insert the new layer
+            insertIndex = currentSetTypes.FindIndex(Function(x) CInt(x) > CInt(tmpLayer.Type))
+            If tmpLayer.Type = LayerType.ColorDecal Then
+                newPresetLayer.PresetColor = PresetColorType.CustomPreset
+                newPresetLayer.Color = layerColor.ToArgb
+            End If
+            If insertIndex = -1 Then insertIndex = lviChassisLayers.Items.Count
 
-        'add layer to current set
-        _currentSet.Layers.Insert(insertIndex, newPresetLayer)
+            'add layer to current set
+            _currentSet.Layers.Insert(insertIndex, newPresetLayer)
 
-        'reload set (lists, etc)
-        LoadPreset(_currentSet)
+            'reload set (lists, etc)
+            LoadPreset(_currentSet)
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error adding layer: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub AddElement(ByVal element As PresetElement)
@@ -918,111 +961,135 @@ Public Class frmMain
 
     Private Sub UpdateLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
         'update the edited layer's color, no reload necessary
-        _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).Color = layerColor.ToArgb
+        Try
+            _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).Color = layerColor.ToArgb
 
-        'auto-update
-        If _settings.AutoUpdate Then UpdateChassisPreview()
+            'auto-update
+            If _settings.AutoUpdate Then UpdateChassisPreview()
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error updating layer: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub UpdateElement(ByVal element As PresetElement)
         'update the edited layer's properties
-        _currentSet.Elements.FirstOrDefault(Function(x) x.Guid = element.Guid).Content = element.Content
-        _currentSet.Elements.FirstOrDefault(Function(x) x.Guid = element.Guid).Area = element.Area
+        Try
+            _currentSet.Elements.FirstOrDefault(Function(x) x.Guid = element.Guid).Content = element.Content
+            _currentSet.Elements.FirstOrDefault(Function(x) x.Guid = element.Guid).Area = element.Area
 
-        'reload set (lists, etc)
-        LoadPreset(_currentSet)
+            'reload set (lists, etc)
+            LoadPreset(_currentSet)
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error updating element: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub MoveLayer(ByVal moveDown As Boolean)
         'check whether an item is selected
         If lviChassisLayers.SelectedItems.Count = 1 Then
-            'find item in current set & get new index if it's NOT the first/last
-            Dim insertIndex As Integer
-            If moveDown Then
-                insertIndex = _currentSet.Layers.FindIndex(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")) + 2
-                If insertIndex > _currentSet.Layers.Count Then Exit Sub
-            Else
-                insertIndex = _currentSet.Layers.FindIndex(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")) - 1
-                If insertIndex < 0 Then Exit Sub
-            End If
+            Try
+                'find item in current set & get new index if it's NOT the first/last
+                Dim insertIndex As Integer
+                If moveDown Then
+                    insertIndex = _currentSet.Layers.FindIndex(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")) + 2
+                    If insertIndex > _currentSet.Layers.Count Then Exit Sub
+                Else
+                    insertIndex = _currentSet.Layers.FindIndex(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")) - 1
+                    If insertIndex < 0 Then Exit Sub
+                End If
 
-            'insert item at new index & remove at old
-            _currentSet.Layers.Insert(insertIndex, _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")))
-            If moveDown Then
-                _currentSet.Layers.RemoveAt(insertIndex - 2)
-            Else
-                _currentSet.Layers.RemoveAt(insertIndex + 2)
-            End If
+                'insert item at new index & remove at old
+                _currentSet.Layers.Insert(insertIndex, _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")))
+                If moveDown Then
+                    _currentSet.Layers.RemoveAt(insertIndex - 2)
+                Else
+                    _currentSet.Layers.RemoveAt(insertIndex + 2)
+                End If
 
-            'reload current set
-            LoadPreset(_currentSet)
+                'reload current set
+                LoadPreset(_currentSet)
 
-            'reselect item
-            If moveDown Then
-                lviChassisLayers.Items(insertIndex - 1).Selected = True
-            Else
-                lviChassisLayers.Items(insertIndex).Selected = True
-            End If
+                'reselect item
+                If moveDown Then
+                    lviChassisLayers.Items(insertIndex - 1).Selected = True
+                Else
+                    lviChassisLayers.Items(insertIndex).Selected = True
+                End If
+            Catch ex As Exception
+                MessageBox.Show(String.Format("Error moving layer: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         End If
     End Sub
 
     Private Sub MoveElement(ByVal moveDown As Boolean)
         'check whether an item is selected
         If lviChassisElements.SelectedItems.Count = 1 Then
-            'find item in current set & get new index if it's NOT the first/last
-            Dim insertIndex As Integer
-            If moveDown Then
-                insertIndex = _currentSet.Elements.FindIndex(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")) + 2
-                If insertIndex > _currentSet.Elements.Count Then Exit Sub
-            Else
-                insertIndex = _currentSet.Elements.FindIndex(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")) - 1
-                If insertIndex < 0 Then Exit Sub
-            End If
+            Try
+                'find item in current set & get new index if it's NOT the first/last
+                Dim insertIndex As Integer
+                If moveDown Then
+                    insertIndex = _currentSet.Elements.FindIndex(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")) + 2
+                    If insertIndex > _currentSet.Elements.Count Then Exit Sub
+                Else
+                    insertIndex = _currentSet.Elements.FindIndex(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")) - 1
+                    If insertIndex < 0 Then Exit Sub
+                End If
 
-            'insert item at new index & remove at old
-            _currentSet.Elements.Insert(insertIndex, _currentSet.Elements.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")))
-            If moveDown Then
-                _currentSet.Elements.RemoveAt(insertIndex - 2)
-            Else
-                _currentSet.Elements.RemoveAt(insertIndex + 2)
-            End If
+                'insert item at new index & remove at old
+                _currentSet.Elements.Insert(insertIndex, _currentSet.Elements.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D")))
+                If moveDown Then
+                    _currentSet.Elements.RemoveAt(insertIndex - 2)
+                Else
+                    _currentSet.Elements.RemoveAt(insertIndex + 2)
+                End If
 
-            'reload current set
-            LoadPreset(_currentSet)
+                'reload current set
+                LoadPreset(_currentSet)
 
-            'reselect item
-            If moveDown Then
-                lviChassisElements.Items(insertIndex - 1).Selected = True
-            Else
-                lviChassisElements.Items(insertIndex).Selected = True
-            End If
+                'reselect item
+                If moveDown Then
+                    lviChassisElements.Items(insertIndex - 1).Selected = True
+                Else
+                    lviChassisElements.Items(insertIndex).Selected = True
+                End If
+            Catch ex As Exception
+                MessageBox.Show(String.Format("Error moving element: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         End If
     End Sub
 
     Private Sub RemoveLayer()
         'check whether an item is selected
         If lviChassisLayers.SelectedItems.Count = 1 Then
-            'check whether the selected item is the base layer and warn accordingly
-            If Not _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")).Type = LayerType.Base _
-                OrElse MessageBox.Show("You are trying to remove the base layer, which is NOT recommended - do you want to continue anyway?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
+            Try
+                'check whether the selected item is the base layer and warn accordingly
+                If Not _currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")).Type = LayerType.Base _
+                    OrElse MessageBox.Show("You are trying to remove the base layer, which is NOT recommended - do you want to continue anyway?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.Yes Then
 
-                'remove layer
-                _currentSet.Layers.RemoveAll(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D"))
+                    'remove layer
+                    _currentSet.Layers.RemoveAll(Function(x) x.LayerGuid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D"))
 
-                'reload current set
-                LoadPreset(_currentSet)
-            End If
+                    'reload current set
+                    LoadPreset(_currentSet)
+                End If
+            Catch ex As Exception
+                MessageBox.Show(String.Format("Error removing layer: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         End If
     End Sub
 
     Private Sub RemoveElement()
         'check whether an item is selected
         If lviChassisElements.SelectedItems.Count = 1 Then
-            'remove layer
-            _currentSet.Elements.RemoveAll(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D"))
+            Try
+                'remove layer
+                _currentSet.Elements.RemoveAll(Function(x) x.Guid = Guid.ParseExact(lviChassisElements.SelectedItems(0).Text, "D"))
 
-            'reload current set
-            LoadPreset(_currentSet)
+                'reload current set
+                LoadPreset(_currentSet)
+            Catch ex As Exception
+                MessageBox.Show(String.Format("Error removing element: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         End If
     End Sub
 

@@ -2,6 +2,8 @@
 
 Public Class frmElementDialog
 
+#Region "Fields"
+
     Private _newElement As Boolean
     Private _elementType As ElementType
     Private _fontConverter As FontConverter
@@ -13,66 +15,71 @@ Public Class frmElementDialog
 
     Friend Element As PresetElement
 
+#End Region
+
 #Region "Constructor"
 
     Public Sub New(ByVal elementType As ElementType, ByVal elementGuid As Guid, ByVal currentElements As List(Of PresetElement), ByVal backgroundImage As Image)
-
-        ' Dieser Aufruf ist für den Designer erforderlich.
         InitializeComponent()
 
-        ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
-        'initialise
-        _fontConverter = New FontConverter
-        _elementType = elementType
-        Me.Text = String.Format("{0} {1}", Me.Text, elementType.ToString)
-        _selBrush = New SolidBrush(Color.FromArgb(150, 32, 74, 135))
+        Try
+            'initialise
+            _fontConverter = New FontConverter
+            _elementType = elementType
+            Me.Text = String.Format("{0} {1}", Me.Text, elementType.ToString)
+            _selBrush = New SolidBrush(Color.FromArgb(150, 32, 74, 135))
 
-        'insert image
-        picElementPreview.Image = backgroundImage
+            'insert image
+            picElementPreview.Image = backgroundImage
 
-        'load element (if edit)
-        If Not elementGuid = Guid.Empty Then
-            Element = currentElements.FirstOrDefault(Function(x) x.Guid = elementGuid)
+            'load element (if edit)
+            If Not elementGuid = Guid.Empty Then
+                Element = currentElements.FirstOrDefault(Function(x) x.Guid = elementGuid)
 
-            'load settings
+                'load settings
+                Select Case elementType
+                    Case Simplivery.ElementType.Sponsor
+                        txtElementImage.Text = Element.Content
+                    Case Simplivery.ElementType.Text
+                        _elementFont = TryCast(_fontConverter.ConvertFromString(Element.Settings), Font)
+                        txtElementText.Text = Element.Content
+                        txtElementTextFont.Text = _elementFont.Name
+                        pnlElementTextColor.BackColor = Color.FromArgb(Element.Color)
+                End Select
+
+                nudElementPositionX.Value = Element.Area.AreaX
+                nudElementPositionY.Value = Element.Area.AreaY
+                nudElementWidth.Value = Element.Area.AreaWidth
+                nudElementHeight.Value = Element.Area.AreaHeight
+                nudElementRotation.Value = Element.Area.AreaRotation
+
+                'draw selection
+                _selRect = Fullsize2Selection(New Rectangle(Element.Area.AreaX, Element.Area.AreaY, Element.Area.AreaWidth, Element.Area.AreaHeight))
+                picElementPreview.Invalidate()
+            Else
+                'new element
+                _newElement = True
+                _elementFont = frmMain._nameFont
+                txtElementTextFont.Text = _elementFont.Name
+                Element = New PresetElement
+                Element.ElementType = elementType
+                pnlElementTextColor.BackColor = frmMain.pnlThirdColor.BackColor
+                Element.Color = pnlElementTextColor.BackColor.ToArgb
+                btnApply.Text = "Add"
+            End If
+
+            'remove unneeded pages
             Select Case elementType
                 Case Simplivery.ElementType.Sponsor
-                    txtElementImage.Text = Element.Content
+                    tbcElementSettings.TabPages.RemoveAt(1)
                 Case Simplivery.ElementType.Text
-                    _elementFont = TryCast(_fontConverter.ConvertFromString(Element.Settings), Font)
-                    txtElementText.Text = Element.Content
-                    txtElementTextFont.Text = _elementFont.Name
-                    pnlElementTextColor.BackColor = Color.FromArgb(Element.Color)
+                    tbcElementSettings.TabPages.RemoveAt(2)
             End Select
+        Catch ex As Exception
+            MessageBox.Show(String.Format("Error initializing element dialog: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Me.DialogResult = Windows.Forms.DialogResult.Abort
+        End Try
 
-            nudElementPositionX.Value = Element.Area.AreaX
-            nudElementPositionY.Value = Element.Area.AreaY
-            nudElementWidth.Value = Element.Area.AreaWidth
-            nudElementHeight.Value = Element.Area.AreaHeight
-            nudElementRotation.Value = Element.Area.AreaRotation
-
-            'draw selection
-            _selRect = Fullsize2Selection(New Rectangle(Element.Area.AreaX, Element.Area.AreaY, Element.Area.AreaWidth, Element.Area.AreaHeight))
-            picElementPreview.Invalidate()
-        Else
-            'new element
-            _newElement = True
-            _elementFont = frmMain._nameFont
-            txtElementTextFont.Text = _elementFont.Name
-            Element = New PresetElement
-            Element.ElementType = elementType
-            pnlElementTextColor.BackColor = frmMain.pnlThirdColor.BackColor
-            Element.Color = pnlElementTextColor.BackColor.ToArgb
-            btnApply.Text = "Add"
-        End If
-
-        'remove unneeded pages
-        Select Case elementType
-            Case Simplivery.ElementType.Sponsor
-                tbcElementSettings.TabPages.RemoveAt(1)
-            Case Simplivery.ElementType.Text
-                tbcElementSettings.TabPages.RemoveAt(2)
-        End Select
     End Sub
 
 #End Region
@@ -198,7 +205,11 @@ Public Class frmElementDialog
 
         'empty temp
         For Each tmpFile In Directory.EnumerateFiles(Path.Combine(Environment.CurrentDirectory, "Temp"))
-            File.Delete(tmpFile)
+            Try
+                File.Delete(tmpFile)
+            Catch ex As Exception
+                'don't display errors
+            End Try
         Next
     End Sub
 
