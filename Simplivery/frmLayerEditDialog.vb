@@ -13,6 +13,7 @@
 
         Try
             'get layer & initialise GUI
+            Me.Icon = My.Resources.icon
             Dim tmpLayer As Layer = currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = layerGuid)
             If tmpLayer IsNot Nothing Then
                 picLayer.Image = Image.FromFile(IO.Path.Combine(templatePath, currentTemplate.Guid.ToString, tmpLayer.FileName))

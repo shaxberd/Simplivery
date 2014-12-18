@@ -24,6 +24,7 @@ Public Class frmElementDialog
 
         Try
             'initialise
+            Me.Icon = My.Resources.icon
             _fontConverter = New FontConverter
             _elementType = elementType
             Me.Text = String.Format("{0} {1}", Me.Text, elementType.ToString)
@@ -171,7 +172,11 @@ Public Class frmElementDialog
     End Sub
 
     Private Sub btnApply_Click(sender As Object, e As EventArgs) Handles btnApply.Click
-        'depending on element type and check data
+        'check data
+        If nudElementWidth.Value = 0 OrElse nudElementHeight.Value = 0 Then
+            MessageBox.Show("Error: No size or invalid size given.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        End If
         Select Case _elementType
             Case ElementType.Sponsor
                 If Not IO.File.Exists(txtElementImage.Text) Then

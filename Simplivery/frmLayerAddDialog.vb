@@ -16,6 +16,7 @@
 
         Try
             'initialize
+            Me.Icon = My.Resources.icon
             Dim tmpImageList As New ImageList
             tmpImageList.ImageSize = New Size(120, 60)
             Dim tmpListViewItem As ListViewItem

@@ -9,11 +9,9 @@
 #Region "Constructor"
 
     Public Sub New(ByVal currentSettings As Settings)
-
-        ' Dieser Aufruf ist für den Designer erforderlich.
         InitializeComponent()
 
-        ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
+        Me.Icon = My.Resources.icon
         Settings = currentSettings
         chkSaveDriverSettings.Checked = currentSettings.SaveDriverInfo
         chkSaveFontSettings.Checked = currentSettings.SaveFontInfo

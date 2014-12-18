@@ -5,6 +5,10 @@ Imports System.IO.Compression
 
 Public Class frmMain
 
+    'TODO: Rotation-Kram
+    'TODO: Pre-defined Sponsor areas (ELE)
+    'TODO: base/acc/third color kram
+
 #Region "Fields"
 
     Private _settings As Settings
@@ -27,6 +31,7 @@ Public Class frmMain
 
         Try
             'Initializing
+            Me.Icon = My.Resources.icon
             _fontConverter = New FontConverter
             _templatePath = Path.Combine(Environment.CurrentDirectory, "Templates")
             _allTemplates = New List(Of Template)
@@ -676,6 +681,7 @@ Public Class frmMain
                     'check for existing files & delete them
                     If File.Exists(ddsFileName) Then File.Delete(ddsFileName)
                     If File.Exists(iniFileName) Then File.Delete(iniFileName)
+                    If File.Exists(Path.ChangeExtension(iniFileName, "zip")) Then File.Delete(Path.ChangeExtension(iniFileName, "zip"))
 
                     'create the ImageMagick image using the selected engine
                     Dim exportImage As New ImageMagick.MagickImage(New Bitmap(GetLiveryImage))

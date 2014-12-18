@@ -20,6 +20,7 @@ Public Class frmOnlineImageDialog
         InitializeComponent()
 
         'initialize
+        Me.Icon = My.Resources.icon
         MyTempPath = tmpPath
         MyImagePath = imgPath
     End Sub
