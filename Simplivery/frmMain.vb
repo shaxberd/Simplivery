@@ -825,7 +825,8 @@ Public Class frmMain
         Dim defPreset As Preset = _currentTemplate.Presets.FirstOrDefault(Function(x) x.Guid = _currentTemplate.DefaultPreset)
 
         If defPreset IsNot Nothing Then
-            LoadPreset(defPreset)
+            'set value, this will trigger the update
+            cmbPresetCollection.ComboBox.SelectedValue = defPreset.Guid
         Else
             MessageBox.Show("Error: Default template style could not be loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
