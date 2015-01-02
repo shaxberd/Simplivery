@@ -5,7 +5,6 @@ Imports System.IO.Compression
 
 Public Class frmMain
 
-    'TODO: Rotation-Kram
     'TODO: Pre-defined Sponsor areas (ELE)
     'TODO: base/acc/third color kram
 
@@ -612,21 +611,24 @@ Public Class frmMain
                         'load image
                         elementImage = New Bitmap(tmpElement.Content)
 
+                        'rotate image, if necessary
+                        elementImage = RotateImage(elementImage, tmpElement.Area.AreaRotation)
+
                         'resize image if necessary
                         elementImage = ResizeImage(elementImage, New Size(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight))
                     Case ElementType.Text
                         'create image
                         elementImage = GetTextImage(tmpElement.Area.AreaWidth, tmpElement.Area.AreaHeight, tmpElement.Content, TryCast(_fontConverter.ConvertFromString(tmpElement.Settings), Font), Color.FromArgb(tmpElement.Color), False)
+
+                        'rotate image, if necessary
+                        elementImage = RotateImage(elementImage, tmpElement.Area.AreaRotation)
                     Case Else
                         Continue For
                 End Select
 
-                'rotate image, if necessary
-                elementImage = RotateImage(elementImage, tmpElement.Area.AreaRotation)
-
                 'draw image (centered)
-                tmpGfx.DrawImage(elementImage, tmpElement.Area.AreaX + (tmpElement.Area.AreaWidth - elementImage.Width), _
-                                 tmpElement.Area.AreaY + (tmpElement.Area.AreaHeight - elementImage.Height))
+                tmpGfx.DrawImage(elementImage, tmpElement.Area.AreaX + CInt((tmpElement.Area.AreaWidth - elementImage.Width) / 2), _
+                                 tmpElement.Area.AreaY + CInt((tmpElement.Area.AreaHeight - elementImage.Height) / 2))
             Next
 
             'clean up & return image
