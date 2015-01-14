@@ -6,6 +6,7 @@
 
     Friend SelectedLayer As Guid
     Friend SelectedColor As Color
+    Friend SelectedColorType As PresetColorType
 
 #End Region
 
@@ -40,13 +41,17 @@
 
             'set imagelist
             lviLayerList.LargeImageList = tmpImageList
+            'select first layer
+            lviLayerList.Items(0).Selected = True
 
-            'disable color choosing or adjust color
+            'disable color choosing and/or adjust color to accent color
+            btnLayerColor.Enabled = False
+            pnlLayerColor.Enabled = False
             If Not layerType = Simplivery.LayerType.ColorDecal Then
-                btnLayerColor.Enabled = False
-                pnlLayerColor.Enabled = False
-                lblLayerColor.Enabled = False
+                cmbColorStyle.Enabled = False
             Else
+                cmbColorStyle.SelectedIndex = 1
+                SelectedColorType = PresetColorType.Accent
                 pnlLayerColor.BackColor = frmMain.pnlAccentColor.BackColor
                 SelectedColor = pnlLayerColor.BackColor
             End If
@@ -91,6 +96,30 @@
 
             SelectedLayer = DirectCast(lviLayerList.SelectedItems(0).Tag, Guid)
         End If
+    End Sub
+
+    Private Sub cmbColorStyle_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbColorStyle.SelectedIndexChanged
+        Select Case cmbColorStyle.SelectedIndex
+            Case 0
+                SelectedColorType = PresetColorType.Main
+                pnlLayerColor.BackColor = frmMain.pnlBaseColor.BackColor
+            Case 1
+                SelectedColorType = PresetColorType.Accent
+                pnlLayerColor.BackColor = frmMain.pnlAccentColor.BackColor
+            Case 2
+                SelectedColorType = PresetColorType.Third
+                pnlLayerColor.BackColor = frmMain.pnlThirdColor.BackColor
+            Case 3
+                'enable color choosing, exit out
+                SelectedColorType = PresetColorType.CustomPreset
+                pnlLayerColor.Enabled = True
+                btnLayerColor.Enabled = True
+                Exit Sub
+        End Select
+        'set color & disable color choosing
+        SelectedColor = pnlLayerColor.BackColor
+        pnlLayerColor.Enabled = False
+        btnLayerColor.Enabled = False
     End Sub
 
 #End Region

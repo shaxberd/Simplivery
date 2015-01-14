@@ -3,6 +3,7 @@
 #Region "Field"
 
     Friend SelectedColor As Color
+    Friend SelectedColorType As PresetColorType
 
 #End Region
 
@@ -16,11 +17,33 @@
             Me.Icon = My.Resources.icon
             Dim tmpLayer As Layer = currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = layerGuid)
             If tmpLayer IsNot Nothing Then
+                'load image, text & name
                 picLayer.Image = Image.FromFile(IO.Path.Combine(templatePath, currentTemplate.Guid.ToString, tmpLayer.FileName))
                 Me.Text = String.Format("{0} {1}", Me.Text, tmpLayer.Name)
                 txtLayerName.Text = tmpLayer.Name
-                pnlLayerColor.BackColor = Color.FromArgb(currentSetLayers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).Color)
-                SelectedColor = pnlLayerColor.BackColor
+
+                'load color setting
+                Dim tmpPreset As PresetLayer = currentSetLayers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid)
+                If Not tmpPreset.PresetColor = PresetColorType.NonColorable Then
+                    SelectedColorType = tmpPreset.PresetColor
+                    Select Case tmpPreset.PresetColor
+                        Case PresetColorType.Main
+                            cmbColorStyle.SelectedIndex = 0
+                        Case PresetColorType.Accent
+                            cmbColorStyle.SelectedIndex = 1
+                        Case PresetColorType.Third
+                            cmbColorStyle.SelectedIndex = 2
+                        Case PresetColorType.CustomPreset
+                            pnlLayerColor.Enabled = True
+                            btnLayerColor.Enabled = True
+                            cmbColorStyle.SelectedIndex = 3
+                    End Select
+                    pnlLayerColor.BackColor = Color.FromArgb(tmpPreset.Color)
+                    SelectedColor = pnlLayerColor.BackColor
+                Else
+                    cmbColorStyle.Enabled = False
+                End If
+                
             Else
                 Me.DialogResult = Windows.Forms.DialogResult.Abort
             End If
@@ -32,7 +55,7 @@
 
 #End Region
 
-#Region "Buttons"
+#Region "Buttons & GUI"
 
     Private Sub btnLayerColor_Click(sender As Object, e As EventArgs) Handles btnLayerColor.Click
         'choose and set selected color
@@ -51,6 +74,30 @@
 
     Private Sub btnApply_Click(sender As Object, e As EventArgs) Handles btnApply.Click
         Me.DialogResult = Windows.Forms.DialogResult.OK
+    End Sub
+
+    Private Sub cmbColorStyle_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbColorStyle.SelectedIndexChanged
+        Select Case cmbColorStyle.SelectedIndex
+            Case 0
+                SelectedColorType = PresetColorType.Main
+                pnlLayerColor.BackColor = frmMain.pnlBaseColor.BackColor
+            Case 1
+                SelectedColorType = PresetColorType.Accent
+                pnlLayerColor.BackColor = frmMain.pnlAccentColor.BackColor
+            Case 2
+                SelectedColorType = PresetColorType.Third
+                pnlLayerColor.BackColor = frmMain.pnlThirdColor.BackColor
+            Case 3
+                'enable color choosing, exit out
+                SelectedColorType = PresetColorType.CustomPreset
+                pnlLayerColor.Enabled = True
+                btnLayerColor.Enabled = True
+                Exit Sub
+        End Select
+        'set color & disable color choosing
+        SelectedColor = pnlLayerColor.BackColor
+        pnlLayerColor.Enabled = False
+        btnLayerColor.Enabled = False
     End Sub
 
 #End Region

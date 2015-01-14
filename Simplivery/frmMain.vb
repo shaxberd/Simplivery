@@ -6,7 +6,6 @@ Imports System.IO.Compression
 Public Class frmMain
 
     'TODO: Pre-defined Sponsor areas (ELE)
-    'TODO: base/acc/third color kram
 
 #Region "Fields"
 
@@ -85,30 +84,45 @@ Public Class frmMain
 #Region "GUI - General & Buttons"
 
     Private Sub btnBaseColor_Click(sender As Object, e As EventArgs) Handles btnBaseColor.Click
-        'choose new text color
+        'choose new base color
         pnlBaseColor.BackColor = ChooseColor(pnlBaseColor.BackColor)
+
+        'auto-update
+        If _settings.AutoUpdate Then UpdateChassisPreview()
     End Sub
 
     Private Sub btnAccentColor_Click(sender As Object, e As EventArgs) Handles btnAccentColor.Click
         'choose new accent color
         pnlAccentColor.BackColor = ChooseColor(pnlAccentColor.BackColor)
+
+        'auto-update
+        If _settings.AutoUpdate Then UpdateChassisPreview()
     End Sub
 
     Private Sub btnThirdColor_Click(sender As Object, e As EventArgs) Handles btnThirdColor.Click
         'choose new third color
         pnlThirdColor.BackColor = ChooseColor(pnlThirdColor.BackColor)
+
+        'auto-update
+        If _settings.AutoUpdate Then UpdateChassisPreview()
     End Sub
 
     Private Sub btnNoFont_Click(sender As Object, e As EventArgs) Handles btnNoFont.Click
         'choose new number font
         _noFont = ChooseFont(_noFont)
         txtNoFont.Text = _noFont.Name
+
+        'auto-update
+        If _settings.AutoUpdate Then UpdateChassisPreview()
     End Sub
 
     Private Sub btnNameFont_Click(sender As Object, e As EventArgs) Handles btnNameFont.Click
         'choose new text font
         _nameFont = ChooseFont(_nameFont)
         txtNameFont.Text = _nameFont.Name
+
+        'auto-update
+        If _settings.AutoUpdate Then UpdateChassisPreview()
     End Sub
 
     Private Sub btnLiveryBasicsPreview_Click(sender As Object, e As EventArgs) Handles btnLiveryBasicsPreview.Click
@@ -462,8 +476,19 @@ Public Class frmMain
 
                 'check whether the current layer is colorable
                 If tmpLayer.Type = LayerType.Base OrElse tmpLayer.Type = LayerType.ColorDecal Then
+                    Dim tmpColor As Color
+                    Select Case layerImage.PresetColor
+                        Case PresetColorType.Main
+                            tmpColor = pnlBaseColor.BackColor
+                        Case PresetColorType.Accent
+                            tmpColor = pnlAccentColor.BackColor
+                        Case PresetColorType.Third
+                            tmpColor = pnlThirdColor.BackColor
+                        Case PresetColorType.CustomPreset
+                            tmpColor = Color.FromArgb(layerImage.Color)
+                    End Select
                     tmpGfx.DrawImage(tmpImage, tmpRect, 0, 0, tmpImage.Width, tmpImage.Height, GraphicsUnit.Pixel, _
-                                         GetColorMatrix(Color.FromArgb(layerImage.Color)))
+                                         GetColorMatrix(tmpColor))
                 Else
                     tmpGfx.DrawImage(tmpImage, tmpRect, 0, 0, tmpImage.Width, tmpImage.Height, GraphicsUnit.Pixel)
                 End If
@@ -878,7 +903,6 @@ Public Class frmMain
                         Case PresetColorType.Third
                             tmpLayer.Color = pnlThirdColor.BackColor.ToArgb
                     End Select
-                    tmpLayer.PresetColor = PresetColorType.CustomPreset
                 End If
             Next
 
@@ -897,7 +921,7 @@ Public Class frmMain
         'opens up the layer chooser for the given type
         Dim lad As New frmLayerAddDialog(_templatePath, type, _currentTemplate, _currentSet.Layers)
         If lad.ShowDialog = Windows.Forms.DialogResult.OK Then
-            AddLayer(lad.SelectedLayer, lad.SelectedColor)
+            AddLayer(lad.SelectedLayer, lad.SelectedColor, lad.SelectedColorType)
         End If
         lad.Dispose()
     End Sub
@@ -907,7 +931,7 @@ Public Class frmMain
         If lviChassisLayers.SelectedItems.Count = 1 Then
             Dim led As New frmLayerEditDialog(Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D"), _templatePath, _currentTemplate, _currentSet.Layers)
             If led.ShowDialog = Windows.Forms.DialogResult.OK Then
-                UpdateLayer(Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D"), led.SelectedColor)
+                UpdateLayer(Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D"), led.SelectedColor, led.SelectedColorType)
             End If
             led.Dispose()
         End If
@@ -927,7 +951,7 @@ Public Class frmMain
         ed.Dispose()
     End Sub
 
-    Private Sub AddLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
+    Private Sub AddLayer(ByVal layerGuid As Guid, ByVal layerColor As Color, ByVal layerColorType As PresetColorType)
         Try
             'initialise
             Dim insertIndex As Integer
@@ -946,7 +970,7 @@ Public Class frmMain
             'determine where to insert the new layer
             insertIndex = currentSetTypes.FindIndex(Function(x) CInt(x) > CInt(tmpLayer.Type))
             If tmpLayer.Type = LayerType.ColorDecal Then
-                newPresetLayer.PresetColor = PresetColorType.CustomPreset
+                newPresetLayer.PresetColor = layerColorType
                 newPresetLayer.Color = layerColor.ToArgb
             End If
             If insertIndex = -1 Then insertIndex = lviChassisLayers.Items.Count
@@ -969,10 +993,11 @@ Public Class frmMain
         LoadPreset(_currentSet)
     End Sub
 
-    Private Sub UpdateLayer(ByVal layerGuid As Guid, ByVal layerColor As Color)
+    Private Sub UpdateLayer(ByVal layerGuid As Guid, ByVal layerColor As Color, ByVal layerColorType As PresetColorType)
         'update the edited layer's color, no reload necessary
         Try
             _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).Color = layerColor.ToArgb
+            _currentSet.Layers.FirstOrDefault(Function(x) x.LayerGuid = layerGuid).PresetColor = layerColorType
 
             'auto-update
             If _settings.AutoUpdate Then UpdateChassisPreview()

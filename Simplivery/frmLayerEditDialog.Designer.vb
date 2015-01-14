@@ -23,13 +23,13 @@ Partial Class frmLayerEditDialog
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.lblLayerName = New System.Windows.Forms.Label()
-        Me.lblLayerColor = New System.Windows.Forms.Label()
         Me.pnlLayerColor = New System.Windows.Forms.Panel()
         Me.btnLayerColor = New System.Windows.Forms.Button()
-        Me.txtLayerName = New System.Windows.Forms.TextBox()
         Me.btnCancel = New System.Windows.Forms.Button()
         Me.btnApply = New System.Windows.Forms.Button()
         Me.picLayer = New System.Windows.Forms.PictureBox()
+        Me.txtLayerName = New System.Windows.Forms.TextBox()
+        Me.cmbColorStyle = New System.Windows.Forms.ComboBox()
         CType(Me.picLayer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -43,21 +43,12 @@ Partial Class frmLayerEditDialog
         Me.lblLayerName.TabIndex = 20
         Me.lblLayerName.Text = "Layer Name:"
         '
-        'lblLayerColor
-        '
-        Me.lblLayerColor.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblLayerColor.AutoSize = True
-        Me.lblLayerColor.Location = New System.Drawing.Point(336, 302)
-        Me.lblLayerColor.Name = "lblLayerColor"
-        Me.lblLayerColor.Size = New System.Drawing.Size(63, 13)
-        Me.lblLayerColor.TabIndex = 19
-        Me.lblLayerColor.Text = "Layer Color:"
-        '
         'pnlLayerColor
         '
         Me.pnlLayerColor.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnlLayerColor.BackColor = System.Drawing.Color.White
         Me.pnlLayerColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.pnlLayerColor.Enabled = False
         Me.pnlLayerColor.Location = New System.Drawing.Point(405, 298)
         Me.pnlLayerColor.Name = "pnlLayerColor"
         Me.pnlLayerColor.Size = New System.Drawing.Size(94, 20)
@@ -66,23 +57,13 @@ Partial Class frmLayerEditDialog
         'btnLayerColor
         '
         Me.btnLayerColor.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnLayerColor.Enabled = False
         Me.btnLayerColor.Location = New System.Drawing.Point(505, 298)
         Me.btnLayerColor.Name = "btnLayerColor"
         Me.btnLayerColor.Size = New System.Drawing.Size(67, 20)
         Me.btnLayerColor.TabIndex = 17
         Me.btnLayerColor.Text = "Choose"
         Me.btnLayerColor.UseVisualStyleBackColor = True
-        '
-        'txtLayerName
-        '
-        Me.txtLayerName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtLayerName.Location = New System.Drawing.Point(85, 298)
-        Me.txtLayerName.Name = "txtLayerName"
-        Me.txtLayerName.ReadOnly = True
-        Me.txtLayerName.Size = New System.Drawing.Size(245, 20)
-        Me.txtLayerName.TabIndex = 15
-        Me.txtLayerName.Text = "Layer Name"
         '
         'btnCancel
         '
@@ -118,16 +99,37 @@ Partial Class frmLayerEditDialog
         Me.picLayer.TabIndex = 21
         Me.picLayer.TabStop = False
         '
+        'txtLayerName
+        '
+        Me.txtLayerName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtLayerName.Location = New System.Drawing.Point(85, 298)
+        Me.txtLayerName.Name = "txtLayerName"
+        Me.txtLayerName.ReadOnly = True
+        Me.txtLayerName.Size = New System.Drawing.Size(170, 20)
+        Me.txtLayerName.TabIndex = 22
+        Me.txtLayerName.Text = "Layer Name"
+        '
+        'cmbColorStyle
+        '
+        Me.cmbColorStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cmbColorStyle.FormattingEnabled = True
+        Me.cmbColorStyle.Items.AddRange(New Object() {"use base color", "use accent color", "use third color", "use custom color:"})
+        Me.cmbColorStyle.Location = New System.Drawing.Point(261, 298)
+        Me.cmbColorStyle.Name = "cmbColorStyle"
+        Me.cmbColorStyle.Size = New System.Drawing.Size(138, 21)
+        Me.cmbColorStyle.TabIndex = 23
+        '
         'frmLayerEditDialog
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.ClientSize = New System.Drawing.Size(584, 368)
+        Me.Controls.Add(Me.cmbColorStyle)
+        Me.Controls.Add(Me.txtLayerName)
         Me.Controls.Add(Me.picLayer)
         Me.Controls.Add(Me.lblLayerName)
-        Me.Controls.Add(Me.lblLayerColor)
         Me.Controls.Add(Me.pnlLayerColor)
         Me.Controls.Add(Me.btnLayerColor)
-        Me.Controls.Add(Me.txtLayerName)
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.btnApply)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
@@ -142,11 +144,11 @@ Partial Class frmLayerEditDialog
 
     End Sub
     Friend WithEvents lblLayerName As System.Windows.Forms.Label
-    Friend WithEvents lblLayerColor As System.Windows.Forms.Label
     Friend WithEvents pnlLayerColor As System.Windows.Forms.Panel
     Friend WithEvents btnLayerColor As System.Windows.Forms.Button
-    Friend WithEvents txtLayerName As System.Windows.Forms.TextBox
     Friend WithEvents btnCancel As System.Windows.Forms.Button
     Friend WithEvents btnApply As System.Windows.Forms.Button
     Friend WithEvents picLayer As System.Windows.Forms.PictureBox
+    Friend WithEvents txtLayerName As System.Windows.Forms.TextBox
+    Friend WithEvents cmbColorStyle As System.Windows.Forms.ComboBox
 End Class
