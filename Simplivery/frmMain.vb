@@ -6,7 +6,6 @@ Imports System.IO.Compression
 Public Class frmMain
 
     'IDEA: Pre-defined Sponsor areas (ELE)
-    'TODO: check text drawing
 
 #Region "Fields"
 
@@ -594,6 +593,16 @@ Public Class frmMain
             Dim txtImage As New Bitmap(width, height)
             Dim txtGfx As Graphics = Graphics.FromImage(txtImage)
             Dim txtFormat As New StringFormat()
+            Dim tmpFont As New Font(font.FontFamily, height, font.Style, GraphicsUnit.Pixel)
+            Dim tmpScaled As Boolean = False
+
+            'Check approximate size & re-initialize if necessary
+            Dim tmpSize As Size = txtGfx.MeasureString(text, tmpFont).ToSize
+            If tmpSize.Width > width OrElse tmpSize.Height > height Then
+                tmpScaled = True
+                txtImage = New Bitmap(tmpSize.Width, tmpSize.Height)
+                txtGfx = Graphics.FromImage(txtImage)
+            End If
 
             If centered Then
                 'Ensure centered text
@@ -605,9 +614,12 @@ Public Class frmMain
             txtGfx.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
 
             'Draw number image
-            Dim tmpFont As New Font(font.FontFamily, height, font.Style, GraphicsUnit.Pixel)
-            txtGfx.DrawString(text, tmpFont, New SolidBrush(color), New Rectangle(0, 0, width, height), txtFormat)
+            txtGfx.DrawString(text, tmpFont, New SolidBrush(color), New Rectangle(0, 0, txtImage.Width, txtImage.Height), txtFormat)
 
+            'Resize if image was scaled up earlier to accomodate the text
+            If tmpScaled Then txtImage = ResizeImage(txtImage, New Size(width, height))
+
+            'Clean up
             txtGfx.Dispose()
             Return txtImage
         Catch ex As Exception

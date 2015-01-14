@@ -69,6 +69,9 @@ Public Class frmElementDialog
                 btnApply.Text = "Add"
             End If
 
+            'update settings element with font string
+            Element.Settings = _fontConverter.ConvertToString(_elementFont)
+
             'remove unneeded pages
             Select Case elementType
                 Case Simplivery.ElementType.Sponsor
