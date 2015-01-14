@@ -146,6 +146,8 @@ Public Class frmElementDialog
         Using ofd As New OpenFileDialog
             ofd.Filter = "PNG|*.png"
             ofd.Multiselect = False
+            Dim tmpPath As String = Path.Combine(Environment.CurrentDirectory, "Images")
+            If Directory.Exists(tmpPath) Then ofd.InitialDirectory = tmpPath
             If ofd.ShowDialog = Windows.Forms.DialogResult.OK Then
                 txtElementImage.Text = ofd.FileName
             End If
@@ -191,6 +193,7 @@ Public Class frmElementDialog
                     Exit Sub
                 End If
 
+                Element.Color = pnlElementTextColor.BackColor.ToArgb
                 Element.Content = txtElementText.Text
         End Select
 

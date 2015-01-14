@@ -52,7 +52,6 @@ Partial Class frmElementDialog
         Me.txtElementText = New System.Windows.Forms.TextBox()
         Me.tbpElementImage = New System.Windows.Forms.TabPage()
         Me.btnOnlineElementImage = New System.Windows.Forms.Button()
-        Me.btnLibraryElementImage = New System.Windows.Forms.Button()
         Me.btnBrowseElementImage = New System.Windows.Forms.Button()
         Me.lblElementImage = New System.Windows.Forms.Label()
         Me.txtElementImage = New System.Windows.Forms.TextBox()
@@ -374,7 +373,6 @@ Partial Class frmElementDialog
         'tbpElementImage
         '
         Me.tbpElementImage.Controls.Add(Me.btnOnlineElementImage)
-        Me.tbpElementImage.Controls.Add(Me.btnLibraryElementImage)
         Me.tbpElementImage.Controls.Add(Me.btnBrowseElementImage)
         Me.tbpElementImage.Controls.Add(Me.lblElementImage)
         Me.tbpElementImage.Controls.Add(Me.txtElementImage)
@@ -389,23 +387,12 @@ Partial Class frmElementDialog
         'btnOnlineElementImage
         '
         Me.btnOnlineElementImage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnOnlineElementImage.Location = New System.Drawing.Point(479, 58)
+        Me.btnOnlineElementImage.Location = New System.Drawing.Point(479, 32)
         Me.btnOnlineElementImage.Name = "btnOnlineElementImage"
         Me.btnOnlineElementImage.Size = New System.Drawing.Size(67, 20)
         Me.btnOnlineElementImage.TabIndex = 35
         Me.btnOnlineElementImage.Text = "Online"
         Me.btnOnlineElementImage.UseVisualStyleBackColor = True
-        '
-        'btnLibraryElementImage
-        '
-        Me.btnLibraryElementImage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnLibraryElementImage.Location = New System.Drawing.Point(479, 32)
-        Me.btnLibraryElementImage.Name = "btnLibraryElementImage"
-        Me.btnLibraryElementImage.Size = New System.Drawing.Size(67, 20)
-        Me.btnLibraryElementImage.TabIndex = 34
-        Me.btnLibraryElementImage.Text = "Library"
-        Me.btnLibraryElementImage.UseVisualStyleBackColor = True
-        Me.btnLibraryElementImage.Visible = False
         '
         'btnBrowseElementImage
         '
@@ -497,7 +484,6 @@ Partial Class frmElementDialog
     Friend WithEvents btnBrowseElementImage As System.Windows.Forms.Button
     Friend WithEvents lblElementImage As System.Windows.Forms.Label
     Friend WithEvents txtElementImage As System.Windows.Forms.TextBox
-    Friend WithEvents btnLibraryElementImage As System.Windows.Forms.Button
     Friend WithEvents nudElementPositionX As System.Windows.Forms.NumericUpDown
     Friend WithEvents tbrElementPositionX As System.Windows.Forms.TrackBar
     Friend WithEvents lblElementHeight As System.Windows.Forms.Label

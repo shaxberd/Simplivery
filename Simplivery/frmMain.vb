@@ -5,7 +5,8 @@ Imports System.IO.Compression
 
 Public Class frmMain
 
-    'TODO: Pre-defined Sponsor areas (ELE)
+    'IDEA: Pre-defined Sponsor areas (ELE)
+    'TODO: check text drawing
 
 #Region "Fields"
 
