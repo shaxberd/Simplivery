@@ -73,7 +73,7 @@ Public Class frmMain
 
         'save settings
         Dim xmlSer As New Xml.Serialization.XmlSerializer(_settings.GetType)
-        Dim xmlStream As New FileStream(Path.Combine(Environment.CurrentDirectory, "settings.xml"), FileMode.OpenOrCreate, FileAccess.ReadWrite)
+        Dim xmlStream As New FileStream(Path.Combine(Environment.CurrentDirectory, "settings.xml"), FileMode.Create, FileAccess.ReadWrite)
         xmlSer.Serialize(xmlStream, _settings)
         xmlStream.Close()
         xmlStream.Dispose()
@@ -318,11 +318,15 @@ Public Class frmMain
         Dim settingsFile As String = Path.Combine(Environment.CurrentDirectory, "settings.xml")
 
         If File.Exists(settingsFile) Then
-            Dim xmlSer As New Xml.Serialization.XmlSerializer(_settings.GetType)
-            Dim xmlStream As New FileStream(settingsFile, FileMode.Open, FileAccess.Read)
-            _settings = TryCast(xmlSer.Deserialize(xmlStream), Settings)
-            xmlStream.Close()
-            xmlStream.Dispose()
+            Try
+                Dim xmlSer As New Xml.Serialization.XmlSerializer(_settings.GetType)
+                Dim xmlStream As New FileStream(settingsFile, FileMode.Open, FileAccess.Read)
+                _settings = TryCast(xmlSer.Deserialize(xmlStream), Settings)
+                xmlStream.Close()
+                xmlStream.Dispose()
+            Catch ex As Exception
+                MessageBox.Show(String.Format("Error loading settings, reverting to defaults: {0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         End If
     End Sub
 
@@ -587,7 +591,7 @@ Public Class frmMain
         Return GetTextImage(width, height, nudDriverNo.Value.ToString, _noFont, Color.Black, True)
     End Function
 
-    Private Function GetTextImage(ByVal width As Integer, ByVal height As Integer, ByVal text As String, ByVal font As Font, ByVal color As Color, ByVal centered As Boolean) As Bitmap
+    Private Function GetTextImage(ByVal width As Integer, ByVal height As Integer, ByVal text As String, ByVal font As Font, ByVal color As Color, ByVal centerNoScaling As Boolean) As Bitmap
         Try
             'Initialize
             Dim txtImage As New Bitmap(width, height)
@@ -596,18 +600,19 @@ Public Class frmMain
             Dim tmpFont As New Font(font.FontFamily, height, font.Style, GraphicsUnit.Pixel)
             Dim tmpScaled As Boolean = False
 
-            'Check approximate size & re-initialize if necessary
-            Dim tmpSize As Size = txtGfx.MeasureString(text, tmpFont).ToSize
-            If tmpSize.Width > width OrElse tmpSize.Height > height Then
-                tmpScaled = True
-                txtImage = New Bitmap(tmpSize.Width, tmpSize.Height)
-                txtGfx = Graphics.FromImage(txtImage)
-            End If
 
-            If centered Then
-                'Ensure centered text
+            If centerNoScaling Then
+                'Ensure centered text, this is for numbers exclusively ATM
                 txtFormat.LineAlignment = StringAlignment.Center
                 txtFormat.Alignment = StringAlignment.Center
+            Else
+                'Check approximate size & re-initialize if necessary
+                Dim tmpSize As Size = txtGfx.MeasureString(text, tmpFont).ToSize
+                If tmpSize.Width > width OrElse tmpSize.Height > height Then
+                    tmpScaled = True
+                    txtImage = New Bitmap(tmpSize.Width, tmpSize.Height)
+                    txtGfx = Graphics.FromImage(txtImage)
+                End If
             End If
 
             'Enable Antialiasing

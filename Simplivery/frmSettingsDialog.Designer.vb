@@ -29,13 +29,13 @@ Partial Class frmSettingsDialog
         Me.chkSaveFontSettings = New System.Windows.Forms.CheckBox()
         Me.chkSaveDriverSettings = New System.Windows.Forms.CheckBox()
         Me.grpPreviewSettings = New System.Windows.Forms.GroupBox()
-        Me.grpExportSettings = New System.Windows.Forms.GroupBox()
-        Me.radUseCustomSkinFolder = New System.Windows.Forms.RadioButton()
-        Me.radUseCustomFolder = New System.Windows.Forms.RadioButton()
-        Me.txtCustomFolder = New System.Windows.Forms.TextBox()
-        Me.btnChooseCustomFolder = New System.Windows.Forms.Button()
-        Me.chkCreateZip = New System.Windows.Forms.CheckBox()
         Me.chkAutoUpdate = New System.Windows.Forms.CheckBox()
+        Me.grpExportSettings = New System.Windows.Forms.GroupBox()
+        Me.chkCreateZip = New System.Windows.Forms.CheckBox()
+        Me.btnChooseCustomFolder = New System.Windows.Forms.Button()
+        Me.txtCustomFolder = New System.Windows.Forms.TextBox()
+        Me.radUseCustomFolder = New System.Windows.Forms.RadioButton()
+        Me.radUseCustomSkinFolder = New System.Windows.Forms.RadioButton()
         Me.grpSaveSettings.SuspendLayout()
         Me.grpPreviewSettings.SuspendLayout()
         Me.grpExportSettings.SuspendLayout()
@@ -113,6 +113,16 @@ Partial Class frmSettingsDialog
         Me.grpPreviewSettings.TabStop = False
         Me.grpPreviewSettings.Text = "Previews"
         '
+        'chkAutoUpdate
+        '
+        Me.chkAutoUpdate.AutoSize = True
+        Me.chkAutoUpdate.Location = New System.Drawing.Point(6, 20)
+        Me.chkAutoUpdate.Name = "chkAutoUpdate"
+        Me.chkAutoUpdate.Size = New System.Drawing.Size(156, 43)
+        Me.chkAutoUpdate.TabIndex = 6
+        Me.chkAutoUpdate.Text = "Update previews whenever" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "layers, elements and other" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "settings change"
+        Me.chkAutoUpdate.UseVisualStyleBackColor = True
+        '
         'grpExportSettings
         '
         Me.grpExportSettings.Controls.Add(Me.chkCreateZip)
@@ -127,16 +137,31 @@ Partial Class frmSettingsDialog
         Me.grpExportSettings.TabStop = False
         Me.grpExportSettings.Text = "Export"
         '
-        'radUseCustomSkinFolder
+        'chkCreateZip
         '
-        Me.radUseCustomSkinFolder.AutoSize = True
-        Me.radUseCustomSkinFolder.Location = New System.Drawing.Point(6, 19)
-        Me.radUseCustomSkinFolder.Name = "radUseCustomSkinFolder"
-        Me.radUseCustomSkinFolder.Size = New System.Drawing.Size(137, 17)
-        Me.radUseCustomSkinFolder.TabIndex = 0
-        Me.radUseCustomSkinFolder.TabStop = True
-        Me.radUseCustomSkinFolder.Text = "Use custom skins folder"
-        Me.radUseCustomSkinFolder.UseVisualStyleBackColor = True
+        Me.chkCreateZip.AutoSize = True
+        Me.chkCreateZip.Location = New System.Drawing.Point(6, 114)
+        Me.chkCreateZip.Name = "chkCreateZip"
+        Me.chkCreateZip.Size = New System.Drawing.Size(77, 17)
+        Me.chkCreateZip.TabIndex = 5
+        Me.chkCreateZip.Text = "Create ZIP"
+        Me.chkCreateZip.UseVisualStyleBackColor = True
+        '
+        'btnChooseCustomFolder
+        '
+        Me.btnChooseCustomFolder.Location = New System.Drawing.Point(139, 65)
+        Me.btnChooseCustomFolder.Name = "btnChooseCustomFolder"
+        Me.btnChooseCustomFolder.Size = New System.Drawing.Size(37, 20)
+        Me.btnChooseCustomFolder.TabIndex = 3
+        Me.btnChooseCustomFolder.Text = "..."
+        Me.btnChooseCustomFolder.UseVisualStyleBackColor = True
+        '
+        'txtCustomFolder
+        '
+        Me.txtCustomFolder.Location = New System.Drawing.Point(22, 65)
+        Me.txtCustomFolder.Name = "txtCustomFolder"
+        Me.txtCustomFolder.Size = New System.Drawing.Size(111, 20)
+        Me.txtCustomFolder.TabIndex = 2
         '
         'radUseCustomFolder
         '
@@ -149,41 +174,16 @@ Partial Class frmSettingsDialog
         Me.radUseCustomFolder.Text = "Use custom folder:"
         Me.radUseCustomFolder.UseVisualStyleBackColor = True
         '
-        'txtCustomFolder
+        'radUseCustomSkinFolder
         '
-        Me.txtCustomFolder.Location = New System.Drawing.Point(22, 65)
-        Me.txtCustomFolder.Name = "txtCustomFolder"
-        Me.txtCustomFolder.Size = New System.Drawing.Size(111, 20)
-        Me.txtCustomFolder.TabIndex = 2
-        '
-        'btnChooseCustomFolder
-        '
-        Me.btnChooseCustomFolder.Location = New System.Drawing.Point(139, 65)
-        Me.btnChooseCustomFolder.Name = "btnChooseCustomFolder"
-        Me.btnChooseCustomFolder.Size = New System.Drawing.Size(37, 20)
-        Me.btnChooseCustomFolder.TabIndex = 3
-        Me.btnChooseCustomFolder.Text = "..."
-        Me.btnChooseCustomFolder.UseVisualStyleBackColor = True
-        '
-        'chkCreateZip
-        '
-        Me.chkCreateZip.AutoSize = True
-        Me.chkCreateZip.Location = New System.Drawing.Point(6, 114)
-        Me.chkCreateZip.Name = "chkCreateZip"
-        Me.chkCreateZip.Size = New System.Drawing.Size(77, 17)
-        Me.chkCreateZip.TabIndex = 5
-        Me.chkCreateZip.Text = "Create ZIP"
-        Me.chkCreateZip.UseVisualStyleBackColor = True
-        '
-        'chkAutoUpdate
-        '
-        Me.chkAutoUpdate.AutoSize = True
-        Me.chkAutoUpdate.Location = New System.Drawing.Point(6, 20)
-        Me.chkAutoUpdate.Name = "chkAutoUpdate"
-        Me.chkAutoUpdate.Size = New System.Drawing.Size(156, 30)
-        Me.chkAutoUpdate.TabIndex = 6
-        Me.chkAutoUpdate.Text = "Update previews whenever" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "layers or elements change"
-        Me.chkAutoUpdate.UseVisualStyleBackColor = True
+        Me.radUseCustomSkinFolder.AutoSize = True
+        Me.radUseCustomSkinFolder.Location = New System.Drawing.Point(6, 19)
+        Me.radUseCustomSkinFolder.Name = "radUseCustomSkinFolder"
+        Me.radUseCustomSkinFolder.Size = New System.Drawing.Size(137, 17)
+        Me.radUseCustomSkinFolder.TabIndex = 0
+        Me.radUseCustomSkinFolder.TabStop = True
+        Me.radUseCustomSkinFolder.Text = "Use custom skins folder"
+        Me.radUseCustomSkinFolder.UseVisualStyleBackColor = True
         '
         'frmSettingsDialog
         '

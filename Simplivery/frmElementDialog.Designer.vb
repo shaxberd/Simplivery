@@ -165,7 +165,8 @@ Partial Class frmElementDialog
         Me.tbrElementRotation.BackColor = System.Drawing.Color.White
         Me.tbrElementRotation.LargeChange = 45
         Me.tbrElementRotation.Location = New System.Drawing.Point(66, 58)
-        Me.tbrElementRotation.Maximum = 360
+        Me.tbrElementRotation.Maximum = 359
+        Me.tbrElementRotation.Minimum = -359
         Me.tbrElementRotation.Name = "tbrElementRotation"
         Me.tbrElementRotation.Size = New System.Drawing.Size(119, 20)
         Me.tbrElementRotation.SmallChange = 15
@@ -175,7 +176,8 @@ Partial Class frmElementDialog
         'nudElementRotation
         '
         Me.nudElementRotation.Location = New System.Drawing.Point(191, 58)
-        Me.nudElementRotation.Maximum = New Decimal(New Integer() {360, 0, 0, 0})
+        Me.nudElementRotation.Maximum = New Decimal(New Integer() {359, 0, 0, 0})
+        Me.nudElementRotation.Minimum = New Decimal(New Integer() {359, 0, 0, -2147483648})
         Me.nudElementRotation.Name = "nudElementRotation"
         Me.nudElementRotation.Size = New System.Drawing.Size(60, 20)
         Me.nudElementRotation.TabIndex = 24

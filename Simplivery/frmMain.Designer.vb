@@ -449,16 +449,16 @@ Partial Class frmMain
         Me.grpBasicColors.Size = New System.Drawing.Size(256, 140)
         Me.grpBasicColors.TabIndex = 7
         Me.grpBasicColors.TabStop = False
-        Me.grpBasicColors.Text = "Preselect colors for new layers"
+        Me.grpBasicColors.Text = "Preset colors"
         '
         'lblThirdColorInfo
         '
         Me.lblThirdColorInfo.AutoSize = True
         Me.lblThirdColorInfo.Location = New System.Drawing.Point(82, 94)
         Me.lblThirdColorInfo.Name = "lblThirdColorInfo"
-        Me.lblThirdColorInfo.Size = New System.Drawing.Size(152, 13)
+        Me.lblThirdColorInfo.Size = New System.Drawing.Size(161, 13)
         Me.lblThirdColorInfo.TabIndex = 13
-        Me.lblThirdColorInfo.Text = "(used for new text and presets)"
+        Me.lblThirdColorInfo.Text = "(also used for new text elements)"
         '
         'lblThirdColor
         '
@@ -801,7 +801,7 @@ Partial Class frmMain
         '
         Me.spcChassis2.Panel2.Controls.Add(Me.grpChassisElements)
         Me.spcChassis2.Size = New System.Drawing.Size(569, 389)
-        Me.spcChassis2.SplitterDistance = 368
+        Me.spcChassis2.SplitterDistance = 371
         Me.spcChassis2.SplitterWidth = 1
         Me.spcChassis2.TabIndex = 0
         Me.spcChassis2.TabStop = False
@@ -810,7 +810,7 @@ Partial Class frmMain
         '
         Me.btnChassisPreview.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.btnChassisPreview.Image = Global.Simplivery.My.Resources.Resources.reload
-        Me.btnChassisPreview.Location = New System.Drawing.Point(136, 191)
+        Me.btnChassisPreview.Location = New System.Drawing.Point(137, 191)
         Me.btnChassisPreview.Name = "btnChassisPreview"
         Me.btnChassisPreview.Size = New System.Drawing.Size(100, 32)
         Me.btnChassisPreview.TabIndex = 1
@@ -827,7 +827,7 @@ Partial Class frmMain
         Me.picChassisPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.picChassisPreview.Location = New System.Drawing.Point(5, 3)
         Me.picChassisPreview.Name = "picChassisPreview"
-        Me.picChassisPreview.Size = New System.Drawing.Size(358, 182)
+        Me.picChassisPreview.Size = New System.Drawing.Size(361, 182)
         Me.picChassisPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picChassisPreview.TabIndex = 0
         Me.picChassisPreview.TabStop = False
@@ -840,7 +840,7 @@ Partial Class frmMain
         Me.grpChassisElements.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpChassisElements.Location = New System.Drawing.Point(0, 0)
         Me.grpChassisElements.Name = "grpChassisElements"
-        Me.grpChassisElements.Size = New System.Drawing.Size(200, 389)
+        Me.grpChassisElements.Size = New System.Drawing.Size(197, 389)
         Me.grpChassisElements.TabIndex = 1
         Me.grpChassisElements.TabStop = False
         Me.grpChassisElements.Text = "Elements"
