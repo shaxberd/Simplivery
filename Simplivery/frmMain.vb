@@ -875,16 +875,26 @@ Public Class frmMain
     Private Sub LoadTemplateDefault()
         Dim defPreset As Preset = _currentTemplate.Presets.FirstOrDefault(Function(x) x.Guid = _currentTemplate.DefaultPreset)
 
-        If defPreset IsNot Nothing Then
-            'set value, this will trigger the update
-            cmbPresetCollection.ComboBox.SelectedValue = defPreset.Guid
-        Else
+        Try
+            'Change combobox item (if still in default) or call SelectPreset
+            If cmbPresetCollection.ComboBox.SelectedText = defPreset.Name Then
+                cmbPresetCollection.ComboBox.SelectedValue = defPreset.Guid
+            Else
+                SelectPreset(_currentTemplate.DefaultPreset)
+            End If
+        Catch ex As Exception
             MessageBox.Show("Error: Default template style could not be loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End If
+        End Try
     End Sub
 
     Private Sub SelectPreset(ByVal presetGuid As Guid)
-        Dim tmpLoadPreset As Preset = _currentTemplate.Presets.FirstOrDefault(Function(x) x.Guid = presetGuid)
+        'Reload entire template temporarily (unfortunately, this is necessary as changed presets won't revert to their default state)
+        Dim xmlDeser As New Xml.Serialization.XmlSerializer((New Template).GetType)
+        Dim xmlStream As New FileStream(Path.Combine(Environment.CurrentDirectory, "Templates", _currentTemplate.Guid.ToString, "template.xml"), FileMode.Open, FileAccess.Read)
+        Dim tmpTemplate As Template = CType(xmlDeser.Deserialize(xmlStream), Template)
+
+        'reload the actual preset
+        Dim tmpLoadPreset As Preset = tmpTemplate.Presets.FirstOrDefault(Function(x) x.Guid = presetGuid)
         If tmpLoadPreset IsNot Nothing Then
             LoadPreset(tmpLoadPreset)
         End If

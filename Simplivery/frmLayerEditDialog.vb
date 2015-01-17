@@ -29,16 +29,19 @@
                     Select Case tmpPreset.PresetColor
                         Case PresetColorType.Main
                             cmbColorStyle.SelectedIndex = 0
+                            pnlLayerColor.BackColor = frmMain.pnlBaseColor.BackColor
                         Case PresetColorType.Accent
                             cmbColorStyle.SelectedIndex = 1
+                            pnlLayerColor.BackColor = frmMain.pnlAccentColor.BackColor
                         Case PresetColorType.Third
                             cmbColorStyle.SelectedIndex = 2
+                            pnlLayerColor.BackColor = frmMain.pnlThirdColor.BackColor
                         Case PresetColorType.CustomPreset
                             pnlLayerColor.Enabled = True
                             btnLayerColor.Enabled = True
                             cmbColorStyle.SelectedIndex = 3
+                            pnlLayerColor.BackColor = Color.FromArgb(tmpPreset.Color)
                     End Select
-                    pnlLayerColor.BackColor = Color.FromArgb(tmpPreset.Color)
                     SelectedColor = pnlLayerColor.BackColor
                 Else
                     cmbColorStyle.Enabled = False
