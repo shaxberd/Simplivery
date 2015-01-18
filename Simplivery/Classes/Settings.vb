@@ -11,6 +11,7 @@
     Public Property BaseColor As Integer
     Public Property AccentColor As Integer
     Public Property ThirdColor As Integer
+    Public Property NoColor As Integer
     Public Property AutoUpdate As Boolean
     Public Property UseCustomFolder As Boolean
     Public Property CustomFolder As String
@@ -28,6 +29,7 @@
         BaseColor = 0
         AccentColor = 0
         ThirdColor = 0
+        NoColor = 0
         AutoUpdate = False
         UseCustomFolder = False
         CustomFolder = String.Empty

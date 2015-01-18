@@ -6,6 +6,7 @@ Imports System.IO.Compression
 Public Class frmMain
 
     'IDEA: Pre-defined Sponsor areas (ELE)
+    'IDEA: select layers by clicking on image
 
 #Region "Fields"
 
@@ -57,6 +58,7 @@ Public Class frmMain
                 pnlBaseColor.BackColor = Color.FromArgb(_settings.BaseColor)
                 pnlAccentColor.BackColor = Color.FromArgb(_settings.AccentColor)
                 pnlThirdColor.BackColor = Color.FromArgb(_settings.ThirdColor)
+                pnlNoColor.BackColor = Color.FromArgb(_settings.NoColor)
             End If
 
             'loading
@@ -102,6 +104,14 @@ Public Class frmMain
     Private Sub btnThirdColor_Click(sender As Object, e As EventArgs) Handles btnThirdColor.Click
         'choose new third color
         pnlThirdColor.BackColor = ChooseColor(pnlThirdColor.BackColor)
+
+        'auto-update
+        If _settings.AutoUpdate Then UpdateChassisPreview()
+    End Sub
+
+    Private Sub btnNoColor_Click(sender As Object, e As EventArgs) Handles btnNoColor.Click
+        'choose new third color
+        pnlNoColor.BackColor = ChooseColor(pnlNoColor.BackColor)
 
         'auto-update
         If _settings.AutoUpdate Then UpdateChassisPreview()
@@ -343,6 +353,7 @@ Public Class frmMain
                 .BaseColor = pnlBaseColor.BackColor.ToArgb
                 .AccentColor = pnlAccentColor.BackColor.ToArgb
                 .ThirdColor = pnlThirdColor.BackColor.ToArgb
+                .NoColor = pnlNoColor.BackColor.ToArgb
             End If
             If .SaveDriverInfo Then
                 .DriverName = txtDriverName.Text
@@ -421,7 +432,7 @@ Public Class frmMain
             bpGfx.FillRectangle(Brushes.White, New Rectangle(30, 52, 70, 70))
             bpGfx.DrawRectangle(New Pen(Brushes.Black, 2), New Rectangle(30, 52, 70, 70))
             'Number image (black)
-            bpGfx.DrawString(nudDriverNo.Value.ToString, noFont, Brushes.Black, New Rectangle(20, 52, 90, 70), noFormat)
+            bpGfx.DrawString(nudDriverNo.Value.ToString, noFont, New SolidBrush(pnlNoColor.BackColor), New Rectangle(20, 52, 90, 70), noFormat)
             'Name (text color)
             bpGfx.DrawString(txtDriverName.Text, nameFont, textBrush, New Rectangle(30, 10, 300, 30))
 
@@ -595,7 +606,7 @@ Public Class frmMain
 
     Private Function GetNumberImage(ByVal width As Integer, ByVal height As Integer) As Bitmap
         'let general GetTextImage take over
-        Return GetTextImage(width, height, nudDriverNo.Value.ToString, _noFont, Color.Black, True)
+        Return GetTextImage(width, height, nudDriverNo.Value.ToString, _noFont, pnlNoColor.BackColor, True)
     End Function
 
     Private Function GetTextImage(ByVal width As Integer, ByVal height As Integer, ByVal text As String, ByVal font As Font, ByVal color As Color, ByVal centerNoScaling As Boolean) As Bitmap
@@ -767,11 +778,14 @@ Public Class frmMain
                     exportImage.Dispose()
 
                     'write the INI file used by Race07
-                    File.WriteAllText(iniFileName, String.Format("[[[{1}]]]{0}[[{2}]]{0}[{3}]{0}body = {4}", Environment.NewLine, _
+                    File.WriteAllText(iniFileName, String.Format("[[[{1}]]]{0}[[{2}]]", Environment.NewLine, _
                                                                  txtTeamName.Text, _
-                                                                 txtDriverName.Text, _
-                                                                 _currentTemplate.InGameCarName, _
-                                                                 Path.GetFileName(ddsFileName)))
+                                                                 txtDriverName.Text))
+                    For Each tmpCarString As String In _currentTemplate.InGameCarName.Split(CChar("|"))
+                        File.AppendAllText(iniFileName, String.Format("{0}[{1}]{0}body = {2}", Environment.NewLine, _
+                                                                      tmpCarString, _
+                                                                      Path.GetFileName(ddsFileName)))
+                    Next
 
                     'create Zip File
                     If _settings.CreateZip Then

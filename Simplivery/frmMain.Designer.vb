@@ -108,6 +108,9 @@ Partial Class frmMain
         Me.btnCarEditor = New System.Windows.Forms.ToolStripButton()
         Me.btnCarDelete = New System.Windows.Forms.ToolStripButton()
         Me.btnSettings = New System.Windows.Forms.ToolStripButton()
+        Me.lblNoColor = New System.Windows.Forms.Label()
+        Me.pnlNoColor = New System.Windows.Forms.Panel()
+        Me.btnNoColor = New System.Windows.Forms.Button()
         CType(Me.spcMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.spcMain.Panel1.SuspendLayout()
         Me.spcMain.Panel2.SuspendLayout()
@@ -353,6 +356,9 @@ Partial Class frmMain
         '
         'grpBasicFonts
         '
+        Me.grpBasicFonts.Controls.Add(Me.lblNoColor)
+        Me.grpBasicFonts.Controls.Add(Me.pnlNoColor)
+        Me.grpBasicFonts.Controls.Add(Me.btnNoColor)
         Me.grpBasicFonts.Controls.Add(Me.lblNameFontInfo)
         Me.grpBasicFonts.Controls.Add(Me.txtNameFont)
         Me.grpBasicFonts.Controls.Add(Me.btnNameFont)
@@ -371,7 +377,7 @@ Partial Class frmMain
         'lblNameFontInfo
         '
         Me.lblNameFontInfo.AutoSize = True
-        Me.lblNameFontInfo.Location = New System.Drawing.Point(82, 68)
+        Me.lblNameFontInfo.Location = New System.Drawing.Point(83, 94)
         Me.lblNameFontInfo.Name = "lblNameFontInfo"
         Me.lblNameFontInfo.Size = New System.Drawing.Size(139, 13)
         Me.lblNameFontInfo.TabIndex = 38
@@ -379,7 +385,9 @@ Partial Class frmMain
         '
         'txtNameFont
         '
-        Me.txtNameFont.Location = New System.Drawing.Point(85, 45)
+        Me.txtNameFont.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtNameFont.Location = New System.Drawing.Point(85, 71)
         Me.txtNameFont.Name = "txtNameFont"
         Me.txtNameFont.ReadOnly = True
         Me.txtNameFont.Size = New System.Drawing.Size(92, 20)
@@ -388,7 +396,7 @@ Partial Class frmMain
         'btnNameFont
         '
         Me.btnNameFont.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnNameFont.Location = New System.Drawing.Point(183, 45)
+        Me.btnNameFont.Location = New System.Drawing.Point(183, 71)
         Me.btnNameFont.Name = "btnNameFont"
         Me.btnNameFont.Size = New System.Drawing.Size(67, 20)
         Me.btnNameFont.TabIndex = 36
@@ -397,6 +405,8 @@ Partial Class frmMain
         '
         'txtNoFont
         '
+        Me.txtNoFont.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtNoFont.Location = New System.Drawing.Point(85, 19)
         Me.txtNoFont.Name = "txtNoFont"
         Me.txtNoFont.ReadOnly = True
@@ -425,7 +435,7 @@ Partial Class frmMain
         'lblNameFont
         '
         Me.lblNameFont.AutoSize = True
-        Me.lblNameFont.Location = New System.Drawing.Point(6, 48)
+        Me.lblNameFont.Location = New System.Drawing.Point(7, 74)
         Me.lblNameFont.Name = "lblNameFont"
         Me.lblNameFont.Size = New System.Drawing.Size(52, 13)
         Me.lblNameFont.TabIndex = 3
@@ -801,7 +811,7 @@ Partial Class frmMain
         '
         Me.spcChassis2.Panel2.Controls.Add(Me.grpChassisElements)
         Me.spcChassis2.Size = New System.Drawing.Size(569, 389)
-        Me.spcChassis2.SplitterDistance = 371
+        Me.spcChassis2.SplitterDistance = 368
         Me.spcChassis2.SplitterWidth = 1
         Me.spcChassis2.TabIndex = 0
         Me.spcChassis2.TabStop = False
@@ -810,7 +820,7 @@ Partial Class frmMain
         '
         Me.btnChassisPreview.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.btnChassisPreview.Image = Global.Simplivery.My.Resources.Resources.reload
-        Me.btnChassisPreview.Location = New System.Drawing.Point(137, 191)
+        Me.btnChassisPreview.Location = New System.Drawing.Point(136, 191)
         Me.btnChassisPreview.Name = "btnChassisPreview"
         Me.btnChassisPreview.Size = New System.Drawing.Size(100, 32)
         Me.btnChassisPreview.TabIndex = 1
@@ -827,7 +837,7 @@ Partial Class frmMain
         Me.picChassisPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.picChassisPreview.Location = New System.Drawing.Point(5, 3)
         Me.picChassisPreview.Name = "picChassisPreview"
-        Me.picChassisPreview.Size = New System.Drawing.Size(361, 182)
+        Me.picChassisPreview.Size = New System.Drawing.Size(358, 182)
         Me.picChassisPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picChassisPreview.TabIndex = 0
         Me.picChassisPreview.TabStop = False
@@ -840,7 +850,7 @@ Partial Class frmMain
         Me.grpChassisElements.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grpChassisElements.Location = New System.Drawing.Point(0, 0)
         Me.grpChassisElements.Name = "grpChassisElements"
-        Me.grpChassisElements.Size = New System.Drawing.Size(197, 389)
+        Me.grpChassisElements.Size = New System.Drawing.Size(200, 389)
         Me.grpChassisElements.TabIndex = 1
         Me.grpChassisElements.TabStop = False
         Me.grpChassisElements.Text = "Elements"
@@ -1128,6 +1138,36 @@ Partial Class frmMain
         Me.btnSettings.Size = New System.Drawing.Size(28, 28)
         Me.btnSettings.Text = "Settings"
         '
+        'lblNoColor
+        '
+        Me.lblNoColor.AutoSize = True
+        Me.lblNoColor.Location = New System.Drawing.Point(6, 49)
+        Me.lblNoColor.Name = "lblNoColor"
+        Me.lblNoColor.Size = New System.Drawing.Size(51, 13)
+        Me.lblNoColor.TabIndex = 39
+        Me.lblNoColor.Text = "No. Color"
+        '
+        'pnlNoColor
+        '
+        Me.pnlNoColor.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.pnlNoColor.BackColor = System.Drawing.Color.Black
+        Me.pnlNoColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.pnlNoColor.Location = New System.Drawing.Point(85, 45)
+        Me.pnlNoColor.Name = "pnlNoColor"
+        Me.pnlNoColor.Size = New System.Drawing.Size(92, 20)
+        Me.pnlNoColor.TabIndex = 41
+        '
+        'btnNoColor
+        '
+        Me.btnNoColor.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnNoColor.Location = New System.Drawing.Point(183, 45)
+        Me.btnNoColor.Name = "btnNoColor"
+        Me.btnNoColor.Size = New System.Drawing.Size(67, 20)
+        Me.btnNoColor.TabIndex = 40
+        Me.btnNoColor.Text = "Choose"
+        Me.btnNoColor.UseVisualStyleBackColor = True
+        '
         'frmMain
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
@@ -1280,5 +1320,8 @@ Partial Class frmMain
     Friend WithEvents txtNoFont As System.Windows.Forms.TextBox
     Friend WithEvents btnNoFont As System.Windows.Forms.Button
     Friend WithEvents lblNameFontInfo As System.Windows.Forms.Label
+    Friend WithEvents lblNoColor As System.Windows.Forms.Label
+    Friend WithEvents pnlNoColor As System.Windows.Forms.Panel
+    Friend WithEvents btnNoColor As System.Windows.Forms.Button
 
 End Class
