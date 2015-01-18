@@ -291,8 +291,15 @@ Public Class frmMain
         MoveElement(True)
     End Sub
 
-    Private Sub btnChassisEditLayer_Click(sender As Object, e As EventArgs) Handles btnChassisEditLayer.Click, lviChassisLayers.DoubleClick
+    Private Sub btnChassisEditLayer_Click(sender As Object, e As EventArgs) Handles btnChassisEditLayer.Click
         OpenLayerEditDialog()
+    End Sub
+
+    Private Sub lviChassisLayers_DoubleClick(sender As Object, e As EventArgs) Handles lviChassisLayers.DoubleClick
+        'check whether selected layer is colorable/editable at all
+        If lviChassisLayers.SelectedItems.Count = 1 AndAlso {LayerType.ColorDecal, LayerType.Base}.Contains(_currentTemplate.Layers.FirstOrDefault(Function(x) x.Guid = Guid.ParseExact(lviChassisLayers.SelectedItems(0).Text, "D")).Type) Then
+            OpenLayerEditDialog()
+        End If
     End Sub
 
     Private Sub btnChassisRemoveLayer_Click(sender As Object, e As EventArgs) Handles btnChassisRemoveLayer.Click
@@ -946,12 +953,18 @@ Public Class frmMain
 #Region "Methods - Adding, Editing & Moving Stuff"
 
     Private Sub OpenLayerAddDialog(ByVal type As LayerType)
-        'opens up the layer chooser for the given type
-        Dim lad As New frmLayerAddDialog(_templatePath, type, _currentTemplate, _currentSet.Layers)
-        If lad.ShowDialog = Windows.Forms.DialogResult.OK Then
-            AddLayer(lad.SelectedLayer, lad.SelectedColor, lad.SelectedColorType)
+        'check whether additional layers are available
+        If _currentTemplate.Layers.Where(Function(x) x.Type = type).Count > _
+            _currentTemplate.Layers.Where(Function(x) (From y In _currentSet.Layers Select y.LayerGuid).Contains(x.Guid) AndAlso x.Type = type).Count Then
+
+            'opens up the layer chooser for the given type
+            Dim lad As New frmLayerAddDialog(_templatePath, type, _currentTemplate, _currentSet.Layers)
+            If lad.ShowDialog = Windows.Forms.DialogResult.OK Then
+                AddLayer(lad.SelectedLayer, lad.SelectedColor, lad.SelectedColorType)
+            End If
+            lad.Dispose()
         End If
-        lad.Dispose()
+        
     End Sub
 
     Private Sub OpenLayerEditDialog()
