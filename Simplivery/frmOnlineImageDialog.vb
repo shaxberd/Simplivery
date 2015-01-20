@@ -124,7 +124,7 @@ Public Class frmOnlineImageDialog
 
             'save search & infos; handle page buttons
             If lblCurrentPage.Enabled = False Then lblCurrentPage.Enabled = True
-            lblCurrentPage.Text = String.Format("Page {0}", page.ToString)
+            lblCurrentPage.Text = String.Format("Page {0}", (page + 1).ToString)
             If page = 0 Then
                 MyLastSearch = searchTerm
                 MySearchPage = 0

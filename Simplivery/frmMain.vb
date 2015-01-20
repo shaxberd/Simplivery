@@ -30,6 +30,9 @@ Public Class frmMain
         InitializeComponent()
 
         Try
+            tbcLiveryDesign.TabPages.RemoveAt(2)
+            tbcLiveryDesign.TabPages.RemoveAt(2)
+
             'Initializing
             Me.Icon = My.Resources.icon
             _fontConverter = New FontConverter

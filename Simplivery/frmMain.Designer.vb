@@ -37,6 +37,9 @@ Partial Class frmMain
         Me.nudDriverNo = New System.Windows.Forms.NumericUpDown()
         Me.spcLiveryBasicsSettings2 = New System.Windows.Forms.SplitContainer()
         Me.grpBasicFonts = New System.Windows.Forms.GroupBox()
+        Me.lblNoColor = New System.Windows.Forms.Label()
+        Me.pnlNoColor = New System.Windows.Forms.Panel()
+        Me.btnNoColor = New System.Windows.Forms.Button()
         Me.lblNameFontInfo = New System.Windows.Forms.Label()
         Me.txtNameFont = New System.Windows.Forms.TextBox()
         Me.btnNameFont = New System.Windows.Forms.Button()
@@ -96,6 +99,7 @@ Partial Class frmMain
         Me.Label1 = New System.Windows.Forms.Label()
         Me.tstActions = New System.Windows.Forms.ToolStrip()
         Me.btnReset = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnSave = New System.Windows.Forms.ToolStripButton()
         Me.btnLoad = New System.Windows.Forms.ToolStripButton()
         Me.btnExport = New System.Windows.Forms.ToolStripButton()
@@ -108,10 +112,6 @@ Partial Class frmMain
         Me.btnCarEditor = New System.Windows.Forms.ToolStripButton()
         Me.btnCarDelete = New System.Windows.Forms.ToolStripButton()
         Me.btnSettings = New System.Windows.Forms.ToolStripButton()
-        Me.lblNoColor = New System.Windows.Forms.Label()
-        Me.pnlNoColor = New System.Windows.Forms.Panel()
-        Me.btnNoColor = New System.Windows.Forms.Button()
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         CType(Me.spcMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.spcMain.Panel1.SuspendLayout()
         Me.spcMain.Panel2.SuspendLayout()
@@ -374,6 +374,36 @@ Partial Class frmMain
         Me.grpBasicFonts.TabIndex = 4
         Me.grpBasicFonts.TabStop = False
         Me.grpBasicFonts.Text = "Font Settings"
+        '
+        'lblNoColor
+        '
+        Me.lblNoColor.AutoSize = True
+        Me.lblNoColor.Location = New System.Drawing.Point(6, 49)
+        Me.lblNoColor.Name = "lblNoColor"
+        Me.lblNoColor.Size = New System.Drawing.Size(51, 13)
+        Me.lblNoColor.TabIndex = 39
+        Me.lblNoColor.Text = "No. Color"
+        '
+        'pnlNoColor
+        '
+        Me.pnlNoColor.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.pnlNoColor.BackColor = System.Drawing.Color.Black
+        Me.pnlNoColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.pnlNoColor.Location = New System.Drawing.Point(85, 45)
+        Me.pnlNoColor.Name = "pnlNoColor"
+        Me.pnlNoColor.Size = New System.Drawing.Size(92, 20)
+        Me.pnlNoColor.TabIndex = 41
+        '
+        'btnNoColor
+        '
+        Me.btnNoColor.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnNoColor.Location = New System.Drawing.Point(183, 45)
+        Me.btnNoColor.Name = "btnNoColor"
+        Me.btnNoColor.Size = New System.Drawing.Size(67, 20)
+        Me.btnNoColor.TabIndex = 40
+        Me.btnNoColor.Text = "Choose"
+        Me.btnNoColor.UseVisualStyleBackColor = True
         '
         'lblNameFontInfo
         '
@@ -1032,6 +1062,11 @@ Partial Class frmMain
         Me.btnReset.Size = New System.Drawing.Size(28, 28)
         Me.btnReset.Text = "Reset livery to default preset"
         '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 31)
+        '
         'btnSave
         '
         Me.btnSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
@@ -1138,41 +1173,6 @@ Partial Class frmMain
         Me.btnSettings.Name = "btnSettings"
         Me.btnSettings.Size = New System.Drawing.Size(28, 28)
         Me.btnSettings.Text = "Settings"
-        '
-        'lblNoColor
-        '
-        Me.lblNoColor.AutoSize = True
-        Me.lblNoColor.Location = New System.Drawing.Point(6, 49)
-        Me.lblNoColor.Name = "lblNoColor"
-        Me.lblNoColor.Size = New System.Drawing.Size(51, 13)
-        Me.lblNoColor.TabIndex = 39
-        Me.lblNoColor.Text = "No. Color"
-        '
-        'pnlNoColor
-        '
-        Me.pnlNoColor.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlNoColor.BackColor = System.Drawing.Color.Black
-        Me.pnlNoColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.pnlNoColor.Location = New System.Drawing.Point(85, 45)
-        Me.pnlNoColor.Name = "pnlNoColor"
-        Me.pnlNoColor.Size = New System.Drawing.Size(92, 20)
-        Me.pnlNoColor.TabIndex = 41
-        '
-        'btnNoColor
-        '
-        Me.btnNoColor.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnNoColor.Location = New System.Drawing.Point(183, 45)
-        Me.btnNoColor.Name = "btnNoColor"
-        Me.btnNoColor.Size = New System.Drawing.Size(67, 20)
-        Me.btnNoColor.TabIndex = 40
-        Me.btnNoColor.Text = "Choose"
-        Me.btnNoColor.UseVisualStyleBackColor = True
-        '
-        'ToolStripSeparator1
-        '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 31)
         '
         'frmMain
         '
