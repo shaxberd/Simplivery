@@ -7,6 +7,7 @@ Public Class frmMain
 
     'IDEA: Pre-defined Sponsor areas (ELE)
     'IDEA: select layers by clicking on image
+    'IDEA: preset-share by base64
 
 #Region "Fields"
 
@@ -186,6 +187,9 @@ Public Class frmMain
             sfd.InitialDirectory = Path.Combine(Environment.CurrentDirectory, "Presets")
             sfd.Filter = "XML|*.xml"
             If sfd.ShowDialog = Windows.Forms.DialogResult.OK Then
+                _currentSet.Name = Path.GetFileNameWithoutExtension(sfd.FileName)
+                _currentSet.Guid = Guid.NewGuid
+
                 Dim xmlSer As New Xml.Serialization.XmlSerializer(_currentSet.GetType)
                 Dim xmlStream As New FileStream(sfd.FileName, FileMode.OpenOrCreate, FileAccess.Write)
                 xmlSer.Serialize(xmlStream, _currentSet)

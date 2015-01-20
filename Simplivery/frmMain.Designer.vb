@@ -111,6 +111,7 @@ Partial Class frmMain
         Me.lblNoColor = New System.Windows.Forms.Label()
         Me.pnlNoColor = New System.Windows.Forms.Panel()
         Me.btnNoColor = New System.Windows.Forms.Button()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         CType(Me.spcMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.spcMain.Panel1.SuspendLayout()
         Me.spcMain.Panel2.SuspendLayout()
@@ -1015,7 +1016,7 @@ Partial Class frmMain
         Me.tstActions.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.tstActions.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.tstActions.ImageScalingSize = New System.Drawing.Size(24, 24)
-        Me.tstActions.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnReset, Me.btnSave, Me.btnLoad, Me.btnExport})
+        Me.tstActions.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnReset, Me.ToolStripSeparator1, Me.btnSave, Me.btnLoad, Me.btnExport})
         Me.tstActions.Location = New System.Drawing.Point(0, 466)
         Me.tstActions.Name = "tstActions"
         Me.tstActions.Size = New System.Drawing.Size(784, 31)
@@ -1167,6 +1168,11 @@ Partial Class frmMain
         Me.btnNoColor.TabIndex = 40
         Me.btnNoColor.Text = "Choose"
         Me.btnNoColor.UseVisualStyleBackColor = True
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 31)
         '
         'frmMain
         '
@@ -1323,5 +1329,6 @@ Partial Class frmMain
     Friend WithEvents lblNoColor As System.Windows.Forms.Label
     Friend WithEvents pnlNoColor As System.Windows.Forms.Panel
     Friend WithEvents btnNoColor As System.Windows.Forms.Button
+    Friend WithEvents ToolStripSeparator1 As System.Windows.Forms.ToolStripSeparator
 
 End Class
